@@ -4,9 +4,14 @@ import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
 import useModalStore from '../../store/useModalStore'; 
+import {Appearance} from 'react-native';
 
 const TabModal = () => {
   const { isModalVisible, toggleModal } = useModalStore();
+
+  const toggleDarkLight = () => {
+    Appearance.setColorScheme(Appearance.getColorScheme() === 'light' ? 'dark' : 'light');
+  };
 
   return (
     <Modal transparent={true} visible={isModalVisible} onRequestClose={toggleModal}>
@@ -21,6 +26,9 @@ const TabModal = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => alert('Close')} style={styles.optionButton}>
             <Text style={styles.optionText}>Close</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleDarkLight} style={styles.optionButton}>
+            <Text style={styles.optionText}>Toggle Light/Dark Mode</Text>
           </TouchableOpacity>
         </View>
       </BlurView>
