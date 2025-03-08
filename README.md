@@ -66,7 +66,7 @@ Local ip address for laptop in network changes, find out by using the command "i
 flask --app main run --host=0.0.0.0
 ```
 
-### Then start the expo application by doing this in the folder where app.json is located (i think there is currently also a README.md file explaining within the folder how to start the app, but it is just the next line)
+### Then s[text](.gitignore)tart the expo application by doing this in the folder where app.json is located (i think there is currently also a README.md file explaining within the folder how to start the app, but it is just the next line)
 ```bash
 npx expo start
 ```
