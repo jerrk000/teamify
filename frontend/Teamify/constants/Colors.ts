@@ -15,6 +15,8 @@ export const Colors = {
     tabIconDefault: '#687076',
     tabIconSelected: tintColorLight,
     listselection: '#fcc340', //yellow
+    button: '#2e3c87', //dark blue
+    buttonText: '#ffffff', //white
   },
   dark: {
     text: '#ECEDEE',
@@ -24,5 +26,7 @@ export const Colors = {
     tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorDark,
     listselection: '#fcc340', //yellow
+    button: '#fcc340', //yellow
+    buttonText: '#000000'
   },
 };

@@ -4,7 +4,7 @@ const CustomLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: '#ffffff', //white (little grey)
+    background: '#ffffff', //white
     primary: '#2e3c87', //dark blue
     text: '#000000', //black
     //corresponding yellow color '#fcc340'

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Button, Keyboard } from 'react-native';
+import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 //import { useTheme } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import Button from '@/components/ui/Button'
 
 
 type Item = {
