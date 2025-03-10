@@ -4,8 +4,12 @@ const CustomLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: 'rgb(140, 201, 125)',
-    primary: 'rgb(255, 45, 85)',
+    background: '#ffffff', //white (little grey)
+    primary: '#2e3c87', //dark blue
+    text: '#000000', //black
+    //corresponding yellow color '#fcc340'
+    //sand: '#f0dbc3'
+    //blue sky: '#d7e5f0'
   },
 };
 

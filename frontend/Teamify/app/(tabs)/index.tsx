@@ -4,6 +4,9 @@ import { useRouter } from 'expo-router';
 import { useListStore } from "../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+//import { useTheme } from '@react-navigation/native';
+import { useColorScheme } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
 
 type Item = {
@@ -31,6 +34,10 @@ const HomeScreen = () => {
     { id: '14', name: 'Maximilian Baximilian Raximus' },
     { id: '15', name: 'Servus Versus Cersus' },
   ]);
+
+  const colorScheme = useColorScheme();
+  //const { colors } = useTheme(); //only needed when working with predefined Theme from react navigation
+
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [selectedItems, setSelectedItems] = useState<Item[]>(() => {
@@ -157,7 +164,7 @@ const HomeScreen = () => {
             <TouchableOpacity onPress={() => handleItemPress(item)}>
               <View style={[
                 styles.item,
-                isItemSelected(item) ? styles.clickedItem : styles.noclickedItem
+                isItemSelected(item) ? {backgroundColor: Colors[colorScheme ?? 'light'].listselection} : styles.noclickedItem
               ]}>
                 <Text>
                   {item.name}

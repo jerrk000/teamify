@@ -4,8 +4,9 @@ const CustomDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: 'rgb(140, 201, 125)',
-    primary: 'rgb(255, 45, 85)',
+    background: '#000000', //black
+    primary: '#fcc340', //yellow
+    text: '#fcc340', //also yellow, check if nowhere text on primary
   },
 };
 

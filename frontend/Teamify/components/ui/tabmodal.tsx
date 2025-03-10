@@ -10,7 +10,7 @@ const TabModal = () => {
   const { isModalVisible, toggleModal } = useModalStore();
 
   const toggleDarkLight = () => {
-    // Maybe look instead at ThemProvider or ThemeContext?
+    // Maybe look instead at ThemeProvider or ThemeContext?
     Appearance.setColorScheme(Appearance.getColorScheme() === 'light' ? 'dark' : 'light');
   };
 
