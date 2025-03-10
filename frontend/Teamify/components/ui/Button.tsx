@@ -1,5 +1,9 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, GestureResponderEvent } from 'react-native';
+import { useThemeColor } from '@/hooks/useThemeColor';
+
+
+//TODO maybe make this a *themed* button here already, so that i dont have to manually change to darkmode everywhere
 
 interface ButtonProps {
   title: string;
@@ -8,6 +12,8 @@ interface ButtonProps {
   loading?: boolean;
   style?: object;
   textStyle?: object;
+  lightColor?: string;
+  darkColor?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,10 +23,15 @@ const Button: React.FC<ButtonProps> = ({
   loading = false,
   style,
   textStyle,
+  lightColor,
+  darkColor,
 }) => {
+  
+  const buttonColor = useThemeColor({ light: lightColor, dark: darkColor }, 'button');
+
   return (
     <TouchableOpacity
-      style={[styles.button, disabled && styles.disabledButton, style]}
+      style={[{backgroundColor: buttonColor}, styles.button, disabled && styles.disabledButton, style]}
       onPress={onPress}
       activeOpacity={0.7}
       disabled={disabled || loading}
@@ -36,7 +47,7 @@ const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#007BFF',
+    //backgroundColor: '#007BFF',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 8,
