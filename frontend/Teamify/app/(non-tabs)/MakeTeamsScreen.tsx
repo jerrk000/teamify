@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useListStore } from "../../store/useListStore";
 import BackgroundPicture from '@/components/ImageBackground';
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
-import { Player } from '@/types/PlayerType';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
+import Button from '@/components/ui/Button';
+//import { useThemeColor } from '@/hooks/useThemeColor';
 
 
 const SavedItemsScreen = () => {
@@ -23,43 +26,55 @@ const SavedItemsScreen = () => {
   };
 
 
-  const renderItemUpper = ({ item }: { item: Player }) => ( //crimson red
-    <View style={[styles.playerlistitemcontainer, {borderColor: "#DC143C"}]}> 
-      <Text style={[styles.playerlistitemtext, {color: "#DC143C"}]}>{item.name}</Text> 
-    </View>
-  );
+  const colorScheme = useColorScheme();
+  //const background = useThemeColor({ light: 'light', dark: 'dark' }, 'background'); //does not work?
+  //const textColor = useThemeColor({ light: 'light', dark: 'dark' }, 'text'); //does not work?
 
-  // Render item for FlatList
-  const renderItemLower = ({ item }: { item: Player }) => (
-    <View style={styles.playerlistitemcontainer}>
-      <Text style={styles.playerlistitemtext}>{item.name}</Text>
-    </View>
-  );
 
   return (
     <BackgroundPicture>
       <View style={styles.container}>
         
         <View style={styles.teamContainer}>  
-          <Text style={[styles.teamTitle, {color: "#DC143C"}]}>Team</Text>
-          <SelectedPlayers selectedPlayers={firstGroup} disableTouch={true} />
+          <Text style={[styles.teamTitle, {color: Colors[colorScheme ?? 'light'].volley1}]}>Team</Text>
+          <SelectedPlayers 
+            selectedPlayers={firstGroup} 
+            disableTouch={true} 
+            isCentered={true} 
+            selectedItemStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].volley1}}
+            textStyle={{color: Colors[colorScheme ?? 'light'].text}}
+          />
         </View>
         
 
         
         <View style={styles.simplebuttonContainer}>
-          <Button title="Randomize Teams" onPress={randomizeItems} />
+          <Button 
+            title="Randomize Teams" 
+            onPress={randomizeItems} 
+            style={{backgroundColor: Colors[colorScheme ?? 'light'].volley3}} 
+          />
         </View>
 
         
-        <View style={styles.teamContainer}>
-          <Text style={[styles.teamTitle, {color: "#3498db"}]}>Team</Text>
-          <SelectedPlayers selectedPlayers={secondGroup} disableTouch={true} />
+        <View style={styles.teamContainer}>  
+          <Text style={[styles.teamTitle, {color: Colors[colorScheme ?? 'light'].volley2}]}>Team</Text>
+          <SelectedPlayers 
+            selectedPlayers={secondGroup} 
+            disableTouch={true} 
+            isCentered={true} 
+            selectedItemStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].volley2}}
+            textStyle={{color: Colors[colorScheme ?? 'light'].text}}
+          />
         </View>
 
         {/* Choose Winner Button */}
         <View style={styles.simplebuttonContainer}>
-          <Button title="Choose winner" onPress={() => setShowAdditionalButtons(!showAdditionalButtons)} />
+          <Button 
+            title="Choose winner" 
+            onPress={() => setShowAdditionalButtons(!showAdditionalButtons)} 
+            style={{backgroundColor: Colors[colorScheme ?? 'light'].volley3}}
+          />
         </View>
 
         {/* Overlay with Additional Buttons */}
@@ -97,15 +112,12 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
   },
-  playernameflatList: {
-    alignItems: "center", // Ensures items are centered
-  },
   teamContainer: {
     flex: 1,
     marginBottom: 16,
   },
   teamTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlignVertical: "center",

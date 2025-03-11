@@ -174,7 +174,12 @@ const HomeScreen = () => {
         />
         <Text style={styles.selectedTitle}>Selected Players: {selectedItems.length}</Text>
         {!keyboardStatus ? (
-        <SelectedPlayers selectedPlayers={selectedItems} onRemovePlayer={handleRemoveItem} />
+        <SelectedPlayers 
+          selectedPlayers={selectedItems} 
+          onClickPlayer={handleRemoveItem}
+          selectedItemStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].button}}
+          textStyle={{color: Colors[colorScheme ?? 'light'].text}} 
+        />
           ) : null
         }
         <Button title="Save Selected Players" onPress={handleSave} />

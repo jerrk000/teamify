@@ -17,6 +17,9 @@ export const Colors = {
     listselection: '#fcc340', //yellow
     button: '#2e3c87', //dark blue
     buttonText: '#ffffff', //white
+    volley1: '#2e3c87', //dark blue
+    volley2: '#fcc340', //yellow
+    volley3: '#de3d4b', //red
   },
   dark: {
     text: '#ECEDEE',
@@ -27,6 +30,9 @@ export const Colors = {
     tabIconSelected: tintColorDark,
     listselection: '#fcc340', //yellow
     button: '#fcc340', //yellow
-    buttonText: '#000000'
+    buttonText: '#000000', //black
+    volley1: '#2e3c87', //dark blue
+    volley2: '#fcc340', //yellow
+    volley3: '#de3d4b', //red
   },
 };

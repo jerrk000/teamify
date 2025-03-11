@@ -1,21 +1,25 @@
 import React from 'react';
-import { FlatList, Text, View, TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
+import { FlatList, Text, View, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { Player } from '@/types/PlayerType';
 
 interface SelectedPlayersProps {
   selectedPlayers: Player[];
-  onRemovePlayer?: (player: Player) => void;
+  onClickPlayer?: (player: Player) => void;
   containerStyle?: ViewStyle;
   selectedItemStyle?: ViewStyle;
+  textStyle?: TextStyle;
   disableTouch?: boolean;
+  isCentered?: boolean;
 }
 
 const SelectedPlayers: React.FC<SelectedPlayersProps> = ({ 
   selectedPlayers, 
-  onRemovePlayer = () => {},
+  onClickPlayer = () => {},
   containerStyle, 
   selectedItemStyle,
-  disableTouch = false
+  textStyle,
+  disableTouch = false,
+  isCentered = false
   }) => {
   return (
     <View style={[styles.selectedPlayersContainer, containerStyle]}>
@@ -23,14 +27,15 @@ const SelectedPlayers: React.FC<SelectedPlayersProps> = ({
         data={selectedPlayers}
         keyExtractor={(player) => player.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => onRemovePlayer(item)} disabled={disableTouch}>
+          <TouchableOpacity onPress={() => onClickPlayer(item)} disabled={disableTouch}>
             <View style={[styles.selectedItem, selectedItemStyle]}>
-              <Text style={styles.itemtext} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
+              <Text style={[styles.itemtext, textStyle]} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
               {!disableTouch ? (<Text style={styles.cross}>❌</Text>) : null}
             </View>
           </TouchableOpacity>
         )}
         numColumns={3}
+        contentContainerStyle = {isCentered ? {alignItems: 'center'} : {alignItems: 'stretch'}}
       />
     </View>
   );
@@ -46,8 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
     backgroundColor: '#f9f9f9',
     margin: 5,
     borderWidth: 2, // Border thickness
