@@ -8,6 +8,7 @@ import { IconSymbol } from '@/components/ui/IconSymbol';
 import { useColorScheme } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import Button from '@/components/ui/Button'
+import SelectedPlayers from '@/components/ui/SelectedPlayers';
 
 
 type Item = {
@@ -118,9 +119,6 @@ const HomeScreen = () => {
     setItems(selectedItems); // Store the list in Zustand
     router.push({
       pathname: '/MakeTeamsScreen',
-      params: {
-        customTitle: 'Custom Header Title', // Pass dynamic header title
-      },
     });
   };
 
@@ -176,26 +174,7 @@ const HomeScreen = () => {
         />
         <Text style={styles.selectedTitle}>Selected Items: {selectedItems.length}</Text>
         {!keyboardStatus ? (
-          <View style={styles.selectedItemsContainer}>
-            <FlatList
-              data={selectedItems}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleRemoveItem(item)}>
-                  <View style={styles.selectedItem}>
-                    <Text style={styles.playerlistitemtext}
-                    numberOfLines={1} 
-                    ellipsizeMode="tail">
-                      {item.name}</Text>
-                      <Text style={styles.cross}>❌</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-              numColumns={3}
-              columnWrapperStyle={selectedItems.length === 1 ? { justifyContent: "center" } : {}}
-              contentContainerStyle={styles.playernameflatList}
-            />
-          </View>
+        <SelectedPlayers selectedPlayers={selectedItems} onRemovePlayer={handleRemoveItem} />
           ) : null
         }
         <Button title="Save Selected Items" onPress={handleSave} />
