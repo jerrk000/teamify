@@ -4,21 +4,29 @@ import { Player } from '@/types/PlayerType';
 
 interface SelectedPlayersProps {
   selectedPlayers: Player[];
-  onRemovePlayer: (player: Player) => void;
-  style?: ViewStyle;
+  onRemovePlayer?: (player: Player) => void;
+  containerStyle?: ViewStyle;
+  selectedItemStyle?: ViewStyle;
+  disableTouch?: boolean;
 }
 
-const SelectedPlayers: React.FC<SelectedPlayersProps> = ({ selectedPlayers, onRemovePlayer, style }) => {
+const SelectedPlayers: React.FC<SelectedPlayersProps> = ({ 
+  selectedPlayers, 
+  onRemovePlayer = () => {},
+  containerStyle, 
+  selectedItemStyle,
+  disableTouch = false
+  }) => {
   return (
-    <View style={[styles.selectedPlayersContainer, style]}>
+    <View style={[styles.selectedPlayersContainer, containerStyle]}>
       <FlatList
         data={selectedPlayers}
         keyExtractor={(player) => player.id}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => onRemovePlayer(item)}>
-            <View style={styles.selectedItem}>
+          <TouchableOpacity onPress={() => onRemovePlayer(item)} disabled={disableTouch}>
+            <View style={[styles.selectedItem, selectedItemStyle]}>
               <Text style={styles.itemtext} numberOfLines={1} ellipsizeMode="tail">{item.name}</Text>
-              <Text style={styles.cross}>❌</Text>
+              {!disableTouch ? (<Text style={styles.cross}>❌</Text>) : null}
             </View>
           </TouchableOpacity>
         )}

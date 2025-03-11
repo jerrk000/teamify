@@ -172,12 +172,12 @@ const HomeScreen = () => {
             </TouchableOpacity>
           )}
         />
-        <Text style={styles.selectedTitle}>Selected Items: {selectedItems.length}</Text>
+        <Text style={styles.selectedTitle}>Selected Players: {selectedItems.length}</Text>
         {!keyboardStatus ? (
         <SelectedPlayers selectedPlayers={selectedItems} onRemovePlayer={handleRemoveItem} />
           ) : null
         }
-        <Button title="Save Selected Items" onPress={handleSave} />
+        <Button title="Save Selected Players" onPress={handleSave} />
       </SafeAreaView>
     </SafeAreaProvider>
   );

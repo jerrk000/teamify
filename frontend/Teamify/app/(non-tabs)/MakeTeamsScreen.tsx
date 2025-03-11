@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { useListStore } from "../../store/useListStore";
 import BackgroundPicture from '@/components/ImageBackground';
+import SelectedPlayers from '@/components/ui/SelectedPlayers';
+import { Player } from '@/types/PlayerType';
 
-type Item = {
-  id: string;
-  name: string;
-};
 
 const SavedItemsScreen = () => {
   const items = useListStore((state) => state.items); // Get items from Zustand
@@ -25,14 +23,14 @@ const SavedItemsScreen = () => {
   };
 
 
-  const renderItemUpper = ({ item }: { item: Item }) => ( //crimson red
+  const renderItemUpper = ({ item }: { item: Player }) => ( //crimson red
     <View style={[styles.playerlistitemcontainer, {borderColor: "#DC143C"}]}> 
       <Text style={[styles.playerlistitemtext, {color: "#DC143C"}]}>{item.name}</Text> 
     </View>
   );
 
   // Render item for FlatList
-  const renderItemLower = ({ item }: { item: Item }) => (
+  const renderItemLower = ({ item }: { item: Player }) => (
     <View style={styles.playerlistitemcontainer}>
       <Text style={styles.playerlistitemtext}>{item.name}</Text>
     </View>
@@ -41,33 +39,22 @@ const SavedItemsScreen = () => {
   return (
     <BackgroundPicture>
       <View style={styles.container}>
-        {/* Upper Group */}
-        <View style={styles.teamContainer}>
+        
+        <View style={styles.teamContainer}>  
           <Text style={[styles.teamTitle, {color: "#DC143C"}]}>Team</Text>
-          <FlatList
-            data={firstGroup}
-            renderItem={renderItemUpper}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={3}
-            contentContainerStyle={styles.playernameflatList}
-          />
+          <SelectedPlayers selectedPlayers={firstGroup} disableTouch={true} />
         </View>
+        
 
-        {/* Randomize Button */}
+        
         <View style={styles.simplebuttonContainer}>
           <Button title="Randomize Teams" onPress={randomizeItems} />
         </View>
 
-        {/* Bottom Group */}
+        
         <View style={styles.teamContainer}>
           <Text style={[styles.teamTitle, {color: "#3498db"}]}>Team</Text>
-          <FlatList
-            data={secondGroup}
-            renderItem={renderItemLower}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={3}
-            contentContainerStyle={styles.playernameflatList}
-          />
+          <SelectedPlayers selectedPlayers={secondGroup} disableTouch={true} />
         </View>
 
         {/* Choose Winner Button */}
