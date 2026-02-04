@@ -58,6 +58,8 @@ source deactivate
 deactivate
 ```
 
+# New setup:
+
 ### Adapt local ip address of laptop
 Local ip address for laptop in network changes, find out by using the command "ip a" in terminal (ip address under wlp3s0)
 
@@ -66,7 +68,13 @@ Local ip address for laptop in network changes, find out by using the command "i
 flask --app main run --host=0.0.0.0
 ```
 
-### Then s[text](.gitignore)tart the expo application by doing this in the folder where app.json is located (i think there is currently also a README.md file explaining within the folder how to start the app, but it is just the next line)
+### Then start the expo application by doing this in the folder where app.json is located (i think there is currently also a README.md file explaining within the folder how to start the app, but it is just the next line)
 ```bash
 npx expo start
 ```
+
+In case you want to use Expo Go on your phone to look at the app, do not forget to press "s" after the QR-Code was generated, so that you actually use Expo Go and not some other version!
+
+This currently works fo frontend/Teamify (after I updated to SDK 54) with the line from above in combination with Expo Go 
+
+I tried using the Expo Go App to try the ignite-boilerplate, but they are currently not compatible. (4.2.2026)
