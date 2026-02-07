@@ -106,9 +106,18 @@ Integrate my project into Ignite-boilerplate, because there are already many con
 
 Pretty much only copy and paste of files, and installing packages that were missing. Some files that were not needed in previous iteration were not copied.
 
+### Added simple auth-flow to app.
+
+Made a new group called **(app)** which checks for authentication in corresponding `_layout.tsx` when used.
+If not authenticated, you get redirected to loginscreen. AuthStore in zustand was also created. 
+Logout-Button in modal als has functionality now.
+
 
 ## TODO
 
 - Look through all TODOs in code which were created when merging ignite-boilerplate and  original app
 - SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
 - DONE ALREADY: Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
+- integrate login and auth
+- use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented
+-fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
