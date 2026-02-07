@@ -3,15 +3,25 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { useRouter } from 'expo-router';
 import useModalStore from '../../store/useModalStore'; 
+import { useAuthStore } from '@/store/useAuthStore';
 import {Appearance} from 'react-native';
 
 const TabModal = () => {
   const { isModalVisible, toggleModal } = useModalStore();
+  const logout = useAuthStore((state) => state.logout);
+  const router = useRouter();
 
   const toggleDarkLight = () => {
     // Maybe look instead at ThemeProvider or ThemeContext?
     Appearance.setColorScheme(Appearance.getColorScheme() === 'light' ? 'dark' : 'light');
+  };
+
+  const handleLogout = () => {
+    logout();
+    toggleModal();
+    router.replace('/LoginScreen');
   };
 
   return (
@@ -22,7 +32,7 @@ const TabModal = () => {
           <TouchableOpacity onPress={() => alert('Settings')} style={styles.optionButton}>
             <Text style={styles.optionText}>Settings</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => alert('Logout')} style={styles.optionButton}>
+          <TouchableOpacity onPress={handleLogout} style={styles.optionButton}>
             <Text style={styles.optionText}>Logout</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => alert('Close')} style={styles.optionButton}>

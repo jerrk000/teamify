@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { useListStore } from "../../store/useListStore";
+import { useListStore } from "../../../store/useListStore";
 import BackgroundPicture from '@/components/ImageBackground';
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
 import { useColorScheme } from '@/hooks/useColorScheme';

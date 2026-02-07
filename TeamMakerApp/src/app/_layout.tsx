@@ -60,13 +60,9 @@ export default function Root() {
       <ThemeProvider>
         <KeyboardProvider>
           <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="(app)" options={{ headerShown: false }} />
+            <Stack.Screen name="LoginScreen" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
-            <Stack.Screen name="(non-tabs)/MakeTeamsScreen"
-            options={{
-              title: 'Teams', //Header title for this screen
-            }}
-            />
           </Stack>
           {/*<StatusBar style="auto" />*/}
         </KeyboardProvider>
