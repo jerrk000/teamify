@@ -86,11 +86,6 @@ npx expo prebuild
 Luckily, we only have to do the prebuild-command when we change `app.json/app.config.*`. This step sometimes takes a while.
 As the metro bundler just uses the files outside of the android/ios folder, it is not needed if we just change the UI a little bit.
 
-After that, 
-```bash
-cd android
-```
-and then 
 ```bash
 npx expo run:android
 ```
@@ -105,6 +100,15 @@ Had to
 - install proper JDK and add it to PATH (build failed)
 
 ## Next steps
-Think if I want to integrate my project into Ignite-boilerplate
-Or
-Get inspired by Ignite-boilerplate and stay on my own project
+Integrate my project into Ignite-boilerplate, because there are already many configs set up that will help us later, like EAS, theme-engine, api-part for backend
+
+### Integrating current project into Ignite-boilerplate (expo-router version)
+
+Pretty much only copy and paste of files, and installing packages that were missing. Some files that were not needed in previous iteration were not copied.
+
+
+## TODO
+
+- Look through all TODOs in code which were created when merging ignite-boilerplate and  original app
+- SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
+- DONE ALREADY: Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
