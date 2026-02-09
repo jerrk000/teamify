@@ -100,7 +100,7 @@ Had to
 - install proper JDK and add it to PATH (build failed)
 
 ## Next steps
-Integrate my project into Ignite-boilerplate, because there are already many configs set up that will help us later, like EAS, theme-engine, api-part for backend
+Integrate my project into Ignite-boilerplate, because there are already many configs set up that will help us later, like EAS, theme-engine, api-part for backend (with docker?)
 
 ### Integrating current project into Ignite-boilerplate (expo-router version)
 
@@ -112,21 +112,30 @@ Made a new group called **(app)** which checks for authentication in correspondi
 If not authenticated, you get redirected to loginscreen. AuthStore in zustand was also created. 
 Logout-Button in modal als has functionality now.
 
-### Theming using `styled-components`
+### Theming using `styled-components` or just local ThemeProvider.
 
 
 
 ## Features to implement
 
+### Categorize later
+
+- Implement option where you can create different teams, to more easily add people to a game. 
+- Think about option of giving people a quick rating (or just yourself), so that it is possible to balance teams without using winrate.
+- Add local player for this session with possibility to add foto too.
+
+
 ### General
 - Darkmode
 - use more animations in general for more smoothness
-- Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?
+- Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand)
 - Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
+- Give people the possibility to report wrong games, when they get a message of a reported game.
 - Write a bigger README with app-structure of frontend and backend, database structure, screenshots of the app, cool features.
 - Like in Strong-App, show as a push-notification that a match is currently running, how long it is running. And if you click on it you get back to the partitioned teams screen.
 - Currently stats for winrate just uses naive bayes. with just pure winrates. Maybe expand this so that it makes a difference playing with/against specific players.
 - Local first data management, in case you dont have internet at this moment. See ignite cookbook "PowerSync for Local-First Data Management"
+- Docker to set up everything with  docker-compose, especially when testing connection to backend.
 
 ### Auth and friends
 - use MMKV to stay logged in even after closing the app. Doublecheck because kind of implemented with `persistent` in `AuthStore`.
@@ -136,11 +145,14 @@ Logout-Button in modal als has functionality now.
 - Add player without official account to the game. Their stats will not be written down or just be marked as "Unknown player"
 - Mark friends in friendlist as favourits, so they show up at the top in the searchbar for everything.
 - Make simplified version of app where you can just add local players for splitting up teams FAST.
+- Make a tab for friends to swipe over, to get to the personalised part about yourself. Make it possible to change the name and add a picture, so that the lineup in initial screen and partitioned screen are nicer to look at
 
 
 
 ### Initial Screen where you search players
 - Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets
+- One new game mode: Custom: choose players to participate, but then find a way to add people to individual teams yourself
+- Layout like this 
 
 ### Partitioned Teams Screen
 - Drag-and-Drop after teams were created to change the teams howevery you want. Winrate per team should also refresh. (use panhandler and reanimated maybe?). When doing drag and drop, make a grid that makes it easily possible to change players by dragging one playername on the other. Also make a button or zone "Add to Team" which if dragged there, the players gets added to the team without switching another player only show this button/zone if a name is currently dragged. Alternatively no drag and drop, but long presses where  you get a menu with "Change Team" or sth like that. Dont forget to recalculate winrates.
@@ -150,6 +162,15 @@ Logout-Button in modal als has functionality now.
 - Randomized team should start with fairest team (so winrate closest to 50%), then each "randomize team" button press it gives you the next fairest team. 
 - Short list of last played matches. How long did the game last, which team won.
 - Make a timer which shows how long the current game is running, so that you are always sure if you typed in who won. Reset the timer every time the team changes, obviously. Dont use this time for any stats, it should just help players determine if they already entered the result.
+- Add cutout-pictures of face/upper-body over name, to make it similar like lineup in football
+
+-New layout:
+Change color of field if added. Rounded edges. Little bit of space between each player.
+--------------------------------------------------------------------
+-                                                                  -
+- Picture, Name               ^SignForMoreStats, StarForFavourite  -
+-                                                                  -
+--------------------------------------------------------------------
 
 ### Stats Screen
 - Do more radar charts (maybe implement it yourself? Probably not). Maybe do one radar-chart where you can rate yourself, and do another one where other people can rate you? Maybe bad idea.
