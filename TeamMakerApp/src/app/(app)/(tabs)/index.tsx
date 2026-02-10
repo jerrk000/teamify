@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
+import { View, type ViewStyle, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -9,7 +9,8 @@ import { useColorScheme } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import Button from '@/components/ui/Button'
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
-
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
 
 type Item = {
   id: string;
@@ -36,6 +37,12 @@ const HomeScreen = () => {
     { id: '14', name: 'Maximilian Baximilian Raximus' },
     { id: '15', name: 'Servus Versus Cersus' },
   ]);
+
+  const {
+    themed,
+    theme,
+    themeContext,
+  } = useAppTheme()
 
   const colorScheme = useColorScheme();
   //const { colors } = useTheme(); //only needed when working with predefined Theme from react navigation
@@ -182,11 +189,16 @@ const HomeScreen = () => {
         />
           ) : null
         }
-        <Button title="Save Selected Players" onPress={handleSave} />
+        <Button title="Save Selected Players" onPress={handleSave} style={themed($testbutton)} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 };
+
+const $testbutton: ThemedStyle<ViewStyle> = (theme) => ({ // TODO delete this if not needed, just a test to see if it works.
+  backgroundColor: theme.colors.background,
+  color: theme.colors.text,
+})
 
 const styles = StyleSheet.create({
   container: {

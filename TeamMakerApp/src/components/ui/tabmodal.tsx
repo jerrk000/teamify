@@ -1,4 +1,4 @@
-// ATTENTION: BlurView is currently not working (maybe because its still experimental on android).
+// ATTENTION: TODO: BlurView is currently not working (maybe because its still experimental on android).
 // either fix this or delete the BlurView
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -6,16 +6,22 @@ import { BlurView } from 'expo-blur';
 import { useRouter } from 'expo-router';
 import useModalStore from '../../store/useModalStore'; 
 import { useAuthStore } from '@/store/useAuthStore';
-import {Appearance} from 'react-native';
+import { useAppTheme } from '@/theme/context';
 
 const TabModal = () => {
   const { isModalVisible, toggleModal } = useModalStore();
   const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
 
+  const {
+  setThemeContextOverride, // Function to set the theme
+  themeContext, // The current theme context ("light" | "darK")
+  } = useAppTheme()
+
+
   const toggleDarkLight = () => {
-    // Maybe look instead at ThemeProvider or ThemeContext?
-    Appearance.setColorScheme(Appearance.getColorScheme() === 'light' ? 'dark' : 'light');
+    // This will toggle between light and dark mode using the Ignite - ThemeProvider context.
+  setThemeContextOverride(themeContext === "dark" ? "light" : "dark")
   };
 
   const handleLogout = () => {

@@ -35,8 +35,15 @@ const palette = {
   overlay50: "rgba(25, 16, 21, 0.5)",
 } as const
 
+const volleyColors = {
+  volleyblue: '#2e3c87', //dark blue
+  volleyyellow: '#fcc340', //yellow
+  volleyred: '#de3d4b', //red
+} as const
+
 export const colors = {
   palette,
+  volleyColors,
   transparent: "rgba(0, 0, 0, 0)",
   text: palette.neutral800,
   textDim: palette.neutral600,

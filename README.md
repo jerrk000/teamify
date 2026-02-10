@@ -196,3 +196,22 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - Use EAS to build and submit to playstore.
 - Create and check icons and splashscreens, logos, background pictures
 - Make the partitioned teams screen look good on every screensize.
+
+How to do theming:
+For every component/screen do:
+At the top:
+import { View, type ViewStyle } from "react-native"
+
+In the functional part:
+const {
+    themed, theme, themeContext,
+  } = useAppTheme()
+
+In the render part:
+<View style={themed($container)}>
+
+Under the render, where the styles are:
+const $container: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.background,
+  color: theme.colors.palette.angry500,
+})
