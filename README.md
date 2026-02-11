@@ -110,7 +110,7 @@ Pretty much only copy and paste of files, and installing packages that were miss
 
 Made a new group called **(app)** which checks for authentication in corresponding `_layout.tsx` when used.
 If not authenticated, you get redirected to loginscreen. AuthStore in zustand was also created. 
-Logout-Button in modal als has functionality now.
+Logout-Button in modal also has functionality now.
 
 ### Theming using `styled-components` or just local ThemeProvider.
 
@@ -128,7 +128,7 @@ Logout-Button in modal als has functionality now.
 ### General
 - Darkmode
 - use more animations in general for more smoothness
-- Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand)
+- Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand). Create your own file for each theme, or add it to light and dark mode as a flavour? Find out what makes more sense, my guess is individual file, as it is its own theme for the whole app.
 - Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
 - Give people the possibility to report wrong games, when they get a message of a reported game.
 - Write a bigger README with app-structure of frontend and backend, database structure, screenshots of the app, cool features.
@@ -136,6 +136,8 @@ Logout-Button in modal als has functionality now.
 - Currently stats for winrate just uses naive bayes. with just pure winrates. Maybe expand this so that it makes a difference playing with/against specific players.
 - Local first data management, in case you dont have internet at this moment. See ignite cookbook "PowerSync for Local-First Data Management"
 - Docker to set up everything with  docker-compose, especially when testing connection to backend.
+- Style the modal more, so that it is just a list on the bottom right corner (style it with reanimated)
+
 
 ### Auth and friends
 - use MMKV to stay logged in even after closing the app. Doublecheck because kind of implemented with `persistent` in `AuthStore`.
@@ -201,6 +203,8 @@ How to do theming:
 For every component/screen do:
 At the top:
 import { View, type ViewStyle } from "react-native"
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
 
 In the functional part:
 const {

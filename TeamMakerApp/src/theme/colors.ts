@@ -33,9 +33,11 @@ const palette = {
 
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
+  overlaymodal: "rgba(0, 0, 0, 0.5)",
 } as const
 
-const volleyColors = {
+const volleyColors = { //TODO create a new file for this as this is probably a whole theme at some point. 
+//                    Is this a good idea or is it better to add a volleyball-flavour to light and dark theme?
   volleyblue: '#2e3c87', //dark blue
   volleyyellow: '#fcc340', //yellow
   volleyred: '#de3d4b', //red
