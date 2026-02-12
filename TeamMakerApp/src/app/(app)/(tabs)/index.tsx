@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, type ViewStyle, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
+import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, type TextStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
@@ -39,9 +39,7 @@ const HomeScreen = () => {
   ]);
 
   const {
-    themed,
-    theme,
-    themeContext,
+    themed, theme, themeContext,
   } = useAppTheme()
 
   const colorScheme = useColorScheme();
@@ -131,34 +129,34 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Add friends to game</Text>
-        <View style={styles.searchContainer}>
+      <SafeAreaView style={themed($container)}>
+      <Text style={themed($header)}>Add friends to game</Text>
+        <View style={themed($searchContainer)}>
           <TextInput
-            style={styles.searchBar}
+            style={themed($searchBar)}
             placeholder="Search..."
             value={searchQuery}
             onChangeText={handleSearch}
           />
-          <View style={styles.clearButton}>
-            <TouchableOpacity onPress={clearSearch} style={styles.iconContainer}>
+          <View style={themed($clearButton)}>
+            <TouchableOpacity onPress={clearSearch} style={themed($iconContainer)}>
               <IconSymbol size={28} name='delete.left.fill' color='black' iconSet="fontawesome6" />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.buttonRow}>
-          <View style={styles.leftContainer}>
+        <View style={themed($buttonRow)}>
+          <View style={themed($leftContainer)}>
             <TextInput
-              style={styles.newplayerinput}
+              style={themed($newplayerinput)}
               placeholder="Add temp player"
               value={inputName}
               onChangeText={setInputName}
             />
-            <TouchableOpacity onPress={handleAddItem} style={styles.iconContainer}>
+            <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
               <IconSymbol size={28} name='person.badge.plus' color='black' iconSet="material" />
             </TouchableOpacity>
           </View>
-          <View style={styles.clearItemsButton}>
+          <View style={themed($clearItemsButton)}>
             <Button title="Clear Selection" onPress={handleClearSelectedItems} />
           </View>
         </View>
@@ -169,8 +167,8 @@ const HomeScreen = () => {
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => handleItemPress(item)}>
               <View style={[
-                styles.item,
-                isItemSelected(item) ? {backgroundColor: Colors[colorScheme ?? 'light'].listselection} : styles.noclickedItem
+                themed($item),
+                isItemSelected(item) ? themed($clickedItem) : undefined,
               ]}>
                 <Text>
                   {item.name}
@@ -179,27 +177,183 @@ const HomeScreen = () => {
             </TouchableOpacity>
           )}
         />
-        <Text style={styles.selectedTitle}>Selected Players: {selectedItems.length}</Text>
+        <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
         {!keyboardStatus ? (
         <SelectedPlayers 
           selectedPlayers={selectedItems} 
           onClickPlayer={handleRemoveItem}
-          selectedItemStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].button}}
-          textStyle={{color: Colors[colorScheme ?? 'light'].text}} 
+          selectedItemStyle={themed($selectedItem)}
+          textStyle={themed($selectedItemText)} 
         />
           ) : null
         }
-        <Button title="Save Selected Players" onPress={handleSave} style={themed($testbutton)} />
+        <Button title="Save Selected Players" onPress={handleSave} style={themed($saveButton)} />
       </SafeAreaView>
     </SafeAreaProvider>
   );
 };
 
-const $testbutton: ThemedStyle<ViewStyle> = (theme) => ({ // TODO delete this if not needed, just a test to see if it works.
+
+
+const $container: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1,
+  padding: 16,
+  backgroundColor: theme.colors.background,
+});
+
+const $header: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 24,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  marginVertical: 5,
+  color: theme.colors.text, // TODO what does this do again?
+});
+
+const $searchBar: ThemedStyle<TextStyle> = (theme) => ({
+  flex: 1,
+  height: 40,
+  borderColor: theme.colors.border,
+  borderWidth: 1,
+  paddingLeft: 8,
+  color: theme.colors.text, // TODO what does it do?
+});
+
+const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: "row",
+  alignItems: "center",
+  paddingHorizontal: 10,
+  marginBottom: 16,
+});
+
+// TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
+
+const $clearButton: ThemedStyle<ViewStyle> = (theme) => ({
+  //height: 40,
+  marginLeft: 10,
+  padding: 5,
+  justifyContent: "center",
+  alignItems: "center",
+});
+
+const $clearButtonText: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 16,
+  color: 'red', // TODO use theme color for this. Check hardcoded values for all these spacings etc here in general.
+});
+
+const $item: ThemedStyle<ViewStyle> = (theme) => ({
+  padding: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: theme.colors.border,
+  backgroundColor: theme.colors.palette.neutral300, // TODO change this and add this or add it to to theme semantically (like light background or something)
+  margin: 5,
+  borderWidth: 2, // Border thickness
+  borderColor: theme.colors.palette.neutral600, // TODO change this and add this to the theme
+  borderRadius: 10, // Rounded corners
+});
+
+const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.palette.neutral500, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
+});
+
+const $noclickedItem: ThemedStyle<ViewStyle> = (theme) => ({
+  borderBottomColor: theme.colors.border, //unneeded, because already in item, but maybe customized later?
+});
+
+const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginTop: 16,
+  marginBottom: 8,
+  color: theme.colors.text, // TODO what does this do again, just color of text?
+});
+
+const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: 10,
+  borderBottomWidth: 1,
+  borderBottomColor: theme.colors.border,
+  backgroundColor: theme.colors.palette.neutral100, // TODO change this and add this to the theme
+  margin: 5,
+  borderWidth: 2, // Border thickness
+  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
+  borderRadius: 10, // Rounded corners
+});
+
+const $cross: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 16,
+  color: 'red', // TODO change this and add this to the theme
+});
+
+const $playernameflatList: ThemedStyle<ViewStyle> = (theme) => ({
+  alignItems: "center", // Ensures items are centered
+});
+
+const $playerlistitemcontainer: ThemedStyle<ViewStyle> = (theme) => ({
+  width: 100,
+  height: 50,
+  backgroundColor: theme.colors.palette.neutral100, // Light background, TODO change this and add this to the theme
+  margin: 5,
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 2, // Border thickness
+  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme, was blue, maybe change to that
+  borderRadius: 10, // Rounded corners
+});
+
+const $playerlistitemtext: ThemedStyle<TextStyle> = (theme) => ({
+  fontWeight: "bold",
+  color: theme.colors.text, // TODO change this and add this to the theme, was blue, maybe change to that
+  maxWidth: 90,
+});
+
+const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 16,
+});
+
+const $clearItemsButton: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1, // Takes up available space on the right
+  marginLeft: 20,
+});
+
+const $leftContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  flex: 2, // Takes up more space on the left
+});
+
+const $newplayerinput: ThemedStyle<TextStyle> = (theme) => ({
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  padding: 8,
+  width: 150, // Fixed width for the TextInput
+  marginRight: 8, // Space between TextInput and Add Item button
+});
+
+const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  padding: 8,
+});
+
+const $selectedItemsContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  marginBottom: 10,
+});
+
+const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text, 
+});
+
+const $saveButton: ThemedStyle<ViewStyle> = (theme) => ({ // TODO delete this if not needed, just a test to see if it works.
   backgroundColor: theme.colors.background,
   color: theme.colors.text,
 })
-
+/*
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -320,5 +474,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   }
 });
-
+*/
 export default HomeScreen;

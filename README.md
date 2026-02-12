@@ -126,7 +126,7 @@ Logout-Button in modal also has functionality now.
 
 
 ### General
-- Darkmode
+- Darkmode. Also include tabs at the bottom.
 - use more animations in general for more smoothness
 - Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand). Create your own file for each theme, or add it to light and dark mode as a flavour? Find out what makes more sense, my guess is individual file, as it is its own theme for the whole app.
 - Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
@@ -155,6 +155,14 @@ Logout-Button in modal also has functionality now.
 - Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets
 - One new game mode: Custom: choose players to participate, but then find a way to add people to individual teams yourself
 - Layout like this 
+Change color of field if added. Rounded edges. Little bit of space between each player.
+--------------------------------------------------------------------
+-                                                                  -
+- Picture, Name               ^SignForMoreStats, StarForFavourite  -
+-                                                                  -
+--------------------------------------------------------------------
+
+- Theming of buttons. Do clicked items for first primary color, other buttons secondary color. Do this for volleyball theme and darkmode too. Choose very basic primary and secondary colors for 
 
 ### Partitioned Teams Screen
 - Drag-and-Drop after teams were created to change the teams howevery you want. Winrate per team should also refresh. (use panhandler and reanimated maybe?). When doing drag and drop, make a grid that makes it easily possible to change players by dragging one playername on the other. Also make a button or zone "Add to Team" which if dragged there, the players gets added to the team without switching another player only show this button/zone if a name is currently dragged. Alternatively no drag and drop, but long presses where  you get a menu with "Change Team" or sth like that. Dont forget to recalculate winrates.
@@ -164,15 +172,9 @@ Logout-Button in modal also has functionality now.
 - Randomized team should start with fairest team (so winrate closest to 50%), then each "randomize team" button press it gives you the next fairest team. 
 - Short list of last played matches. How long did the game last, which team won.
 - Make a timer which shows how long the current game is running, so that you are always sure if you typed in who won. Reset the timer every time the team changes, obviously. Dont use this time for any stats, it should just help players determine if they already entered the result.
-- Add cutout-pictures of face/upper-body over name, to make it similar like lineup in football
+- Add cutout-pictures of face/upper-body over name, to make it similar like lineup in football. Info button somewhere that spins the icons around to reveal some stats.
 
--New layout:
-Change color of field if added. Rounded edges. Little bit of space between each player.
---------------------------------------------------------------------
--                                                                  -
-- Picture, Name               ^SignForMoreStats, StarForFavourite  -
--                                                                  -
---------------------------------------------------------------------
+
 
 ### Stats Screen
 - Do more radar charts (maybe implement it yourself? Probably not). Maybe do one radar-chart where you can rate yourself, and do another one where other people can rate you? Maybe bad idea.
@@ -198,6 +200,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - Use EAS to build and submit to playstore.
 - Create and check icons and splashscreens, logos, background pictures
 - Make the partitioned teams screen look good on every screensize.
+- Check out IconSymbol in index.tsx. Currently color is hardcoded.
 
 How to do theming:
 For every component/screen do:
