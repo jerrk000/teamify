@@ -114,47 +114,49 @@ Logout-Button in modal also has functionality now.
 
 ### Theming using `styled-components` or just local ThemeProvider.
 
+I just used the local ThemeProvider. Now I am not using stylesheets anymore, but themed objects where the theme is imported from theme-folder, so I only have to define each theme once. The app has to look similar throughout all screens. Changed tabmodal.tsx and now index.tsx.
+
 
 
 ## Features to implement
 
 ### Categorize later
 
-- Implement option where you can create different teams, to more easily add people to a game. 
-- Think about option of giving people a quick rating (or just yourself), so that it is possible to balance teams without using winrate.
-- Add local player for this session with possibility to add foto too.
+- [ ] Implement option where you can create different teams, to more easily add people to a game. 
+- [ ] Think about option of giving people a quick rating (or just yourself), so that it is possible to balance teams without using winrate.
+- [ ] Add local player for this session with possibility to add foto too.
 
 
 ### General
-- Darkmode. Also include tabs at the bottom.
-- use more animations in general for more smoothness
-- Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand). Create your own file for each theme, or add it to light and dark mode as a flavour? Find out what makes more sense, my guess is individual file, as it is its own theme for the whole app.
-- Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
-- Give people the possibility to report wrong games, when they get a message of a reported game.
-- Write a bigger README with app-structure of frontend and backend, database structure, screenshots of the app, cool features.
-- Like in Strong-App, show as a push-notification that a match is currently running, how long it is running. And if you click on it you get back to the partitioned teams screen.
-- Currently stats for winrate just uses naive bayes. with just pure winrates. Maybe expand this so that it makes a difference playing with/against specific players.
-- Local first data management, in case you dont have internet at this moment. See ignite cookbook "PowerSync for Local-First Data Management"
-- Docker to set up everything with  docker-compose, especially when testing connection to backend.
-- Style the modal more, so that it is just a list on the bottom right corner (style it with reanimated)
+- [ ] Darkmode. Also include tabs at the bottom.
+- [ ] use more animations in general for more smoothness
+- [ ] Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand). Create your own file for each theme, or add it to light and dark mode as a flavour? Find out what makes more sense, my guess is individual file, as it is its own theme for the whole app.
+- [ ] Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
+- [ ] Give people the possibility to report wrong games, when they get a message of a reported game.
+- [ ] Write a bigger README with app-structure of frontend and backend, database structure, screenshots of the app, cool features.
+- [ ] Like in Strong-App, show as a push-notification that a match is currently running, how long it is running. And if you click on it you get back to the partitioned teams screen.
+- [ ] Currently stats for winrate just uses naive bayes. with just pure winrates. Maybe expand this so that it makes a difference playing with/against specific players.
+- [ ] Local first data management, in case you dont have internet at this moment. See ignite cookbook "PowerSync for Local-First Data Management"
+- [ ] Docker to set up everything with  docker-compose, especially when testing connection to backend.
+- [ ] Style the modal more, so that it is just a list on the bottom right corner (style it with reanimated)
 
 
 ### Auth and friends
-- use MMKV to stay logged in even after closing the app. Doublecheck because kind of implemented with `persistent` in `AuthStore`.
-- Feature to add the official account of another person to a game without him having the app, so just two accounts in one??
-- Adding a person to a game (e.g. with QR-Code or with Invite by pressing button), so that winrate can be officially tracked. Adding friends to friendslist with QR-Code, design similar to whatsapp or discord with buttonlayout of qr-code, but also posibility to type a name/number combination or send/copy friendcodes. Add a message that accepting friend requests can be risky because then they can add you to games without asking for permission. I guess when displaying your QR-code you can choose between Game-QR-Code and FrienshipRequest-QR-Code.
-- Make button that displays your own QR-Code. Like Whatsapp, also make it possible to open camera to scan qr-code.
-- Add player without official account to the game. Their stats will not be written down or just be marked as "Unknown player"
-- Mark friends in friendlist as favourits, so they show up at the top in the searchbar for everything.
-- Make simplified version of app where you can just add local players for splitting up teams FAST.
-- Make a tab for friends to swipe over, to get to the personalised part about yourself. Make it possible to change the name and add a picture, so that the lineup in initial screen and partitioned screen are nicer to look at
+- [ ] use MMKV to stay logged in even after closing the app. Doublecheck because kind of implemented with `persistent` in `AuthStore`.
+- [ ] Feature to add the official account of another person to a game without him having the app, so just two accounts in one??
+- [ ] Adding a person to a game (e.g. with QR-Code or with Invite by pressing button), so that winrate can be officially tracked. Adding friends to friendslist with QR-Code, design similar to whatsapp or discord with buttonlayout of qr-code, but also posibility to type a name/number combination or send/copy friendcodes. Add a message that accepting friend requests can be risky because then they can add you to games without asking for permission. I guess when displaying your QR-code you can choose between Game-QR-Code and FrienshipRequest-QR-Code.
+- [ ] Make button that displays your own QR-Code. Like Whatsapp, also make it possible to open camera to scan qr-code.
+- [ ] Add player without official account to the game. Their stats will not be written down or just be marked as "Unknown player"
+- [ ] Mark friends in friendlist as favourits, so they show up at the top in the searchbar for everything.
+- [ ] Make simplified version of app where you can just add local players for splitting up teams FAST.
+- [ ] Make a tab for friends to swipe over, to get to the personalised part about yourself. Make it possible to change the name and add a picture, so that the lineup in initial screen and partitioned screen are nicer to look at
 
 
 
 ### Initial Screen where you search players
-- Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets
-- One new game mode: Custom: choose players to participate, but then find a way to add people to individual teams yourself
-- Layout like this 
+- [ ] Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets
+- [ ] One new game mode: Custom: choose players to participate, but then find a way to add people to individual teams yourself
+- [ ] Layout like this 
 Change color of field if added. Rounded edges. Little bit of space between each player.
 --------------------------------------------------------------------
 -                                                                  -
@@ -162,45 +164,48 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 -                                                                  -
 --------------------------------------------------------------------
 
-- Theming of buttons. Do clicked items for first primary color, other buttons secondary color. Do this for volleyball theme and darkmode too. Choose very basic primary and secondary colors for 
+- [ ] Theming of buttons. Do clicked items for first primary color, other buttons secondary color. Do this for volleyball theme and darkmode too. Choose very basic primary and secondary colors for 
 
 ### Partitioned Teams Screen
-- Drag-and-Drop after teams were created to change the teams howevery you want. Winrate per team should also refresh. (use panhandler and reanimated maybe?). When doing drag and drop, make a grid that makes it easily possible to change players by dragging one playername on the other. Also make a button or zone "Add to Team" which if dragged there, the players gets added to the team without switching another player only show this button/zone if a name is currently dragged. Alternatively no drag and drop, but long presses where  you get a menu with "Change Team" or sth like that. Dont forget to recalculate winrates.
-- Maybe show the number of different combinations. Also when go to previous screen and then back to partioned screen, start again with first combination.
-- Do another view of partitioned teams if phone is in horizontal (landscape) mode
-- Show stats for each game (on partitioned teams screen) when pressing an information button. Either the average radar-chart per team, or winrate and amount of games per player.
-- Randomized team should start with fairest team (so winrate closest to 50%), then each "randomize team" button press it gives you the next fairest team. 
-- Short list of last played matches. How long did the game last, which team won.
-- Make a timer which shows how long the current game is running, so that you are always sure if you typed in who won. Reset the timer every time the team changes, obviously. Dont use this time for any stats, it should just help players determine if they already entered the result.
-- Add cutout-pictures of face/upper-body over name, to make it similar like lineup in football. Info button somewhere that spins the icons around to reveal some stats.
+- [ ] Drag-and-Drop after teams were created to change the teams howevery you want. Winrate per team should also refresh. (use panhandler and reanimated maybe?). When doing drag and drop, make a grid that makes it easily possible to change players by dragging one playername on the other. Also make a button or zone "Add to Team" which if dragged there, the players gets added to the team without switching another player only show this button/zone if a name is currently dragged. Alternatively no drag and drop, but long presses where  you get a menu with "Change Team" or sth like that. Dont forget to recalculate winrates.
+- [ ] Maybe show the number of different combinations. Also when go to previous screen and then back to partioned screen, start again with first combination.
+- [ ] Do another view of partitioned teams if phone is in horizontal (landscape) mode
+- [ ] Show stats for each game (on partitioned teams screen) when pressing an information button. Either the average radar-chart per team, or winrate and amount of games per player.
+- [ ] Randomized team should start with fairest team (so winrate closest to 50%), then each "randomize team" button press it gives you the next fairest team. 
+- [ ] Short list of last played matches. How long did the game last, which team won.
+- [ ] Make a timer which shows how long the current game is running, so that you are always sure if you typed in who won. Reset the timer every time the team changes, obviously. Dont use this time for any stats, it should just help players determine if they already entered the result.
+- [ ] Add cutout-pictures of face/upper-body over name, to make it similar like lineup in football. Info button somewhere that spins the icons around to reveal some stats.
 
 
 
 ### Stats Screen
-- Do more radar charts (maybe implement it yourself? Probably not). Maybe do one radar-chart where you can rate yourself, and do another one where other people can rate you? Maybe bad idea.
-- show more stats. Show general winrate andamount of matches played. For each friend: amount of matches played with each person, Winrate. Show how often you lost against each player, player combination. Do a general ranking of best/worst teammates/opponents independ of friends.
-- Show the last played matches here, and also make the possibility to delete a wrong match.
-- Maybe advanced stats to show you if results are statistically significant.
+- [ ] Do more radar charts (maybe implement it yourself? Probably not). Maybe do one radar-chart where you can rate yourself, and do another one where other people can rate you? Maybe bad idea.
+- [ ] show more stats. Show general winrate andamount of matches played. For each friend: amount of matches played with each person, Winrate. Show how often you lost against each player, player combination. Do a general ranking of best/worst teammates/opponents independ of friends.
+- [ ] Show the last played matches here, and also make the possibility to delete a wrong match.
+- [ ] Maybe advanced stats to show you if results are statistically significant.
 
 
 
 ## TODO
 
-- Look through all TODOs in code which were created when merging ignite-boilerplate and  original app
-- SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
-- DONE ALREADY: Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
-- DONE integrate login and auth in the frontend
-- use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented
-- fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
-- **theme** the app with a common theme and delete the individual themes from the app.
-- Make Randomize-Team Button for partitioned teams exactly in the center
-- Bigger line between selected players and list of players (initial screen)
-- Add a cancel-button on the winner-chooser overlay at partitioned players, so that people know how to get back from there.
-- Make it possible to cancel after choosing a winner team in partitioned players overlay.
-- Use EAS to build and submit to playstore.
-- Create and check icons and splashscreens, logos, background pictures
-- Make the partitioned teams screen look good on every screensize.
-- Check out IconSymbol in index.tsx. Currently color is hardcoded.
+- [ ] Look through all TODOs in code which were created when merging ignite-boilerplate and  original app
+- [ ] SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
+- [x] Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
+- [x] integrate login and auth in the frontend
+- [ ] use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented
+- [ ]fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
+- [ ]**theme** the app with a common theme and delete the individual themes from the app.
+- [ ]Make Randomize-Team Button for partitioned teams exactly in the center
+- [ ] Bigger line between selected players and list of players (initial screen)
+- [ ] Add a cancel-button on the winner-chooser overlay at partitioned players, so that people know how to get back from there.
+- [ ] Make it possible to cancel after choosing a winner team in partitioned players overlay.
+- [ ] Use EAS to build and submit to playstore.
+- [ ] Create and check icons and splashscreens, logos, background pictures
+- [ ] Make the partitioned teams screen look good on every screensize.
+- [ ] Check out IconSymbol in index.tsx. Currently color is hardcoded.
+- [ ] NOW: Make a normal theme, starting with index.tsx.
+- [ ] NOW: Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
+- [ ] NOW: Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
 
 How to do theming:
 For every component/screen do:
