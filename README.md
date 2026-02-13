@@ -196,15 +196,15 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] integrate login and auth in the frontend
 - [ ] use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented
 - [ ]fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
-- [ ]**theme** the app with a common theme and delete the individual themes from the app.
+- [x]**theme** the app with a common theme and delete the individual themes from the app.
 - [ ]Make Randomize-Team Button for partitioned teams exactly in the center
-- [ ] Bigger line between selected players and list of players (initial screen)
+- [x] Bigger line between selected players and list of players (initial screen)
 - [ ] Add a cancel-button on the winner-chooser overlay at partitioned players, so that people know how to get back from there.
 - [ ] Make it possible to cancel after choosing a winner team in partitioned players overlay.
 - [ ] Use EAS to build and submit to playstore.
 - [ ] Create and check icons and splashscreens, logos, background pictures
 - [ ] Make the partitioned teams screen look good on every screensize.
-- [ ] Check out IconSymbol in index.tsx. Currently color is hardcoded.
+- [x] Check out IconSymbol in index.tsx. Currently color is hardcoded.
 - [ ] Check out HapticTap, i am not sure if there is no feedback when clicking different tabs only on the simulator or in any case. I would like feedback when clicking things.
 - [ ] NOW: Make a normal theme, starting with index.tsx.
 - [ ] NOW: Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
