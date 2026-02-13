@@ -83,7 +83,7 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
     return t === "dark" ? "dark" : "light"
   }, [initialContext, themeScheme, systemColorScheme])
 
-  const navigationTheme: NavTheme = useMemo(() => {
+  const navigationTheme: NavTheme = useMemo(() => { //TODO think about deleting this, as this uses react-navigation's theming, but we are using our own theming engine.
     switch (themeContext) {
       case "dark":
         return NavDarkTheme

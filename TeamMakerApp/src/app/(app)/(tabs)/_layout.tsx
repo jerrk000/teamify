@@ -5,21 +5,26 @@ import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+// import { Colors } from '@/constants/Colors'; //TODO delete
+import { useAppTheme } from '@/theme/context';
+// import { useColorScheme } from '@/hooks/useColorScheme'; //TODO delete
 import TabModal from '@/components/ui/tabmodal'
 import useModalStore from '@/store/useModalStore';
 
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  //const colorScheme = useColorScheme(); //TODO delete
+  const {
+    themed, theme, themeContext,
+  } = useAppTheme()
   const { toggleModal } = useModalStore();
 
   return (
     <> 
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: theme.colors.tint,
+        tabBarInactiveTintColor: theme.colors.tintInactive,
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
@@ -27,6 +32,9 @@ export default function TabLayout() {
           ios: {
             // Use a transparent background on iOS to show the blur effect
             position: 'absolute',
+          },
+          android: {
+            backgroundColor: theme.colors.background,
           },
           default: {},
         }),

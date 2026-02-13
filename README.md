@@ -114,7 +114,7 @@ Logout-Button in modal also has functionality now.
 
 ### Theming using `styled-components` or just local ThemeProvider.
 
-I just used the local ThemeProvider. Now I am not using stylesheets anymore, but themed objects where the theme is imported from theme-folder, so I only have to define each theme once. The app has to look similar throughout all screens. Changed tabmodal.tsx and now index.tsx.
+I just used the local ThemeProvider. Now I am not using stylesheets anymore, but themed objects where the theme is imported from theme-folder, so I only have to define each theme once. The app has to look similar throughout all screens. Changed tabmodal.tsx and now index.tsx. IconSymbol now also change with darkmode. Next: Placeholder färben.
 
 
 
@@ -134,11 +134,12 @@ I just used the local ThemeProvider. Now I am not using stylesheets anymore, but
 - [ ] Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
 - [ ] Give people the possibility to report wrong games, when they get a message of a reported game.
 - [ ] Write a bigger README with app-structure of frontend and backend, database structure, screenshots of the app, cool features.
-- [ ] Like in Strong-App, show as a push-notification that a match is currently running, how long it is running. And if you click on it you get back to the partitioned teams screen.
+- [ ] Like in Strong-App, show as a push-notification that a match is currently running, how long it is running. And if you click on it you get back to the partitioned teams screen. (maybe use Voltra for this, or the expo thing when Expo 55 is released and stable.)
 - [ ] Currently stats for winrate just uses naive bayes. with just pure winrates. Maybe expand this so that it makes a difference playing with/against specific players.
 - [ ] Local first data management, in case you dont have internet at this moment. See ignite cookbook "PowerSync for Local-First Data Management"
 - [ ] Docker to set up everything with  docker-compose, especially when testing connection to backend.
 - [ ] Style the modal more, so that it is just a list on the bottom right corner (style it with reanimated)
+- [ ] Use Hermes v1 when Expo 55 is released.
 
 
 ### Auth and friends

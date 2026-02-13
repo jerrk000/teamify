@@ -135,12 +135,13 @@ const HomeScreen = () => {
           <TextInput
             style={themed($searchBar)}
             placeholder="Search..."
+            placeholderTextColor={theme.colors.textDim}
             value={searchQuery}
             onChangeText={handleSearch}
           />
           <View style={themed($clearButton)}>
             <TouchableOpacity onPress={clearSearch} style={themed($iconContainer)}>
-              <IconSymbol size={28} name='delete.left.fill' color='black' iconSet="fontawesome6" />
+              <IconSymbol size={28} name='delete.left.fill' color={theme.colors.iconColor} iconSet="fontawesome6" />
             </TouchableOpacity>
           </View>
         </View>
@@ -149,11 +150,12 @@ const HomeScreen = () => {
             <TextInput
               style={themed($newplayerinput)}
               placeholder="Add temp player"
+              placeholderTextColor={theme.colors.textDim}
               value={inputName}
               onChangeText={setInputName}
             />
             <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
-              <IconSymbol size={28} name='person.badge.plus' color='black' iconSet="material" />
+              <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
             </TouchableOpacity>
           </View>
           <View style={themed($clearItemsButton)}>
@@ -170,7 +172,7 @@ const HomeScreen = () => {
                 themed($item),
                 isItemSelected(item) ? themed($clickedItem) : undefined,
               ]}>
-                <Text>
+                <Text style={themed($playerlistitemtext)}>
                   {item.name}
                 </Text>
               </View>
@@ -242,17 +244,15 @@ const $clearButtonText: ThemedStyle<TextStyle> = (theme) => ({
 
 const $item: ThemedStyle<ViewStyle> = (theme) => ({
   padding: 10,
-  borderBottomWidth: 1,
-  borderBottomColor: theme.colors.border,
-  backgroundColor: theme.colors.palette.neutral300, // TODO change this and add this or add it to to theme semantically (like light background or something)
+  backgroundColor: theme.colors.palette.neutral200, // TODO change this and add this or add it to to theme semantically (like light background or something)
   margin: 5,
   borderWidth: 2, // Border thickness
-  borderColor: theme.colors.palette.neutral600, // TODO change this and add this to the theme
+  borderColor: theme.colors.palette.neutral500, // TODO change this and add this to the theme
   borderRadius: 10, // Rounded corners
 });
 
 const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.palette.neutral500, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
+  backgroundColor: theme.colors.palette.neutral400, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
 });
 
 const $noclickedItem: ThemedStyle<ViewStyle> = (theme) => ({
@@ -272,8 +272,6 @@ const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: 10,
-  borderBottomWidth: 1,
-  borderBottomColor: theme.colors.border,
   backgroundColor: theme.colors.palette.neutral100, // TODO change this and add this to the theme
   margin: 5,
   borderWidth: 2, // Border thickness
@@ -305,7 +303,7 @@ const $playerlistitemcontainer: ThemedStyle<ViewStyle> = (theme) => ({
 const $playerlistitemtext: ThemedStyle<TextStyle> = (theme) => ({
   fontWeight: "bold",
   color: theme.colors.text, // TODO change this and add this to the theme, was blue, maybe change to that
-  maxWidth: 90,
+  maxWidth: 90, //TODO change this to make it responsive or add it to the theme, maybe add an ellipsis if text is too long instead of just cutting it off like this
 });
 
 const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({

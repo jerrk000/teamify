@@ -1,3 +1,5 @@
+import { blue } from "react-native-reanimated/lib/typescript/Colors"
+
 const palette = {
   neutral100: "#FFFFFF",
   neutral200: "#F4F2F1",
@@ -34,6 +36,10 @@ const palette = {
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
   overlaymodal: "rgba(0, 0, 0, 0.5)",
+
+  blackHard: "black",
+  whiteHard: "white",
+  blueHard: "blue",
 } as const
 
 const volleyColors = { //TODO create a new file for this as this is probably a whole theme at some point. 
@@ -63,7 +69,7 @@ export const colors = {
    */
   text: palette.neutral800,
   /**
-   * Secondary text information.
+   * Secondary text information. Also used for placeholder text.
    */
   textDim: palette.neutral600,
   /**
@@ -77,11 +83,11 @@ export const colors = {
   /**
    * The main tinting color.
    */
-  tint: palette.primary500,
+  tint: palette.neutral900,//before it was palette.primary500,
   /**
    * The inactive tinting color.
    */
-  tintInactive: palette.neutral300,
+  tintInactive: palette.neutral300,//before it was palette.neutral300,
   /**
    * A subtle color used for lines.
    */
@@ -94,4 +100,8 @@ export const colors = {
    * Error Background.
    */
   errorBackground: palette.angry100,
+  /**
+   * Color of icons.
+   */
+iconColor: palette.blackHard,
 } as const

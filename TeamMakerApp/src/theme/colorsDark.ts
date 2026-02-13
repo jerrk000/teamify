@@ -34,6 +34,10 @@ const palette = {
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
   overlaymodal: "rgba(0, 0, 0, 0.5)",
+
+  blackHard: "black",
+  whiteHard: "white",
+  blueHard: "blue",
 } as const
 
 const volleyColors = {
@@ -50,9 +54,10 @@ export const colors = {
   textDim: palette.neutral600,
   background: palette.neutral200,
   border: palette.neutral400,
-  tint: palette.primary500,
-  tintInactive: palette.neutral300,
+  tint: palette.neutral900,//before it was palette.primary500,
+  tintInactive: palette.neutral500,//before it was palette.neutral300,
   separator: palette.neutral300,
   error: palette.angry500,
   errorBackground: palette.angry100,
+  iconColor: palette.whiteHard,
 } as const
