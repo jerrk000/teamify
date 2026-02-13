@@ -140,6 +140,7 @@ I just used the local ThemeProvider. Now I am not using stylesheets anymore, but
 - [ ] Docker to set up everything with  docker-compose, especially when testing connection to backend.
 - [ ] Style the modal more, so that it is just a list on the bottom right corner (style it with reanimated)
 - [ ] Use Hermes v1 when Expo 55 is released.
+- [ ] Check in general if it makes a difference to change the pressedStyle of buttons (e.g. changing backgroundcolor when pressed)
 
 
 ### Auth and friends
@@ -171,7 +172,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Drag-and-Drop after teams were created to change the teams howevery you want. Winrate per team should also refresh. (use panhandler and reanimated maybe?). When doing drag and drop, make a grid that makes it easily possible to change players by dragging one playername on the other. Also make a button or zone "Add to Team" which if dragged there, the players gets added to the team without switching another player only show this button/zone if a name is currently dragged. Alternatively no drag and drop, but long presses where  you get a menu with "Change Team" or sth like that. Dont forget to recalculate winrates.
 - [ ] Maybe show the number of different combinations. Also when go to previous screen and then back to partioned screen, start again with first combination.
 - [ ] Do another view of partitioned teams if phone is in horizontal (landscape) mode
-- [ ] Show stats for each game (on partitioned teams screen) when pressing an information button. Either the average radar-chart per team, or winrate and amount of games per player.
+- [ ] Show stats for each game (on partitioned teams screen) when pressing an information button. Either the average radar-chart per team, or winrate and amount of games per player. Maybe turn the "face" of each player around like the playercards in FIFA to reveal more stats.
 - [ ] Randomized team should start with fairest team (so winrate closest to 50%), then each "randomize team" button press it gives you the next fairest team. 
 - [ ] Short list of last played matches. How long did the game last, which team won.
 - [ ] Make a timer which shows how long the current game is running, so that you are always sure if you typed in who won. Reset the timer every time the team changes, obviously. Dont use this time for any stats, it should just help players determine if they already entered the result.
@@ -204,6 +205,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Create and check icons and splashscreens, logos, background pictures
 - [ ] Make the partitioned teams screen look good on every screensize.
 - [ ] Check out IconSymbol in index.tsx. Currently color is hardcoded.
+- [ ] Check out HapticTap, i am not sure if there is no feedback when clicking different tabs only on the simulator or in any case. I would like feedback when clicking things.
 - [ ] NOW: Make a normal theme, starting with index.tsx.
 - [ ] NOW: Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
 - [ ] NOW: Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)

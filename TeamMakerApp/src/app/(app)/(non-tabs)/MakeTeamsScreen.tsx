@@ -5,7 +5,7 @@ import BackgroundPicture from '@/components/ImageBackground';
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Colors } from '@/constants/Colors';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/Button';
 //import { useThemeColor } from '@/hooks/useThemeColor';
 
 
@@ -50,7 +50,7 @@ const SavedItemsScreen = () => {
         
         <View style={styles.simplebuttonContainer}>
           <Button 
-            title="Randomize Teams" 
+            text="Randomize Teams" 
             onPress={randomizeItems} 
             style={{backgroundColor: Colors[colorScheme ?? 'light'].volley3}} 
           />
@@ -71,7 +71,7 @@ const SavedItemsScreen = () => {
         {/* Choose Winner Button */}
         <View style={styles.simplebuttonContainer}>
           <Button 
-            title="Choose winner" 
+            text="Choose winner" 
             onPress={() => setShowAdditionalButtons(!showAdditionalButtons)} 
             style={{backgroundColor: Colors[colorScheme ?? 'light'].volley3}}
           />

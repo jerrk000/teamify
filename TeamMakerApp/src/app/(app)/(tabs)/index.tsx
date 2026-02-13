@@ -6,8 +6,8 @@ import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 //import { useTheme } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
-import { Colors } from '@/constants/Colors';
-import Button from '@/components/ui/Button'
+import { $styles } from '@/theme/styles';
+import { Button } from '@/components/Button'
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
 import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
@@ -159,7 +159,12 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
           <View style={themed($clearItemsButton)}>
-            <Button title="Clear Selection" onPress={handleClearSelectedItems} />
+            <Button
+              text="Clear Selection" 
+              onPress={handleClearSelectedItems}
+              style={themed($Button)}
+              textStyle={themed($clearSelectionButtonText)}
+            />
           </View>
         </View>
         
@@ -179,6 +184,7 @@ const HomeScreen = () => {
             </TouchableOpacity>
           )}
         />
+        <View style={themed($fullWidthDivider)} />
         <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
         {!keyboardStatus ? (
         <SelectedPlayers 
@@ -189,7 +195,12 @@ const HomeScreen = () => {
         />
           ) : null
         }
-        <Button title="Save Selected Players" onPress={handleSave} style={themed($saveButton)} />
+        <Button
+          text="Create Teams" 
+          onPress={handleSave} 
+          style={themed($Button)}
+          textStyle={themed($saveButtonText)} 
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -244,7 +255,7 @@ const $clearButtonText: ThemedStyle<TextStyle> = (theme) => ({
 
 const $item: ThemedStyle<ViewStyle> = (theme) => ({
   padding: 10,
-  backgroundColor: theme.colors.palette.neutral200, // TODO change this and add this or add it to to theme semantically (like light background or something)
+  backgroundColor: theme.colors.itemBackground, // TODO change this and add this or add it to to theme semantically (like light background or something)
   margin: 5,
   borderWidth: 2, // Border thickness
   borderColor: theme.colors.palette.neutral500, // TODO change this and add this to the theme
@@ -252,18 +263,25 @@ const $item: ThemedStyle<ViewStyle> = (theme) => ({
 });
 
 const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.palette.neutral400, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
+  backgroundColor: theme.colors.palette.neutral300, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
 });
 
 const $noclickedItem: ThemedStyle<ViewStyle> = (theme) => ({
   borderBottomColor: theme.colors.border, //unneeded, because already in item, but maybe customized later?
 });
 
+const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
+  height: 4,
+  backgroundColor: theme.colors.border, //marginHorizontal: -16, // cancel container padding
+  marginBottom: 8,
+});
+
+
 const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 16,
   fontWeight: 'bold',
-  marginTop: 16,
-  marginBottom: 8,
+  marginTop: 4, 
+  marginBottom: 12,
   color: theme.colors.text, // TODO what does this do again, just color of text?
 });
 
@@ -272,7 +290,7 @@ const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: 10,
-  backgroundColor: theme.colors.palette.neutral100, // TODO change this and add this to the theme
+  backgroundColor: theme.colors.itemBackground, // TODO change this and add this to the theme
   margin: 5,
   borderWidth: 2, // Border thickness
   borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
@@ -337,6 +355,7 @@ const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
   borderWidth: 1,
   borderColor: theme.colors.border,
   padding: 8,
+  backgroundColor: theme.colors.buttonBackground,
 });
 
 const $selectedItemsContainer: ThemedStyle<ViewStyle> = (theme) => ({
@@ -347,130 +366,18 @@ const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.text, 
 });
 
-const $saveButton: ThemedStyle<ViewStyle> = (theme) => ({ // TODO delete this if not needed, just a test to see if it works.
-  backgroundColor: theme.colors.background,
+const $Button: ThemedStyle<ViewStyle> = (theme) => ({ // TODO delete this if not needed, just a test to see if it works.
+  backgroundColor: theme.colors.buttonBackground, // TODO add this to the theme
   color: theme.colors.text,
 })
-/*
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 5,
-  },
-  searchBar: {
-    flex: 1,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 8,
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 10,
-    marginBottom: 16,
-  },
-  clearButton: {
-    //height: 40,
-    marginLeft: 10,
-    padding: 5,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  clearButtonText: {
-    fontSize: 16,
-    color: 'red',
-  },
-  item: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  clickedItem: {
-    backgroundColor: '#C8E6C9',
-  },
-  noclickedItem: {
-    borderBottomColor: '#ccc', //unneeded, because already in item, but maybe customized later?
-  },
-  selectedTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  selectedItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: '#f9f9f9',
-    margin: 5,
-    borderWidth: 2, // Border thickness
-    borderColor: "#3498db", // Blue border color
-    borderRadius: 10, // Rounded corners
-  },
-  cross: {
-    fontSize: 16,
-    color: 'red',
-  },
-  playernameflatList: {
-    alignItems: "center", // Ensures items are centered
-  },
-  playerlistitemcontainer: {
-    width: 100,
-    height: 50,
-    backgroundColor: "#f9f9f9", // Light background
-    margin: 5,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2, // Border thickness
-    borderColor: "#3498db", // Blue border color
-    borderRadius: 10, // Rounded corners
-  },
-  playerlistitemtext: {
-    fontWeight: "bold",
-    color: "#3498db", // Blue
-    maxWidth: 90,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  clearItemsButton: {
-    flex: 1, // Takes up available space on the right
-    marginLeft: 20,
-  },
-  leftContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    flex: 2, // Takes up more space on the left
-  },
-  newplayerinput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
-    width: 150, // Fixed width for the TextInput
-    marginRight: 8, // Space between TextInput and Add Item button
-  },
-  iconContainer: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 8,
-  },
-  selectedItemsContainer: {
-    marginBottom: 10,
-  }
+
+const $saveButtonText: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 20, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
+  color: theme.colors.text,
 });
-*/
+
+const $clearSelectionButtonText: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 16, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
+  color: theme.colors.text,
+});
 export default HomeScreen;

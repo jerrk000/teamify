@@ -6,6 +6,8 @@ const palette = {
   neutral500: "#978F8A",
   neutral400: "#564E4A",
   neutral300: "#3C3836",
+  neutral250: "#2B2426",
+  neutral225: "#221A1D",
   neutral200: "#191015",
   neutral100: "#000000",
 
@@ -53,6 +55,7 @@ export const colors = {
   text: palette.neutral800,
   textDim: palette.neutral600,
   background: palette.neutral200,
+  selected: palette.neutral300,
   border: palette.neutral400,
   tint: palette.neutral900,//before it was palette.primary500,
   tintInactive: palette.neutral500,//before it was palette.neutral300,
@@ -60,4 +63,6 @@ export const colors = {
   error: palette.angry500,
   errorBackground: palette.angry100,
   iconColor: palette.whiteHard,
+  buttonBackground: palette.neutral300,
+  itemBackground: palette.neutral225,
 } as const

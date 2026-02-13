@@ -3,6 +3,8 @@ import { blue } from "react-native-reanimated/lib/typescript/Colors"
 const palette = {
   neutral100: "#FFFFFF",
   neutral200: "#F4F2F1",
+  neutral225: "#EDE9E7",
+  neutral250: "#E6E0DD",
   neutral300: "#D7CEC9",
   neutral400: "#B6ACA6",
   neutral500: "#978F8A",
@@ -76,6 +78,10 @@ export const colors = {
    * The default color of the screen background.
    */
   background: palette.neutral200,
+  /*
+  * The default color for a selected item, for example a selected list item or selected button.
+  */
+  selected: palette.neutral300,
   /**
    * The default border color.
    */
@@ -103,5 +109,13 @@ export const colors = {
   /**
    * Color of icons.
    */
-iconColor: palette.blackHard,
+  iconColor: palette.blackHard,
+  /*
+  * Default button background color, should be used for buttons that do not have a specific color.
+  */
+  buttonBackground: palette.neutral300,
+  /*
+  * Default item background color, should be used for items that do not have a specific color.
+  */
+  itemBackground: palette.neutral225,
 } as const
