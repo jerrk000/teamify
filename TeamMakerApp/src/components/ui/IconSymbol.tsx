@@ -41,7 +41,9 @@ const FONT_AWESOME_MAPPING = {
 
 // Add your SF Symbol to FontAwesome mappings here.
 const FONT_AWESOME6_MAPPING = {
-  'delete.left.fill': 'delete-left'
+  'delete.left.fill': 'delete-left',
+  'magnifying-glass': 'magnifying-glass',
+  'xmark': 'xmark',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

@@ -11,6 +11,7 @@ import { Button } from '@/components/Button'
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
 import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
+import { SearchField } from '@/components/SearchField';
 
 type Item = {
   id: string;
@@ -132,18 +133,16 @@ const HomeScreen = () => {
       <SafeAreaView style={themed($container)}>
       <Text style={themed($header)}>Add friends to game</Text>
         <View style={themed($searchContainer)}>
-          <TextInput
-            style={themed($searchBar)}
-            placeholder="Search..."
-            placeholderTextColor={theme.colors.textDim}
+          <SearchField
             value={searchQuery}
             onChangeText={handleSearch}
+            placeholder="Search…"
+            onClear={clearSearch}
+            onSubmit={(q) => handleSearch(q)}
+            testID="players-search"
+            inputTestID="players-search-input"
+            clearButtonTestID="players-search-clear"
           />
-          <View style={themed($clearButton)}>
-            <TouchableOpacity onPress={clearSearch} style={themed($iconContainer)}>
-              <IconSymbol size={28} name='delete.left.fill' color={theme.colors.iconColor} iconSet="fontawesome6" />
-            </TouchableOpacity>
-          </View>
         </View>
         <View style={themed($buttonRow)}>
           <View style={themed($leftContainer)}>
@@ -234,8 +233,10 @@ const $searchBar: ThemedStyle<TextStyle> = (theme) => ({
 const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
   flexDirection: "row",
   alignItems: "center",
+  alignSelf: "stretch",
   paddingHorizontal: 10,
   marginBottom: 16,
+  marginTop: 16,
 });
 
 // TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
@@ -266,10 +267,6 @@ const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
   backgroundColor: theme.colors.palette.neutral300, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
 });
 
-const $noclickedItem: ThemedStyle<ViewStyle> = (theme) => ({
-  borderBottomColor: theme.colors.border, //unneeded, because already in item, but maybe customized later?
-});
-
 const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
   height: 4,
   backgroundColor: theme.colors.border, //marginHorizontal: -16, // cancel container padding
@@ -290,9 +287,9 @@ const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   padding: 10,
-  backgroundColor: theme.colors.itemBackground, // TODO change this and add this to the theme
+  backgroundColor: theme.colors.itemBackground, 
   margin: 5,
-  borderWidth: 2, // Border thickness
+  borderWidth: 2,
   borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
   borderRadius: 10, // Rounded corners
 });
@@ -366,8 +363,8 @@ const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.text, 
 });
 
-const $Button: ThemedStyle<ViewStyle> = (theme) => ({ // TODO delete this if not needed, just a test to see if it works.
-  backgroundColor: theme.colors.buttonBackground, // TODO add this to the theme
+const $Button: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.buttonBackground,
   color: theme.colors.text,
 })
 

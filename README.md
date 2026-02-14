@@ -114,7 +114,28 @@ Logout-Button in modal also has functionality now.
 
 ### Theming using `styled-components` or just local ThemeProvider.
 
-I just used the local ThemeProvider. Now I am not using stylesheets anymore, but themed objects where the theme is imported from theme-folder, so I only have to define each theme once. The app has to look similar throughout all screens. Changed tabmodal.tsx and now index.tsx. IconSymbol now also change with darkmode. Next: Placeholder färben.
+I just used the local ThemeProvider. Now I am not using stylesheets anymore, but themed objects where the theme is imported from theme-folder, so I only have to define each theme once. The app has to look similar throughout all screens. Changed tabmodal.tsx and now index.tsx. IconSymbol now also change with darkmode. Placeholder colored too.
+There is now more or less a basic theme in white/grey and also darkmode. All the important files can be found in the `theme`-folder. 
+How to do theming:
+For every component/screen do:
+At the top:
+import { View, type ViewStyle } from "react-native"
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
+
+In the functional part:
+const {
+    themed, theme, themeContext,
+  } = useAppTheme()
+
+In the render part:
+<View style={themed($container)}>
+
+Under the render, where the styles are:
+const $container: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.background,
+  color: theme.colors.palette.angry500,
+})
 
 
 
@@ -211,23 +232,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] NOW: Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
 - [ ] Check how the +not_found page is reachable and if it works
 
-How to do theming:
-For every component/screen do:
-At the top:
-import { View, type ViewStyle } from "react-native"
-import { useAppTheme } from '@/theme/context';
-import { ThemedStyle } from '@/theme/types';
 
-In the functional part:
-const {
-    themed, theme, themeContext,
-  } = useAppTheme()
-
-In the render part:
-<View style={themed($container)}>
-
-Under the render, where the styles are:
-const $container: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.background,
-  color: theme.colors.palette.angry500,
-})
