@@ -12,6 +12,7 @@ import SelectedPlayers from '@/components/ui/SelectedPlayers';
 import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
 import { SearchField } from '@/components/SearchField';
+import { PlayerList } from '@/components/ui/PlayerList';
 
 type Item = {
   id: string;
@@ -43,8 +44,7 @@ const HomeScreen = () => {
     themed, theme, themeContext,
   } = useAppTheme()
 
-  const colorScheme = useColorScheme();
-  //const { colors } = useTheme(); //only needed when working with predefined Theme from react navigation
+  const placeholderAvatar = require("../../../../assets/avatar-placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
@@ -167,6 +167,7 @@ const HomeScreen = () => {
           </View>
         </View>
         
+        {/* //TODO when PlayerList looks good, delete this.
         <FlatList
           data={filteredData.length > 0 ? filteredData : data}
           keyExtractor={(item) => item.id}
@@ -183,6 +184,20 @@ const HomeScreen = () => {
             </TouchableOpacity>
           )}
         />
+        */}
+
+
+        <PlayerList
+          data={filteredData.length > 0 ? filteredData : data}
+          themed={themed}
+          isSelected={(item) => isItemSelected(item)}
+          favoriteDisabled={true}
+          onPressRow={(item) => handleItemPress(item)}
+          onPressFavorite={(item) => console.log("fav", item.id)}
+          onPressMore={(item) => console.log("more", item.id)}
+          placeholderAvatarSource={placeholderAvatar}
+        />
+
         <View style={themed($fullWidthDivider)} />
         <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
         {!keyboardStatus ? (

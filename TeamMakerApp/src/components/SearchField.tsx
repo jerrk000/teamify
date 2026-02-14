@@ -170,7 +170,7 @@ export function SearchField(props: SearchFieldProps) {
         testID={clearButtonTestID}
       >
         <IconSymbol
-          size={18}
+          size={22}
           name="xmark"
           iconSet="fontawesome6"
           color={
