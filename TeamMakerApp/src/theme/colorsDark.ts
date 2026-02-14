@@ -44,8 +44,11 @@ const palette = {
 
 const volleyColors = {
   volleyblue: '#2e3c87', //dark blue
+  volleyblueTransparent: 'rgba(0, 123, 255, 0.5)', //50% transparent blue, instead of //"#3498db". //TODO this is from first implementation, maybe change.
   volleyyellow: '#fcc340', //yellow
   volleyred: '#de3d4b', //red
+  volleyredTransparent: 'rgba(220, 20, 60, 0.5)', //50$ transparent red //TODO this is from first implementation, maybe change.
+
 } as const
 
 export const colors = {

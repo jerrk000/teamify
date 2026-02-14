@@ -47,8 +47,10 @@ const palette = {
 const volleyColors = { //TODO create a new file for this as this is probably a whole theme at some point. 
 //                    Is this a good idea or is it better to add a volleyball-flavour to light and dark theme?
   volleyblue: '#2e3c87', //dark blue
+  volleyblueTransparent: 'rgba(0, 123, 255, 0.5)', //50% transparent blue, instead of //"#3498db". //TODO this is from first implementation, maybe change.
   volleyyellow: '#fcc340', //yellow
   volleyred: '#de3d4b', //red
+  volleyredTransparent: 'rgba(220, 20, 60, 0.5)', //50$ transparent red //TODO this is from first implementation, maybe change.
 } as const
 
 export const colors = {

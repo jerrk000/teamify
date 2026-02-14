@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, type ViewStyle, type TextStyle, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useListStore } from "../../../store/useListStore";
 import BackgroundPicture from '@/components/ImageBackground';
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
 import { Button } from '@/components/Button';
-//import { useThemeColor } from '@/hooks/useThemeColor';
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
 
 
 const SavedItemsScreen = () => {
+  const {
+      themed, theme, themeContext,
+    } = useAppTheme()
+
   const items = useListStore((state) => state.items); // Get items from Zustand
   const setItems = useListStore((state) => state.setItems); // Get setItems function from Zustand
   const [showAdditionalButtons, setShowAdditionalButtons] = useState(false);
@@ -25,79 +28,73 @@ const SavedItemsScreen = () => {
     setItems(shuffledItems); // Update the Zustand store with shuffled items
   };
 
-
-  const colorScheme = useColorScheme();
-  //const background = useThemeColor({ light: 'light', dark: 'dark' }, 'background'); //does not work?
-  //const textColor = useThemeColor({ light: 'light', dark: 'dark' }, 'text'); //does not work?
-
-
   return (
     <BackgroundPicture>
-      <View style={styles.container}>
+      <View style={themed($container)}>
         
-        <View style={styles.teamContainer}>  
-          <Text style={[styles.teamTitle, {color: Colors[colorScheme ?? 'light'].volley1}]}>Team</Text>
+        <View style={themed($teamContainer)}>  
+          <Text style={themed($teamTitle)}>Team</Text>
           <SelectedPlayers 
             selectedPlayers={firstGroup} 
             disableTouch={true} 
             isCentered={true} 
-            selectedItemStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].volley1}}
-            textStyle={{color: Colors[colorScheme ?? 'light'].text}}
+            selectedItemStyle={{ ...themed($selectedItem), borderColor: theme.colors.volleyColors.volleyblue }}
+            textStyle={themed($selectedItemText)}
           />
         </View>
         
 
         
-        <View style={styles.simplebuttonContainer}>
+        <View style={themed($simplebuttonContainer)}>
           <Button 
             text="Randomize Teams" 
             onPress={randomizeItems} 
-            style={{backgroundColor: Colors[colorScheme ?? 'light'].volley3}} 
+            style={[themed($randomizeButton), { backgroundColor: "red" }]}
           />
         </View>
 
         
-        <View style={styles.teamContainer}>  
-          <Text style={[styles.teamTitle, {color: Colors[colorScheme ?? 'light'].volley2}]}>Team</Text>
+        <View style={themed($teamContainer)}>  
+          <Text style={[themed($teamTitle), {color: "blue"}]}>Team</Text>
           <SelectedPlayers 
             selectedPlayers={secondGroup} 
             disableTouch={true} 
             isCentered={true} 
-            selectedItemStyle={{backgroundColor: Colors[colorScheme ?? 'light'].background, borderColor: Colors[colorScheme ?? 'light'].volley2}}
-            textStyle={{color: Colors[colorScheme ?? 'light'].text}}
+            selectedItemStyle={{ ...themed($selectedItem), borderColor: theme.colors.volleyColors.volleyred }}
+            textStyle={themed($selectedItemText)}
           />
         </View>
 
         {/* Choose Winner Button */}
-        <View style={styles.simplebuttonContainer}>
+        <View style={themed($simplebuttonContainer)}>
           <Button 
             text="Choose winner" 
             onPress={() => setShowAdditionalButtons(!showAdditionalButtons)} 
-            style={{backgroundColor: Colors[colorScheme ?? 'light'].volley3}}
+            style={{backgroundColor: "red"}} //TODO this is hardcoded and not pretty
           />
         </View>
 
         {/* Overlay with Additional Buttons */}
         {showAdditionalButtons ? (
-          <View style={styles.overlay}>
+          <View style={themed($overlay)}>
             <TouchableOpacity
-              style={styles.overlayBackground}
+              style={themed($overlayBackground)}
               activeOpacity={1}
               onPress={() => setShowAdditionalButtons(false)}
             >
               {/* Empty TouchableOpacity to close the overlay when tapping outside buttons */}
             </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.button, {backgroundColor: 'rgba(220, 20, 60, 0.5)'}]}
+                style={[themed($button), {backgroundColor: theme.colors.volleyColors.volleyredTransparent}]} //TODO this is hardcoded
                 onPress={() => alert('Team Red will be saved as winner')}
               >
-                <Text style={styles.buttonText}>Winner</Text>
+                <Text style={themed($buttonText)}>Winner</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.button}
+                style={themed($button)}
                 onPress={() => alert('Team Blue will be saved as winner')}
               >
-                <Text style={styles.buttonText}>Winner</Text>
+                <Text style={themed($buttonText)}>Winner</Text>
               </TouchableOpacity>
           </View>
         ) : null}
@@ -105,75 +102,110 @@ const SavedItemsScreen = () => {
     </BackgroundPicture>
   );
 };
+  
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    alignItems: "center",
-  },
-  teamContainer: {
-    flex: 1,
-    marginBottom: 16,
-  },
-  teamTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlignVertical: "center",
-    textAlign: "center"
-  },
-  simplebuttonContainer: {
-    marginTop: 16,
-    marginBottom: 16,
-  },
-  playerlistitemcontainer: {
-    width: 100,
-    height: 50,
-    backgroundColor: "#f9f9f9", // Light background
-    margin: 5,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2, // Border thickness
-    borderColor: "#3498db", // Blue border color
-    borderRadius: 10, // Rounded corners
-  },
-  playerlistitemtext: {
-    fontWeight: "bold",
-    color: "#3498db", // Blue
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  overlayBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black
-  },
-  button: {
-    flex: 1,
-    width: '70%',
-    height: '40%',
-    padding: 15,
-    backgroundColor: 'rgba(0, 123, 255, 0.5)', //50% transparent blue, instead of //"#3498db",
-    borderRadius: 5,
-    marginVertical: 60,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  buttonText: {
+const $container: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1,
+  padding: 16,
+  alignItems: "center",
+});
+
+const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: 10,
+  backgroundColor: theme.colors.itemBackground, // TODO change this and add this to the theme
+  margin: 5,
+  borderWidth: 2, // Border thickness
+  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
+  borderRadius: 10, // Rounded corners
+});
+
+const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text, 
+});
+
+const $teamContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1,
+  marginBottom: 16,
+});
+
+const $teamTitle: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginBottom: 8,
+  textAlignVertical: "center",
+  textAlign: "center"
+});
+
+
+const $simplebuttonContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  marginTop: 16,
+  marginBottom: 16,
+});
+
+const $playerlistitemcontainer: ThemedStyle<ViewStyle> = (theme) => ({
+  width: 100,
+  height: 50,
+  backgroundColor: theme.colors.itemBackground, 
+  margin: 5,
+  justifyContent: "center",
+  alignItems: "center",
+  borderWidth: 2, // Border thickness
+  borderColor: theme.colors.volleyColors.volleyblue, //was "#3498db", blue border color
+  borderRadius: 10, // Rounded corners
+});
+
+const $playerlistitemtext: ThemedStyle<TextStyle> = (theme) => ({
+  fontWeight: "bold",
+  color: theme.colors.volleyColors.volleyblue, // was "#3498db", blue text
+});
+
+const $overlay: ThemedStyle<ViewStyle> = (theme) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
+const $overlayBackground: ThemedStyle<ViewStyle> = (theme) => ({
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: theme.colors.palette.overlaymodal, // Semi-transparent black
+});
+
+const $button: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1,
+  width: '70%',
+  height: '40%',
+  padding: 15,
+  backgroundColor: theme.colors.volleyColors.volleyblueTransparent, //50% transparent blue, instead of //"#3498db". //TODO not in sync with other blue, check colors.ts
+  borderRadius: 5,
+  marginVertical: 60,
+  alignItems: 'center',
+  justifyContent: 'center'
+});
+
+const $buttonText: ThemedStyle<TextStyle> = (theme) => ({
     color: 'white',
     fontSize: 20,
-  },
+});
+
+const $randomizeButton: ThemedStyle<ViewStyle> = (theme) => ({ 
+  backgroundColor: theme.colors.buttonBackground,
+  color: theme.colors.text,
+})
+
+const $randomizeButtonText: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 20, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
+  color: theme.colors.text,
 });
 
 export default SavedItemsScreen;

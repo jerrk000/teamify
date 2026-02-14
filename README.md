@@ -209,6 +209,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] NOW: Make a normal theme, starting with index.tsx.
 - [ ] NOW: Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
 - [ ] NOW: Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
+- [ ] Check how the +not_found page is reachable and if it works
 
 How to do theming:
 For every component/screen do:

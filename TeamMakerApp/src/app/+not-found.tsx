@@ -1,33 +1,36 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet } from 'react-native';
+import { View, type ViewStyle, type TextStyle, StyleSheet } from 'react-native';
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
+import { Text } from '@/components/Text'; // Assuming you have a ThemedText component for consistent theming
 
-// TODO maybe remove ThemedText and ThemedView component and also in here and everywhere else it is used
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function NotFoundScreen() {
+  const {
+    themed, theme, themeContext,
+  } = useAppTheme()
+
   return (
     <>
       <Stack.Screen options={{ title: 'Oops!' }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
+      <View style={themed($container)}>
+        <Text preset="heading" text="This screen doesn't exist." />
+        <Link href="/" style={themed($link)}>
+          <Text text="Go to home screen!"/>
         </Link>
-      </ThemedView>
+      </View>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
+const $container: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 20,
+});
+
+const $link: ThemedStyle<TextStyle> = (theme) => ({
+   marginTop: 15,
+   paddingVertical: 15,
 });
