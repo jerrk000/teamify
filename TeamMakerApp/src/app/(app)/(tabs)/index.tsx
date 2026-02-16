@@ -4,8 +4,6 @@ import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-//import { useTheme } from '@react-navigation/native';
-import { useColorScheme } from 'react-native';
 import { $styles } from '@/theme/styles';
 import { Button } from '@/components/Button'
 import SelectedPlayers from '@/components/ui/SelectedPlayers';
@@ -14,19 +12,12 @@ import { ThemedStyle } from '@/theme/types';
 import { SearchField } from '@/components/SearchField';
 import { PlayerList } from '@/components/ui/PlayerList';
 import { TopOptionTabs } from "@/components/ui/TopOptionTabs"
+import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/OptionsTabs';
 
 type Item = {
   id: string;
   name: string;
 };
-
-const options = [
-  { key: "overview", label: "Overview" },
-  { key: "stats", label: "Stats" },
-  { key: "matches", label: "Matches" },
-  { key: "history", label: "History" },
-  { key: "advanced", label: "Advanced" },
-]
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -49,8 +40,6 @@ const HomeScreen = () => {
     { id: '15', name: 'Servus Versus Cersus' },
   ]);
 
-  const [tab, setTab] = useState("options")
-
 
   const {
     themed, theme, themeContext,
@@ -67,6 +56,7 @@ const HomeScreen = () => {
   });
   const [inputName, setInputName] = useState('');
   const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const [tab, setTab] = useState<GameOptionsTagKey>(GAME_OPTIONS_TAGS[0].key);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -133,11 +123,15 @@ const HomeScreen = () => {
     return selectedItems.some((selected) => selected.id === item.id);
   };
 
-  const handleSave = () => {
+  const handleCreateTeams = () => {
     setItems(selectedItems); // Store the list in Zustand
-    router.push({
-      pathname: '/MakeTeamsScreen',
-    });
+    const actionByTab: Record<GameOptionsTagKey, () => void> = {
+      random: () =>router.push({pathname: '/MakeTeamsScreen',}),
+      custom: () => router.push({pathname: '/MakeTeamsScreen',}),
+      tournament: () => router.push({pathname: '/MakeTeamsScreen',}),
+      // Dont forget to add cases here if new modes are implemented
+  }
+  actionByTab[tab]()
   };
 
   return (
@@ -145,12 +139,11 @@ const HomeScreen = () => {
       <Text style={themed($header)}>Add Players</Text>
       <View>
       <TopOptionTabs
-        options={options}
+        options={GAME_OPTIONS_TAGS}
         value={tab}
         onChange={setTab}
-        rightHint="chevron"
+        rightHint="fade"
       />
-          <Text>Selected: {tab}</Text>
       </View>
       <View style={themed($searchContainer)}>
         <SearchField
@@ -212,7 +205,7 @@ const HomeScreen = () => {
       }
       <Button
         text="Create Teams" 
-        onPress={handleSave} 
+        onPress={handleCreateTeams} 
         style={themed($Button)}
         textStyle={themed($saveButtonText)} 
       />

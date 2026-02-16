@@ -15,17 +15,17 @@ import type { ThemedStyle } from "@/theme/types"
 
 type OptionKey = string
 
-export type TopOptionTabsOption = {
-  key: OptionKey
+type TopOptionTabsOption<K extends string> = Readonly<{
+  key: K
   label: string
   disabled?: boolean
   testID?: string
-}
+}>
 
-export type TopOptionTabsProps = {
-  options: TopOptionTabsOption[]
-  value: OptionKey
-  onChange: (key: OptionKey) => void
+export type TopOptionTabsProps<K extends string> = { // had to extend string so that it accepts generic unions too
+  options: readonly TopOptionTabsOption<K>[]
+  value: K
+  onChange: (key: K) => void
 
   rightHint?: "none" | "fade" | "chevron"
   autoScrollToSelected?: boolean
@@ -34,8 +34,7 @@ export type TopOptionTabsProps = {
   a11yLabelPrefix?: string
 }
 
-export function TopOptionTabs(props: TopOptionTabsProps) {
-  const {
+export function TopOptionTabs<K extends string>(props: TopOptionTabsProps<K>) {  const {
     options,
     value,
     onChange,
