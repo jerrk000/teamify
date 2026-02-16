@@ -13,11 +13,20 @@ import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
 import { SearchField } from '@/components/SearchField';
 import { PlayerList } from '@/components/ui/PlayerList';
+import { TopOptionTabs } from "@/components/ui/TopOptionTabs"
 
 type Item = {
   id: string;
   name: string;
 };
+
+const options = [
+  { key: "overview", label: "Overview" },
+  { key: "stats", label: "Stats" },
+  { key: "matches", label: "Matches" },
+  { key: "history", label: "History" },
+  { key: "advanced", label: "Advanced" },
+]
 
 const HomeScreen = () => {
   const router = useRouter();
@@ -39,6 +48,9 @@ const HomeScreen = () => {
     { id: '14', name: 'Maximilian Baximilian Raximus' },
     { id: '15', name: 'Servus Versus Cersus' },
   ]);
+
+  const [tab, setTab] = useState("options")
+
 
   const {
     themed, theme, themeContext,
@@ -131,6 +143,15 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={themed($container)}>
       <Text style={themed($header)}>Add Players</Text>
+      <View>
+      <TopOptionTabs
+        options={options}
+        value={tab}
+        onChange={setTab}
+        rightHint="chevron"
+      />
+          <Text>Selected: {tab}</Text>
+      </View>
       <View style={themed($searchContainer)}>
         <SearchField
           value={searchQuery}

@@ -68,4 +68,8 @@ export const colors = {
   iconColor: palette.whiteHard,
   buttonBackground: palette.neutral300,
   itemBackground: palette.neutral225,
+  primary: palette.primary500,
+  onPrimary: palette.neutral100,
+  surface: palette.neutral225,       
+  surfacePressed: palette.neutral250,
 } as const

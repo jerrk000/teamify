@@ -120,4 +120,20 @@ export const colors = {
   * Default item background color, should be used for items that do not have a specific color.
   */
   itemBackground: palette.neutral225,
+  /*
+  * Strong primary color, used for key components like the active tab and active buttons. Try to use sparingly, as it can be overpowering.
+  */
+  primary: palette.primary500,
+  /**
+  * On primary color, used for text and icons on top of the primary color. Should have good contrast with primary.
+  */
+  onPrimary: palette.neutral100,
+  /*
+  * Surface color, used for cards, sheets, and other surfaces. Can be used as a background color for components.
+  */
+  surface: palette.neutral225,     
+  /*
+  * Pressed state for surfaces, such as cards and sheets. Should be a subtle change from surface to indicate interactivity.
+  */   
+  surfacePressed: palette.neutral250, // pressed state for chips
 } as const
