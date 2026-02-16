@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, type TextStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
-import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 //import { useTheme } from '@react-navigation/native';
 import { useColorScheme } from 'react-native';
@@ -129,75 +129,73 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={themed($container)}>
-        <Text style={themed($header)}>Add Players</Text>
-        <View style={themed($searchContainer)}>
-          <SearchField
-            value={searchQuery}
-            onChangeText={handleSearch}
-            placeholder="Search…"
-            onClear={clearSearch}
-            onSubmit={(q) => handleSearch(q)}
-            testID="players-search"
-            inputTestID="players-search-input"
-            clearButtonTestID="players-search-clear"
+    <SafeAreaView style={themed($container)}>
+      <Text style={themed($header)}>Add Players</Text>
+      <View style={themed($searchContainer)}>
+        <SearchField
+          value={searchQuery}
+          onChangeText={handleSearch}
+          placeholder="Search…"
+          onClear={clearSearch}
+          onSubmit={(q) => handleSearch(q)}
+          testID="players-search"
+          inputTestID="players-search-input"
+          clearButtonTestID="players-search-clear"
+        />
+      </View>
+      <View style={themed($buttonRow)}>
+        <View style={themed($leftContainer)}>
+          <TextInput
+            style={themed($newplayerinput)}
+            placeholder="Add temp player"
+            placeholderTextColor={theme.colors.textDim}
+            value={inputName}
+            onChangeText={setInputName}
+          />
+          <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
+            <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
+          </TouchableOpacity>
+        </View>
+        <View style={themed($clearItemsButton)}>
+          <Button
+            text="Clear Selection" 
+            onPress={handleClearSelectedItems}
+            style={themed($Button)}
+            textStyle={themed($clearSelectionButtonText)}
           />
         </View>
-        <View style={themed($buttonRow)}>
-          <View style={themed($leftContainer)}>
-            <TextInput
-              style={themed($newplayerinput)}
-              placeholder="Add temp player"
-              placeholderTextColor={theme.colors.textDim}
-              value={inputName}
-              onChangeText={setInputName}
-            />
-            <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
-              <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
-            </TouchableOpacity>
-          </View>
-          <View style={themed($clearItemsButton)}>
-            <Button
-              text="Clear Selection" 
-              onPress={handleClearSelectedItems}
-              style={themed($Button)}
-              textStyle={themed($clearSelectionButtonText)}
-            />
-          </View>
-        </View>
+      </View>
 
 
-        <PlayerList
-          data={filteredData.length > 0 ? filteredData : data}
-          themed={themed}
-          isSelected={(item) => isItemSelected(item)}
-          favoriteDisabled={true}
-          onPressRow={(item) => handleItemPress(item)}
-          onPressFavorite={(item) => console.log("fav", item.id)}
-          onPressMore={(item) => console.log("more", item.id)}
-          placeholderAvatarSource={placeholderAvatar}
-        />
+      <PlayerList
+        data={filteredData.length > 0 ? filteredData : data}
+        themed={themed}
+        isSelected={(item) => isItemSelected(item)}
+        favoriteDisabled={true}
+        onPressRow={(item) => handleItemPress(item)}
+        onPressFavorite={(item) => console.log("fav", item.id)}
+        onPressMore={(item) => console.log("more", item.id)}
+        placeholderAvatarSource={placeholderAvatar}
+      />
 
-        <View style={themed($fullWidthDivider)} />
-        <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
-        {!keyboardStatus ? (
-        <SelectedPlayers 
-          selectedPlayers={selectedItems} 
-          onClickPlayer={handleRemoveItem}
-          selectedItemStyle={themed($selectedItem)}
-          textStyle={themed($selectedItemText)} 
-        />
-          ) : null
-        }
-        <Button
-          text="Create Teams" 
-          onPress={handleSave} 
-          style={themed($Button)}
-          textStyle={themed($saveButtonText)} 
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+      <View style={themed($fullWidthDivider)} />
+      <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
+      {!keyboardStatus ? (
+      <SelectedPlayers 
+        selectedPlayers={selectedItems} 
+        onClickPlayer={handleRemoveItem}
+        selectedItemStyle={themed($selectedItem)}
+        textStyle={themed($selectedItemText)} 
+      />
+        ) : null
+      }
+      <Button
+        text="Create Teams" 
+        onPress={handleSave} 
+        style={themed($Button)}
+        textStyle={themed($saveButtonText)} 
+      />
+    </SafeAreaView>
   );
 };
 

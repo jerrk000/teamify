@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Button, Modal, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Button, Modal, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {RadarChart} from '@salmonco/react-native-radar-chart'; 
 //It sucks that I have to use a radar chart from a random person
 //TODO maybe implement radar chart yourself?
