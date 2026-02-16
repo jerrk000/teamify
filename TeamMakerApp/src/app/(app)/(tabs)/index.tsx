@@ -131,7 +131,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={themed($container)}>
-      <Text style={themed($header)}>Add friends to game</Text>
+        <Text style={themed($header)}>Add Players</Text>
         <View style={themed($searchContainer)}>
           <SearchField
             value={searchQuery}
@@ -166,25 +166,6 @@ const HomeScreen = () => {
             />
           </View>
         </View>
-        
-        {/* //TODO when PlayerList looks good, delete this.
-        <FlatList
-          data={filteredData.length > 0 ? filteredData : data}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleItemPress(item)}>
-              <View style={[
-                themed($item),
-                isItemSelected(item) ? themed($clickedItem) : undefined,
-              ]}>
-                <Text style={themed($playerlistitemtext)}>
-                  {item.name}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          )}
-        />
-        */}
 
 
         <PlayerList
@@ -249,7 +230,7 @@ const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
   flexDirection: "row",
   alignItems: "center",
   alignSelf: "stretch",
-  paddingHorizontal: 10,
+  //paddingHorizontal: 10,
   marginBottom: 16,
   marginTop: 16,
 });
@@ -267,19 +248,6 @@ const $clearButton: ThemedStyle<ViewStyle> = (theme) => ({
 const $clearButtonText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 16,
   color: 'red', // TODO use theme color for this. Check hardcoded values for all these spacings etc here in general.
-});
-
-const $item: ThemedStyle<ViewStyle> = (theme) => ({
-  padding: 10,
-  backgroundColor: theme.colors.itemBackground, // TODO change this and add this or add it to to theme semantically (like light background or something)
-  margin: 5,
-  borderWidth: 2, // Border thickness
-  borderColor: theme.colors.palette.neutral500, // TODO change this and add this to the theme
-  borderRadius: 10, // Rounded corners
-});
-
-const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.palette.neutral300, // TODO add this to the theme or add it to to theme semantically (like darker background or something)
 });
 
 const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({

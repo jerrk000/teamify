@@ -192,7 +192,7 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
 
   borderWidth: 1,
   borderColor: theme.colors.border,
-  backgroundColor: theme.colors.buttonBackground, // or theme.colors.background if you prefer
+  backgroundColor: theme.colors.itemBackground, // or theme.colors.background if you prefer
 
   borderRadius: 10, // make this a token if you have one
 })

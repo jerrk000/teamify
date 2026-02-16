@@ -232,5 +232,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] NOW: Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
 - [ ] Check how the +not_found page is reachable and if it works
 - [ ] Update PlayerList.tsx. Move avatar icon slightly to the left. Check what happens when the name is too long for row. Check if favouritedisabled actually works? Make the whole bar similar to how it was before (bordercolor, backgroundcolor, roundness i like too). Use Icons instead of just emoji star and down arrow. Make it possible to make a little drop down menu when pressing the down arrow.Check to reuse this for friends-list
-
+- [ ] SelectedPlayers:Maybe rewrite this so that the amount of players per row is dependant on the screensize, and also stretch it maybe so that it fills the row?
 

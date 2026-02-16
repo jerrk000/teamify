@@ -1,5 +1,7 @@
 import React, { memo } from "react"
 import { FlatList, Image, Pressable, Text, TouchableOpacity, View, ViewStyle, TextStyle, ImageStyle } from "react-native"
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
 
 type Id = string
 
@@ -45,6 +47,9 @@ export const PlayerRow = memo(function PlayerRow({
 }: PlayerRowProps) {
   const isFavorite = !!item.isFavorite
 
+  const {
+    theme, themeContext, // no themed or it would be used twice
+  } = useAppTheme()
 
   return (
     <TouchableOpacity onPress={() => onPressRow(item)} activeOpacity={0.8}>
@@ -148,21 +153,21 @@ export function PlayerList({
 
 /** ---------- styles ---------- */
 
-const $itemRow = ({ colors, spacing }: any): ViewStyle => ({
+const $itemRow: ThemedStyle<ViewStyle> = (theme) => ({
   flexDirection: "row",
   alignItems: "center",
-  paddingVertical: spacing?.xs ?? 10,
-  paddingHorizontal: spacing?.md ?? 16,
+  paddingVertical: 10,//spacing?.xs ?? 10, //TODO add spacing to theme and use it here
+  paddingHorizontal: 16, // spacing?.md ?? 16, //TODO add spacing to theme and use it here
+  backgroundColor: theme.colors.itemBackground,
+  margin: 5,
+  borderRadius: 10, // Rounded corners
 })
 
-/**
- * You already have this in your screen:
- * - keep it there, or move it here and export it
- */
-const $clickedItem = ({ colors }: any): ViewStyle => ({
-  backgroundColor: colors?.neutral200 ?? "rgba(0,0,0,0.06)",
-  borderRadius: 10,
-})
+const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.palette.neutral300,
+  borderWidth: 3, // Border thickness
+  borderColor: theme.colors.palette.neutral500, // TODO change this and add this to the theme
+});
 
 const $avatar = ({ colors }: any, size: number): ImageStyle => ({
   width: size,
@@ -172,11 +177,11 @@ const $avatar = ({ colors }: any, size: number): ImageStyle => ({
   backgroundColor: colors?.neutral200 ?? "#eee",
 })
 
-const $name = ({ colors }: any): TextStyle => ({
+const $name: ThemedStyle<TextStyle> = (theme) => ({
   flex: 1,
   minWidth: 0, // IMPORTANT for truncation in flex rows
-  color: colors?.text ?? "#111",
-  fontSize: 16,
+  color: theme.colors.text,
+  fontSize: 16, //TODO add font sizes to theme and use it here
 })
 
 const $rightIcons = (): ViewStyle => ({
