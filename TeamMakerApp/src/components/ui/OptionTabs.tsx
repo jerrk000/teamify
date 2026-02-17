@@ -204,6 +204,31 @@ const $chip: ThemedStyle<ViewStyle> = ({ spacing, colors }) => ({
 })
 
 const $chipActive: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  borderWidth: 4,
+  borderColor: colors.palette.neutral500, // TODO change this and add this to the theme
+})
+
+const $chipPressed: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.surfacePressed, //
+})
+
+const $chipDisabled: ThemedStyle<ViewStyle> = () => ({
+  opacity: 0.5,
+})
+
+const $label: ThemedStyle<TextStyle> = ({ typography, colors }) => ({
+  //...typography.bodySmall, //TODO do something?
+  color: colors.text,
+})
+
+const $labelActive: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
+  //...typography.bodySmall, //TODO do something?
+  fontWeight: "600",
+  //color: colors.onPrimary
+})
+
+/* TODO concept of these colors is really cool, implement later again for a more colorful version of this component? 
+const $chipActive: ThemedStyle<ViewStyle> = ({ colors }) => ({
   backgroundColor: colors.primary, 
   borderColor: colors.primary,
 })
@@ -226,6 +251,7 @@ const $labelActive: ThemedStyle<TextStyle> = ({ colors, typography }) => ({
   fontWeight: "600",
   color: colors.onPrimary
 })
+*/
 
 const $labelDisabled: ThemedStyle<TextStyle> = ({ colors }) => ({
   color: colors.textDim,

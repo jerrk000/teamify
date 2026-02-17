@@ -65,6 +65,12 @@ export type SearchFieldProps = {
   clearButtonTestID?: string
 
   /**
+   * Optional: show/hide left search icon
+   * Default: true
+  */
+  showSearchIcon?: boolean
+
+  /**
    * Optional: pass-through TextInput props (minus ones we control).
    */
   textInputProps?: Omit<
@@ -95,6 +101,7 @@ export function SearchField(props: SearchFieldProps) {
     testID,
     inputTestID,
     clearButtonTestID,
+    showSearchIcon = true,
     textInputProps,
   } = props
 
@@ -122,15 +129,17 @@ export function SearchField(props: SearchFieldProps) {
   return (
     <View style={[themed($container), containerStyle ? themed(containerStyle) : undefined]} testID={testID}>
       {/* Left icon */}
-      <View style={themed($leftIconSlot)} pointerEvents="none">
-        <IconSymbol
-          size={18}
-          name="magnifying-glass"
-          // if your IconSymbol uses different naming per set, change accordingly
-          iconSet="fontawesome6"
-          color={disabled ? theme.colors.border : theme.colors.iconColor}
-        />
-      </View>
+      {showSearchIcon && (
+        <View style={themed($leftIconSlot)} pointerEvents="none">
+          <IconSymbol
+            size={18}
+            name="magnifying-glass"
+            iconSet="fontawesome6"
+            color={disabled ? theme.colors.border : theme.colors.iconColor}
+          />
+        </View>
+      )}
+
 
       {/* Input */}
       <TextInput
@@ -188,13 +197,16 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
   height: CONTROL_HEIGHT_MD,
   flexDirection: "row",
   alignItems: "center",
-  width: "100%",
+  //width: "100%", //cannot be full width and flex shrink
+  flex: 1,
+  flexShrink: 1,
+  minWidth: 0,
 
   borderWidth: 1,
   borderColor: theme.colors.border,
   backgroundColor: theme.colors.itemBackground, // or theme.colors.background if you prefer
 
-  borderRadius: 10, // make this a token if you have one
+  borderRadius: 10, //TODO make this a token if you have one
 })
 
 const $leftIconSlot: ThemedStyle<ViewStyle> = (_theme) => ({

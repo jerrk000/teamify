@@ -12,7 +12,7 @@ import { ThemedStyle } from '@/theme/types';
 import { SearchField } from '@/components/SearchField';
 import { PlayerList } from '@/components/ui/PlayerList';
 import { OptionTabs } from "@/components/ui/OptionTabs"
-import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/OptionsTabs';
+import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/GameOptionsTabs';
 
 type Item = {
   id: string;
@@ -151,27 +151,33 @@ const HomeScreen = () => {
         <SearchField
           value={searchQuery}
           onChangeText={handleSearch}
-          placeholder="Search…"
+          placeholder="Search Player…"
           onClear={clearSearch}
           onSubmit={(q) => handleSearch(q)}
           testID="players-search"
           inputTestID="players-search-input"
           clearButtonTestID="players-search-clear"
+          containerStyle={(theme) => ({ width: "100%",})}
         />
       </View>
+
       <View style={themed($buttonRow)}>
         <View style={themed($leftContainer)}>
-          <TextInput
-            style={themed($newplayerinput)}
-            placeholder="Add temp player"
-            placeholderTextColor={theme.colors.textDim}
+          <SearchField
             value={inputName}
             onChangeText={setInputName}
+            placeholder="Add temp player"
+            onSubmit={handleAddItem}
+            testID="players-add"
+            inputTestID="players-add-input"
+            clearButtonTestID="players-add-clear"
+            showSearchIcon={false}
           />
           <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
             <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
           </TouchableOpacity>
         </View>
+
         <View style={themed($clearItemsButton)}>
           <Button
             text="Clear Selection" 
@@ -346,6 +352,11 @@ const $newplayerinput: ThemedStyle<TextStyle> = (theme) => ({
 });
 
 const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  height: 44, //TODO it is the same as CONTROL_HEIGHT_MD, make a common token for this
+  width: 44,  //TODO just to make it quadratic, common token?
+  borderRadius: 10, //TODO Rounded corners, make token?
+  justifyContent: 'center',
+  alignItems: 'center',
   borderWidth: 1,
   borderColor: theme.colors.border,
   padding: 8,
