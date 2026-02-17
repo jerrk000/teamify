@@ -180,10 +180,20 @@ const HomeScreen = () => {
 
         <View style={themed($clearItemsButton)}>
           <Button
-            text="Clear Selection" 
+            text="Clear"
             onPress={handleClearSelectedItems}
-            style={themed($Button)}
+            style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
             textStyle={themed($clearSelectionButtonText)}
+            RightAccessory={({ style }) => (
+              <View style={style}>
+                <IconSymbol
+                  size={28}
+                  name="delete"
+                  color={theme.colors.iconColor}
+                  iconSet="material"
+                />
+              </View>
+            )}
           />
         </View>
       </View>

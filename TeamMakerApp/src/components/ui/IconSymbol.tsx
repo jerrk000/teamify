@@ -3,7 +3,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
-import { OpaqueColorValue, StyleProp, ViewStyle } from 'react-native';
+import { OpaqueColorValue, StyleProp, TextStyle } from 'react-native';
 
 // Add your SF Symbol to MaterialIcons mappings here.
 const MATERIAL_ICONS_MAPPING = {
@@ -17,6 +17,7 @@ const MATERIAL_ICONS_MAPPING = {
   'line.horizontal.3': 'menu',
   'sportscourt': 'sports-volleyball',
   'gear': 'settings',
+  'delete': 'delete',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -74,7 +75,7 @@ export function IconSymbol({
   name: IconSymbolName;
   size?: number;
   color: string | OpaqueColorValue;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
   iconSet?: 'material' | 'fontawesome' | 'fontawesome6'; // Specify which icon set to use
 }) {

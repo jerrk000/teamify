@@ -162,6 +162,7 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
 - [ ] Style the modal more, so that it is just a list on the bottom right corner (style it with reanimated)
 - [ ] Use Hermes v1 when Expo 55 is released.
 - [ ] Check in general if it makes a difference to change the pressedStyle of buttons (e.g. changing backgroundcolor when pressed)
+- [ ] Think about doing a dashboard-like landing page, big buttons.  with one press for making a game, friends list, settings, notifications (!), stats. Similar to the pokemon tcg pocket one.
 
 
 ### Auth and friends
@@ -234,7 +235,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Update PlayerList.tsx. Move avatar icon slightly to the left. Check what happens when the name is too long for row. Check if favouritedisabled actually works? Make the whole bar similar to how it was before (bordercolor, backgroundcolor, roundness i like too). Use Icons instead of just emoji star and down arrow. Make it possible to make a little drop down menu when pressing the down arrow.Check to reuse this for friends-list
 - [ ] SelectedPlayers:Maybe rewrite this so that the amount of players per row is dependant on the screensize, and also stretch it maybe so that it fills the row?
 - [ ] Add functionality for gamemode "Keep Score" to keep score, also having functionality in backend to write final score in database. Also dont forget that it is already mentioned in another task that different sports themes need different point counts.
-- [ ] NOW: "Clear Selection" Button
+- [x] "Clear Selection" Button
 - [ ] NOW: "Selected Players" clean layout. No colors and more control with how much space each item needs (maybe stretch until end?). Just dont let it grow out of screen.
 - [x] Doublecheck the Star if it is a pressable button even though it is deactivted. Didnt destructure the prop correctly, fixed it.
 
