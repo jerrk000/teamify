@@ -32,6 +32,9 @@ const FONT_AWESOME_MAPPING = {
   'chevron.right': 'chevron-right',
   'person.3.fill': 'group',
   'chart.bar.fill': 'bar-chart',
+  'star': 'star',
+  'star-o': 'star-o',
+  'chevron.down': 'chevron-down',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -51,7 +54,10 @@ const FONT_AWESOME6_MAPPING = {
   >
 >;
 
-export type IconSymbolName = keyof typeof MATERIAL_ICONS_MAPPING;
+export type IconSymbolName =
+  | keyof typeof MATERIAL_ICONS_MAPPING
+  | keyof typeof FONT_AWESOME_MAPPING
+  | keyof typeof FONT_AWESOME6_MAPPING;
 
 /**
  * An icon component that uses native SFSymbols on iOS, and MaterialIcons or FontAwesome on Android and web. This ensures a consistent look across platforms, and optimal resource usage.

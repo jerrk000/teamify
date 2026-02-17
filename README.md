@@ -179,7 +179,7 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
 ### Initial Screen where you search players
 - [ ] Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets. Another game format: Keep Score, with possibility of predefined scores when having a specific theme (football, volleyball, maybe tennis (needs different count), basketball)
 - [ ] One new game mode: Custom: choose players to participate, but then find a way to add people to individual teams yourself
-- [ ] Layout like this 
+- [x] Layout like this 
 Change color of field if added. Rounded edges. Little bit of space between each player.
 --------------------------------------------------------------------
 -                                                                  -
@@ -212,7 +212,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 ## TODO
 
 - [ ] Look through all TODOs in code which were created when merging ignite-boilerplate and  original app
-- [ ] SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
+- [x] SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
 - [x] Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
 - [x] integrate login and auth in the frontend
 - [ ] use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented. Dont forget to check `utils`-Folder, as there are already some functions to load/save values using MMKV.
@@ -227,11 +227,14 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Make the partitioned teams screen look good on every screensize.
 - [x] Check out IconSymbol in index.tsx. Currently color is hardcoded.
 - [ ] Check out HapticTap, i am not sure if there is no feedback when clicking different tabs only on the simulator or in any case. I would like feedback when clicking things.
-- [ ] NOW: Make a normal theme, starting with index.tsx.
+- [x] Make a normal theme, starting with index.tsx.
 - [ ] NOW: Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
-- [ ] NOW: Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
+- [x] Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
 - [ ] Check how the +not_found page is reachable and if it works
 - [ ] Update PlayerList.tsx. Move avatar icon slightly to the left. Check what happens when the name is too long for row. Check if favouritedisabled actually works? Make the whole bar similar to how it was before (bordercolor, backgroundcolor, roundness i like too). Use Icons instead of just emoji star and down arrow. Make it possible to make a little drop down menu when pressing the down arrow.Check to reuse this for friends-list
 - [ ] SelectedPlayers:Maybe rewrite this so that the amount of players per row is dependant on the screensize, and also stretch it maybe so that it fills the row?
 - [ ] Add functionality for gamemode "Keep Score" to keep score, also having functionality in backend to write final score in database. Also dont forget that it is already mentioned in another task that different sports themes need different point counts.
+- [ ] NOW: "Clear Selection" Button
+- [ ] NOW: "Selected Players" clean layout. No colors and more control with how much space each item needs (maybe stretch until end?). Just dont let it grow out of screen.
+- [x] Doublecheck the Star if it is a pressable button even though it is deactivted. Didnt destructure the prop correctly, fixed it.
 

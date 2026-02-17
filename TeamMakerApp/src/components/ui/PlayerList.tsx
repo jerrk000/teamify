@@ -2,6 +2,7 @@ import React, { memo } from "react"
 import { FlatList, Image, Pressable, Text, TouchableOpacity, View, ViewStyle, TextStyle, ImageStyle } from "react-native"
 import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
+import { IconSymbol } from "@/components/ui/IconSymbol"
 
 type Id = string
 
@@ -76,9 +77,12 @@ export const PlayerRow = memo(function PlayerRow({
             accessibilityRole="button"
             accessibilityState={{ disabled: favoriteDisabled }}
             >
-            <Text style={themed($icon)}>
-                {isFavorite ? "★" : "☆"}
-            </Text>
+            <IconSymbol
+              name={isFavorite ? "star" : "star-o"}
+              iconSet="fontawesome"
+              size={18} //TODO make this a token if you have one for icon sizes
+              color={theme.colors.text} //TODO maybe use a different color (like yellow)
+            />
           </Pressable>
 
           <Pressable
@@ -88,7 +92,12 @@ export const PlayerRow = memo(function PlayerRow({
             accessibilityRole="button"
             accessibilityLabel="Show more player info"
           >
-            <Text style={themed($icon)}>⌄</Text>
+            <IconSymbol
+              name="chevron.down"
+              iconSet="fontawesome"
+              size={18} //TODO make this a token if you have one for icon sizes
+              color={theme.colors.text}
+            />
           </Pressable>
         </View>
       </View>
@@ -119,6 +128,7 @@ export function PlayerList({
   data,
   themed,
   isSelected,
+  favoriteDisabled,
   onPressRow,
   onPressFavorite,
   onPressMore,
@@ -138,6 +148,7 @@ export function PlayerList({
           item={item}
           themed={themed}
           isSelected={isSelected?.(item) ?? false}
+          favoriteDisabled={favoriteDisabled}
           onPressRow={onPressRow}
           onPressFavorite={onPressFavorite}
           onPressMore={onPressMore}
