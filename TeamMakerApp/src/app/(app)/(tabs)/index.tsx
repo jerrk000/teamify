@@ -11,7 +11,7 @@ import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
 import { SearchField } from '@/components/SearchField';
 import { PlayerList } from '@/components/ui/PlayerList';
-import { TopOptionTabs } from "@/components/ui/TopOptionTabs"
+import { OptionTabs } from "@/components/ui/OptionTabs"
 import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/OptionsTabs';
 
 type Item = {
@@ -129,6 +129,7 @@ const HomeScreen = () => {
       random: () =>router.push({pathname: '/MakeTeamsScreen',}),
       custom: () => router.push({pathname: '/MakeTeamsScreen',}),
       tournament: () => router.push({pathname: '/MakeTeamsScreen',}),
+      keepscore: () => router.push({pathname: '/MakeTeamsScreen',}),
       // Dont forget to add cases here if new modes are implemented
   }
   actionByTab[tab]()
@@ -138,11 +139,12 @@ const HomeScreen = () => {
     <SafeAreaView style={themed($container)}>
       <Text style={themed($header)}>Add Players</Text>
       <View>
-      <TopOptionTabs
+      <OptionTabs
         options={GAME_OPTIONS_TAGS}
         value={tab}
         onChange={setTab}
         rightHint="fade"
+        showBottomDivider={false}
       />
       </View>
       <View style={themed($searchContainer)}>

@@ -1,6 +1,7 @@
 export const GAME_OPTIONS_TAGS = [
   { key: "random", label: "Random Teams" },
-  { key: "custom", label: "Custom" },
+  { key: "custom", label: "Custom Teams" },
+  { key: "keepscore", label: "Keep Score" }, 
   { key: "tournament", label: "Tournament" },
 ] as const
 

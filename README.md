@@ -177,7 +177,7 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
 
 
 ### Initial Screen where you search players
-- [ ] Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets
+- [ ] Add other game-formats on the initial page. Make a strip at the top where you can change it. Currently only one game, but i could split players also into smaller teams and create a whole tournament-tree. Create a intermediate screen with more controls like maximum team size, group-phase yes no, how many games/sets. Another game format: Keep Score, with possibility of predefined scores when having a specific theme (football, volleyball, maybe tennis (needs different count), basketball)
 - [ ] One new game mode: Custom: choose players to participate, but then find a way to add people to individual teams yourself
 - [ ] Layout like this 
 Change color of field if added. Rounded edges. Little bit of space between each player.
@@ -215,10 +215,10 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] SafeAreaView is deprecated, use "react-native-safe-area-context" instead (https://github.com/th3rdwave/react-native-safe-area-context)
 - [x] Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
 - [x] integrate login and auth in the frontend
-- [ ] use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented
+- [ ] use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented. Dont forget to check `utils`-Folder, as there are already some functions to load/save values using MMKV.
 - [ ]fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
 - [x]**theme** the app with a common theme and delete the individual themes from the app.
-- [ ]Make Randomize-Team Button for partitioned teams exactly in the center
+- [ ] Make Randomize-Team Button for partitioned teams exactly in the center
 - [x] Bigger line between selected players and list of players (initial screen)
 - [ ] Add a cancel-button on the winner-chooser overlay at partitioned players, so that people know how to get back from there.
 - [ ] Make it possible to cancel after choosing a winner team in partitioned players overlay.
@@ -233,4 +233,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Check how the +not_found page is reachable and if it works
 - [ ] Update PlayerList.tsx. Move avatar icon slightly to the left. Check what happens when the name is too long for row. Check if favouritedisabled actually works? Make the whole bar similar to how it was before (bordercolor, backgroundcolor, roundness i like too). Use Icons instead of just emoji star and down arrow. Make it possible to make a little drop down menu when pressing the down arrow.Check to reuse this for friends-list
 - [ ] SelectedPlayers:Maybe rewrite this so that the amount of players per row is dependant on the screensize, and also stretch it maybe so that it fills the row?
+- [ ] Add functionality for gamemode "Keep Score" to keep score, also having functionality in backend to write final score in database. Also dont forget that it is already mentioned in another task that different sports themes need different point counts.
 

@@ -15,15 +15,15 @@ import type { ThemedStyle } from "@/theme/types"
 
 type OptionKey = string
 
-type TopOptionTabsOption<K extends string> = Readonly<{
+type OptionTabsOption<K extends string> = Readonly<{
   key: K
   label: string
   disabled?: boolean
   testID?: string
 }>
 
-export type TopOptionTabsProps<K extends string> = { // had to extend string so that it accepts generic unions too
-  options: readonly TopOptionTabsOption<K>[]
+export type OptionTabsProps<K extends string> = { // had to extend string so that it accepts generic unions too
+  options: readonly OptionTabsOption<K>[]
   value: K
   onChange: (key: K) => void
 
@@ -34,7 +34,7 @@ export type TopOptionTabsProps<K extends string> = { // had to extend string so 
   a11yLabelPrefix?: string
 }
 
-export function TopOptionTabs<K extends string>(props: TopOptionTabsProps<K>) {  const {
+export function OptionTabs<K extends string>(props: OptionTabsProps<K>) {  const {
     options,
     value,
     onChange,
