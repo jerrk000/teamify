@@ -189,6 +189,8 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 --------------------------------------------------------------------
 
 - [ ] Theming of buttons. Do clicked items for first primary color, other buttons secondary color. Do this for volleyball theme and darkmode too. Choose very basic primary and secondary colors for 
+- [ ] Add functionality for gamemode "Keep Score" to keep score, also having functionality in backend to write final score in database. Also dont forget that it is already mentioned in another task that different sports themes need different point counts.
+
 
 ### Partitioned Teams Screen
 - [ ] Drag-and-Drop after teams were created to change the teams howevery you want. Winrate per team should also refresh. (use panhandler and reanimated maybe?). When doing drag and drop, make a grid that makes it easily possible to change players by dragging one playername on the other. Also make a button or zone "Add to Team" which if dragged there, the players gets added to the team without switching another player only show this button/zone if a name is currently dragged. Alternatively no drag and drop, but long presses where  you get a menu with "Change Team" or sth like that. Dont forget to recalculate winrates.
@@ -229,13 +231,14 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Check out IconSymbol in index.tsx. Currently color is hardcoded.
 - [ ] Check out HapticTap, i am not sure if there is no feedback when clicking different tabs only on the simulator or in any case. I would like feedback when clicking things.
 - [x] Make a normal theme, starting with index.tsx.
-- [ ] NOW: Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
+- [x] Fix all the weirdness in index.tsx (like same button design, maybe switch to button from ignite)
 - [x] Do a clean layout of index.tsx. Do the playernames layout correctly (Picture- Name            ^SignForMoreStats, StarForFavourite)
 - [ ] Check how the +not_found page is reachable and if it works
-- [ ] Update PlayerList.tsx. Move avatar icon slightly to the left. Check what happens when the name is too long for row. Check if favouritedisabled actually works? Make the whole bar similar to how it was before (bordercolor, backgroundcolor, roundness i like too). Use Icons instead of just emoji star and down arrow. Make it possible to make a little drop down menu when pressing the down arrow.Check to reuse this for friends-list
-- [ ] SelectedPlayers:Maybe rewrite this so that the amount of players per row is dependant on the screensize, and also stretch it maybe so that it fills the row?
-- [ ] Add functionality for gamemode "Keep Score" to keep score, also having functionality in backend to write final score in database. Also dont forget that it is already mentioned in another task that different sports themes need different point counts.
+- [x] Update PlayerList.tsx. Move avatar icon slightly to the left. Check what happens when the name is too long for row. Check if favouritedisabled actually works? Make the whole bar similar to how it was before (bordercolor, backgroundcolor, roundness i like too). Use Icons instead of just emoji star and down arrow. 
+- [ ] Update PlayerList.tsx: Make it possible to make a little drop down menu when pressing the down arrow.Check to reuse this for friends-list.
+- [x] SelectedPlayers:Maybe rewrite this so that the amount of players per row is dependant on the screensize, and also stretch it maybe so that it fills the row?
 - [x] "Clear Selection" Button
-- [ ] NOW: "Selected Players" clean layout. No colors and more control with how much space each item needs (maybe stretch until end?). Just dont let it grow out of screen.
+- [x] "Selected Players" clean layout. No colors and more control with how much space each item needs (maybe stretch until end?). Just dont let it grow out of screen.
 - [x] Doublecheck the Star if it is a pressable button even though it is deactivted. Didnt destructure the prop correctly, fixed it.
+- [ ] Think about all the margins used in the app. Either tokenize it or think about if they are actually needed, wherever they are.
 
