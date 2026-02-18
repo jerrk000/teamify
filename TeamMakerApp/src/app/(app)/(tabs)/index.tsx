@@ -267,25 +267,11 @@ const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
 
 // TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
 
-const $clearButton: ThemedStyle<ViewStyle> = (theme) => ({
-  //height: 40,
-  marginLeft: 10,
-  padding: 5,
-  justifyContent: "center",
-  alignItems: "center",
-});
-
-const $clearButtonText: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 16,
-  color: 'red', // TODO use theme color for this. Check hardcoded values for all these spacings etc here in general.
-});
-
 const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
   height: 4,
   backgroundColor: theme.colors.border, //marginHorizontal: -16, // cancel container padding
   marginBottom: 8,
 });
-
 
 const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 16,
@@ -307,33 +293,6 @@ const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
   borderRadius: 10, // Rounded corners
 });
 
-const $cross: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 16,
-  color: 'red', // TODO change this and add this to the theme
-});
-
-const $playernameflatList: ThemedStyle<ViewStyle> = (theme) => ({
-  alignItems: "center", // Ensures items are centered
-});
-
-const $playerlistitemcontainer: ThemedStyle<ViewStyle> = (theme) => ({
-  width: 100,
-  height: 50,
-  backgroundColor: theme.colors.palette.neutral100, // Light background, TODO change this and add this to the theme
-  margin: 5,
-  justifyContent: "center",
-  alignItems: "center",
-  borderWidth: 2, // Border thickness
-  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme, was blue, maybe change to that
-  borderRadius: 10, // Rounded corners
-});
-
-const $playerlistitemtext: ThemedStyle<TextStyle> = (theme) => ({
-  fontWeight: "bold",
-  color: theme.colors.text, // TODO change this and add this to the theme, was blue, maybe change to that
-  maxWidth: 90, //TODO change this to make it responsive or add it to the theme, maybe add an ellipsis if text is too long instead of just cutting it off like this
-});
-
 const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
@@ -353,14 +312,6 @@ const $leftContainer: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 2, // Takes up more space on the left
 });
 
-const $newplayerinput: ThemedStyle<TextStyle> = (theme) => ({
-  borderWidth: 1,
-  borderColor: theme.colors.border,
-  padding: 8,
-  width: 150, // Fixed width for the TextInput
-  marginRight: 8, // Space between TextInput and Add Item button
-});
-
 const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
   height: 44, //TODO it is the same as CONTROL_HEIGHT_MD, make a common token for this
   width: 44,  //TODO just to make it quadratic, common token?
@@ -371,10 +322,6 @@ const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
   borderColor: theme.colors.border,
   padding: 8,
   backgroundColor: theme.colors.buttonBackground,
-});
-
-const $selectedItemsContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  marginBottom: 10,
 });
 
 const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
