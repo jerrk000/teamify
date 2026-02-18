@@ -241,4 +241,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] "Selected Players" clean layout. No colors and more control with how much space each item needs (maybe stretch until end?). Just dont let it grow out of screen.
 - [x] Doublecheck the Star if it is a pressable button even though it is deactivted. Didnt destructure the prop correctly, fixed it.
 - [ ] Think about all the margins used in the app. Either tokenize it or think about if they are actually needed, wherever they are.
-
+- [ ] Read up on how caching works. Is it smart to cache friends-list, or possible teams including winrates and possible combinations?
