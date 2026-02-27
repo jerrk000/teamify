@@ -141,13 +141,13 @@ const HomeScreen = () => {
     <SafeAreaView style={themed($container)}>
       <Text style={themed($header)}>Add Players</Text>
       <View>
-      <OptionTabs
-        options={GAME_OPTIONS_TAGS}
-        value={tab}
-        onChange={setTab}
-        rightHint="fade"
-        showBottomDivider={false}
-      />
+        <OptionTabs
+          options={GAME_OPTIONS_TAGS}
+          value={tab}
+          onChange={setTab}
+          rightHint="fade"
+          showBottomDivider={false}
+        />
       </View>
       <View style={themed($searchContainer)}>
         <SearchField

@@ -136,7 +136,7 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
   backgroundColor: theme.colors.background,
 })
 
-### Finished the layout of the first screen (MakeTeamsScreen)
+### Finished the layout of the first screen (HomeScreen/maybe rename to ChoosePlayersScreen)
 
 The layout and themeing is done, and some design choices that were important to me. Icons are used when needed, components are made to be re-useble. Additional game-modes are not implemented yet, but the vertical bar exists. Important features like a Searchbars, addition of players and the visualization of current players (including hiding when typing and scrolling when too many players) are implemented.
 Animations are still missing though.
