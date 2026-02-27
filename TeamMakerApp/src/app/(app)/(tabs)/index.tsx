@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, type TextStyle } from 'react-native';
+import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, ScrollView, useWindowDimensions, type TextStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -55,6 +55,8 @@ const HomeScreen = () => {
     return initialItem ? [initialItem] : [];
   });
   const [inputName, setInputName] = useState('');
+  const { height: windowHeight } = useWindowDimensions();
+  const selectedPlayersMaxHeight = windowHeight * 0.3;
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [tab, setTab] = useState<GameOptionsTagKey>(GAME_OPTIONS_TAGS[0].key);
 
@@ -213,12 +215,19 @@ const HomeScreen = () => {
       <View style={themed($fullWidthDivider)} />
       <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
       {!keyboardStatus ? (
-      <SelectedPlayers 
-        selectedPlayers={selectedItems} 
-        onClickPlayer={handleRemoveItem}
-        selectedItemStyle={themed($selectedItem)}
-        textStyle={themed($selectedItemText)} 
-      />
+      <View style={{ maxHeight: selectedPlayersMaxHeight }}>
+        <ScrollView
+          //keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={true}
+        >
+          <SelectedPlayers 
+            selectedPlayers={selectedItems} 
+            onClickPlayer={handleRemoveItem}
+            selectedItemStyle={themed($selectedItem)}
+            textStyle={themed($selectedItemText)} 
+          />
+        </ScrollView>
+      </View>
         ) : null
       }
       <Button
@@ -235,7 +244,9 @@ const HomeScreen = () => {
 
 const $container: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 1,
-  padding: 16,
+  paddingTop: 8,
+  paddingLeft: 16,
+  paddingRight: 16,
   backgroundColor: theme.colors.background,
 });
 

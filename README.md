@@ -134,8 +134,12 @@ In the render part:
 Under the render, where the styles are:
 const $container: ThemedStyle<ViewStyle> = (theme) => ({
   backgroundColor: theme.colors.background,
-  color: theme.colors.palette.angry500,
 })
+
+### Finished the layout of the first screen (MakeTeamsScreen)
+
+The layout and themeing is done, and some design choices that were important to me. Icons are used when needed, components are made to be re-useble. Additional game-modes are not implemented yet, but the vertical bar exists. Important features like a Searchbars, addition of players and the visualization of current players (including hiding when typing and scrolling when too many players) are implemented.
+Animations are still missing though.
 
 
 
@@ -149,7 +153,7 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
 
 
 ### General
-- [ ] Darkmode. Also include tabs at the bottom.
+- [x] Darkmode. Also include tabs at the bottom.
 - [ ] use more animations in general for more smoothness
 - [ ] Create different themes and tell players that some layouts change when you change the theme. Do a standard one, but in settings/preferences you can change it to volleyball/football/basketball, which changes the colours, where the players are located on the partioned teams and the pitch in the background for partitioned teams. Maybe background more green-ish and the pitch too green with white stripes. Volleyball yellow blue (red) (i already took color probes from pictures of beach-volleyballs). Basketball orange??? Standard maybe just white and black, and night mode black and yellow?. Add more realistic football pitch and beach volleyball pitch (maybe with little lines indicating sand). Create your own file for each theme, or add it to light and dark mode as a flavour? Find out what makes more sense, my guess is individual file, as it is its own theme for the whole app.
 - [ ] Make notifications in other player apps when they played a game on another phone. Show them who played and who won. Also tell them if a match was deleted again.
@@ -219,7 +223,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Look at src/screens folder. Is it needed, is it better to store my screens there? If no, delete
 - [x] integrate login and auth in the frontend
 - [ ] use MMKV to check if user is already logged in (i can still use zustand "persistent", i just can use MMKV as backend). Delete the `context` folder, as soon as MMKV for zustand is implemented. Dont forget to check `utils`-Folder, as there are already some functions to load/save values using MMKV.
-- [ ]fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
+- [ ] fix all the small errors in LoginScreen.tsx. I think i did not copy all types from the DemoApp, so rewrite this.
 - [x]**theme** the app with a common theme and delete the individual themes from the app.
 - [ ] Make Randomize-Team Button for partitioned teams exactly in the center
 - [x] Bigger line between selected players and list of players (initial screen)
