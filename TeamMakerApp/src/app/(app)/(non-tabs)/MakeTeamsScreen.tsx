@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { Text, TouchableOpacity, View, type TextStyle, type ViewStyle } from "react-native"
 import { useListStore } from "../../../store/useListStore"
 import BackgroundPicture from "@/components/ImageBackground"
@@ -6,14 +6,14 @@ import { Button } from "@/components/Button"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 import {
+  CombinedTeamsGrid,
   GRID_COLUMNS_DEFAULT,
-  TeamGridPlayer,
-  TeamPlayerGrid,
+  type PlayerPointer,
+  type TeamId,
+  type TeamGridPlayer,
 } from "@/components/ui/TeamPlayerGrid"
 
 type PlayerWithAvatar = TeamGridPlayer
-
-type TeamKey = "teamA" | "teamB"
 
 type TeamSplit = {
   teamA: PlayerWithAvatar[]
@@ -37,21 +37,59 @@ const SavedItemsScreen = () => {
   const [showAdditionalButtons, setShowAdditionalButtons] = useState(false)
   const [teams, setTeams] = useState<TeamSplit>({ teamA: [], teamB: [] })
 
+  // When we persist a local drag/drop change into the global store, the `items`
+  // subscription will fire and this screen's effect would re-split the list in half,
+  // undoing cross-team transfers. This flag prevents that feedback loop.
+  const internalStoreUpdateRef = useRef(false)
+
   const placeholderAvatar = require("../../../../assets/avatar-placeholder.png")
 
   useEffect(() => {
+    if (internalStoreUpdateRef.current) {
+      internalStoreUpdateRef.current = false
+      return
+    }
+
     setTeams(splitIntoTeams(items))
   }, [items])
 
-  const swapPlayersInTeam = (team: TeamKey, fromIndex: number, toIndex: number) => {
-    setTeams((prev) => {
-      const nextPlayers = [...prev[team]]
-      ;[nextPlayers[fromIndex], nextPlayers[toIndex]] = [nextPlayers[toIndex], nextPlayers[fromIndex]]
+  const syncStoreFromTeams = (nextTeams: TeamSplit) => {
+    internalStoreUpdateRef.current = true
+    setItems([...nextTeams.teamA, ...nextTeams.teamB])
+  }
 
-      return {
-        ...prev,
-        [team]: nextPlayers,
-      }
+  const swapAcrossTeams = (from: PlayerPointer, to: PlayerPointer) => {
+    setTeams((prev) => {
+      const next: TeamSplit = { teamA: [...prev.teamA], teamB: [...prev.teamB] }
+
+      const fromArr = from.team === "teamA" ? next.teamA : next.teamB
+      const toArr = to.team === "teamA" ? next.teamA : next.teamB
+
+      const tmp = fromArr[from.index]
+      fromArr[from.index] = toArr[to.index]
+      toArr[to.index] = tmp
+
+      syncStoreFromTeams(next)
+      return next
+    })
+  }
+
+  const moveIntoTeam = (from: PlayerPointer, toTeam: TeamId) => {
+    setTeams((prev) => {
+      if (from.team === toTeam) return prev
+
+      const next: TeamSplit = { teamA: [...prev.teamA], teamB: [...prev.teamB] }
+      const fromArr = from.team === "teamA" ? next.teamA : next.teamB
+      const toArr = toTeam === "teamA" ? next.teamA : next.teamB
+
+      const [moved] = fromArr.splice(from.index, 1)
+      if (!moved) return prev
+
+      // current behavior: append to the end of the target team.
+      toArr.push(moved)
+
+      syncStoreFromTeams(next)
+      return next
     })
   }
 
@@ -67,17 +105,19 @@ const SavedItemsScreen = () => {
   return (
     <BackgroundPicture>
       <View style={themed($container)}>
-        <View style={themed($teamContainer)}>
-          <Text style={themed($teamTitle)}>Team</Text>
-          <TeamPlayerGrid
-            players={teams.teamA}
-            columns={GRID_COLUMNS_DEFAULT}
-            onSwapPlayers={(fromIndex, toIndex) => swapPlayersInTeam("teamA", fromIndex, toIndex)}
-            placeholderAvatarSource={placeholderAvatar}
-            borderColor={theme.colors.volleyColors.volleyblue}
-            themed={themed}
-          />
-        </View>
+        <Text style={themed($teamTitle)}>Teams</Text>
+
+        <CombinedTeamsGrid
+          teamA={teams.teamA}
+          teamB={teams.teamB}
+          columns={GRID_COLUMNS_DEFAULT}
+          onSwapAcrossTeams={swapAcrossTeams}
+          onMoveIntoTeam={moveIntoTeam}
+          placeholderAvatarSource={placeholderAvatar}
+          teamABorderColor={theme.colors.volleyColors.volleyblue}
+          teamBBorderColor={theme.colors.volleyColors.volleyred}
+          themed={themed}
+        />
 
         <View style={themed($simplebuttonContainer)}>
           <Button
@@ -87,24 +127,12 @@ const SavedItemsScreen = () => {
           />
         </View>
 
-        <View style={themed($teamContainer)}>
-          <Text style={[themed($teamTitle), { color: "blue" }]}>Team</Text>
-          <TeamPlayerGrid
-            players={teams.teamB}
-            columns={GRID_COLUMNS_DEFAULT}
-            onSwapPlayers={(fromIndex, toIndex) => swapPlayersInTeam("teamB", fromIndex, toIndex)}
-            placeholderAvatarSource={placeholderAvatar}
-            borderColor={theme.colors.volleyColors.volleyred}
-            themed={themed}
-          />
-        </View>
-
         {/* Choose Winner Button */}
         <View style={themed($simplebuttonContainer)}>
           <Button
             text="Choose winner"
             onPress={() => setShowAdditionalButtons(!showAdditionalButtons)}
-            style={{backgroundColor: "red"}} //TODO this is hardcoded and not pretty
+            style={{ backgroundColor: "red" }} // TODO this is hardcoded
           />
         </View>
 
@@ -115,19 +143,16 @@ const SavedItemsScreen = () => {
               style={themed($overlayBackground)}
               activeOpacity={1}
               onPress={() => setShowAdditionalButtons(false)}
-            >
-              {/* Empty TouchableOpacity to close the overlay when tapping outside buttons */}
-            </TouchableOpacity>
+            />
+
             <TouchableOpacity
-                style={[themed($button), {backgroundColor: theme.colors.volleyColors.volleyredTransparent}]} //TODO this is hardcoded
-                onPress={() => alert('Team Red will be saved as winner')}
+              style={[themed($button), { backgroundColor: theme.colors.volleyColors.volleyredTransparent }]}
+              onPress={() => alert("Team Red will be saved as winner")}
             >
               <Text style={themed($buttonText)}>Winner</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={themed($button)}
-                onPress={() => alert('Team Blue will be saved as winner')}
-            >
+
+            <TouchableOpacity style={themed($button)} onPress={() => alert("Team Blue will be saved as winner")}>
               <Text style={themed($buttonText)}>Winner</Text>
             </TouchableOpacity>
           </View>
@@ -137,16 +162,10 @@ const SavedItemsScreen = () => {
   )
 }
 
-const $container: ThemedStyle<ViewStyle> = (theme) => ({
+const $container: ThemedStyle<ViewStyle> = () => ({
   flex: 1,
   padding: 16,
   alignItems: "center",
-})
-
-const $teamContainer: ThemedStyle<ViewStyle> = () => ({
-  flex: 1,
-  width: "100%",
-  marginBottom: 16,
 })
 
 const $teamTitle: ThemedStyle<TextStyle> = (theme) => ({
@@ -204,12 +223,4 @@ const $randomizeButton: ThemedStyle<ViewStyle> = (theme) => ({
   color: theme.colors.text,
 })
 
-const $randomizeButtonText: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 20, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
-  color: theme.colors.text,
-});
-
-export default SavedItemsScreen;
-
-  
-
+export default SavedItemsScreen
