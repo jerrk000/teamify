@@ -246,12 +246,14 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Doublecheck the Star if it is a pressable button even though it is deactivted. Didnt destructure the prop correctly, fixed it.
 - [ ] Think about all the margins used in the app. Either tokenize it or think about if they are actually needed, wherever they are.
 - [ ] Read up on how caching works. Is it smart to cache friends-list, or possible teams including winrates and possible combinations?
-- [ ] MakeTeamsScreen changes: change sizes of PlayerCard
+- [ ] MakeTeamsScreen changes: change sizes of PlayerCard (and maybe make it look cooler, like in FIFA?)
 - [ ] MakeTeamsScreen changes: Make opposing team drop-zones and switchable players glow when dragging a player. 
-- [ ] MakeTeamsScreen changes: Make opposing team drop-zones only visible when dragging?
+- [x] MakeTeamsScreen changes: Make opposing team drop-zones only visible when dragging?
 - [ ] MakeTeamsScreen changes: Make different grid layout depending on amount of players
 - [ ] MakeTeamsScreen changes: Make background change color when darkmode
-- [ ] MakeTeamsScreen changes: Make background align with teams (maybe space on the side of filed for drop-zone? Then i would also have space for information button or randomize/shuffle (maybe remix icon like spotify?) button. I would say space on the right side.)
-- [ ] MakeTeamsScreen changes: Make Dropzones vertically full?
+- [ ] MakeTeamsScreen changes: Make background align with teams (maybe space on the side of field for drop-zone? Then i would also have space for information button or randomize/shuffle (maybe remix icon like spotify?) button. I would say space on the right side.)
+- [x] MakeTeamsScreen changes: Make Dropzones vertically full?
 - [ ] MakeTeamsScreen changes: Display information about the game, like winrate (doublecheck tasks for this screen)
 - [ ] MakeTeamsScreen changes: Make a button to display more information (individual winrates, maybe overall team score). Make a cool animation where every PlayerCard turns around to display more information. Would also be cool if i could put the combined radarchart somewhere. Maybe there is space somewhere, or in the background of both teams, if it is visible enough.
+- [ ] MakeTeamsScreen changes: Update colors of buttons.
+- [ ] MakeTeamsScreen changes:Animation where every PlayerCard moves to correct location when a new player is added to the team and amount of players change. Also add an animation when two players switch place.
