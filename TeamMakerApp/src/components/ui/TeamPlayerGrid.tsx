@@ -11,7 +11,7 @@ import {
   type TextStyle,
   type ViewStyle,
 } from "react-native"
-import { ThemedStyle } from "@/theme/types"
+import type { Theme, ThemedStyle } from "@/theme/types"
 import { Player } from "@/types/PlayerType"
 import { Button } from "@/components/Button"
 import { IconSymbol } from "@/components/ui/IconSymbol"
@@ -40,6 +40,7 @@ export type CombinedTeamsGridProps = {
   teamABorderColor: string
   teamBBorderColor: string
   themed: ThemeFn
+  theme: Theme
 
   /**
    * Optional: define slot positions per team as normalized coords [0..1]
@@ -54,6 +55,8 @@ export type CombinedTeamsGridProps = {
   teamBButtonLabel?: string
   onPressTeamAButton?: () => void
   onPressTeamBButton?: () => void
+  leftCenterNumber?: number | string
+  rightCenterNumber?: number | string
 }
 
 const GRID_GAP = 12
@@ -318,12 +321,15 @@ export const CombinedTeamsGrid = ({
   teamABorderColor,
   teamBBorderColor,
   themed,
+  theme,
   layoutA,
   layoutB,
   teamAButtonLabel = "Team A",
   teamBButtonLabel = "Team B",
   onPressTeamAButton,
   onPressTeamBButton,
+  leftCenterNumber = 0,
+  rightCenterNumber = 0,
 }: CombinedTeamsGridProps) => {
   const [containerW, setContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
@@ -382,6 +388,8 @@ const railRect: LayoutRectangle = {
 
 const ZONE_GAP = 10
 const zoneHeight = (railRect.height - ZONE_GAP) / 2
+
+  const centerNumbersTop = Math.max(10, containerH / 2 - 44)
 
 // 1) RENDER rects (relative to rail)
 const zoneAView: LayoutRectangle = {
@@ -573,6 +581,15 @@ const zoneBTarget: LayoutRectangle = {
       <View
         style={[themed($rightRail), rectToStyle(railRect)]}
       >
+        <View style={[themed($centerNumbersStack), { top: centerNumbersTop }]}>
+          <View pointerEvents="none" style={themed($centerNumberBox)}>
+            <Text style={themed($centerNumberText)}>{leftCenterNumber}</Text>
+          </View>
+          <View pointerEvents="none" style={themed($centerNumberBox)}>
+            <Text style={themed($centerNumberText)}>{rightCenterNumber}</Text>
+          </View>
+        </View>
+
       {isDragging ? (
         <>
           <View
@@ -591,34 +608,13 @@ const zoneBTarget: LayoutRectangle = {
         </>
         ) : (
           <View style={themed($railButtons)}>
-             <Button // TODO maybe paremetrize this button
-              onPress={() => alert('Close')}
-              style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
-              //textStyle={themed($railButtonText)} //not needed
-              RightAccessory={({ style }) => (
-                <View style={style}>
-                  <IconSymbol
-                    size={28}
-                    name="check"
-                    color={themed((theme) => theme.colors.iconColor)} //workaround to get theme in this context, i dont like it
-                    iconSet="fontawesome"
-                  />
-                </View>
-              )}
-            />
-
-            <View style={{ height: 12 }} />
             <Button // TODO maybe paremetrize this button
-              onPress={() => alert('Close')}
+              onPress={() => alert('Shuffle')}
               style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
               //textStyle={themed($railButtonText)} //not needed
               RightAccessory={({ style }) => (
                 <View style={style}>
-                  <IconSymbol
-                    size={28}
-                    name="shuffle"
-                    color={themed((theme) => theme.colors.iconColor)} //workaround to get theme in this context, i dont like it
-                    iconSet="fontawesome6"
+                  <IconSymbol size={28} name="shuffle" color={theme.colors.iconColor} iconSet="fontawesome6"
                   />
                 </View>
               )}
@@ -627,20 +623,31 @@ const zoneBTarget: LayoutRectangle = {
             <View style={{ height: 12 }} />
 
             <Button // TODO maybe paremetrize this button
-              onPress={() => alert('Close')}
+              onPress={() => alert('Info')}
               style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
               //textStyle={themed($railButtonText)} //not needed
               RightAccessory={({ style }) => (
                 <View style={style}>
-                  <IconSymbol
-                    size={28}
-                    name="info-outline"
-                    color={themed((theme) => theme.colors.iconColor)} //workaround to get theme in this context, i dont like it
-                    iconSet="material"
+                  <IconSymbol size={28} name="info-outline" color={theme.colors.iconColor} iconSet="material"
                   />
                 </View>
               )}
             />
+
+            <View style={{ height: 12 }} />
+
+            <Button // TODO maybe paremetrize this button
+              onPress={() => alert('Winner')}
+              style={[themed($winnerButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
+              //textStyle={themed($railButtonText)} //not needed
+              RightAccessory={({ style }) => (
+                <View style={style}>
+                  <IconSymbol size={28} name="check" color={theme.colors.iconColor} iconSet="fontawesome"
+                  />
+                </View>
+              )}
+            />
+
           </View>
         )}
       </View>
@@ -659,16 +666,20 @@ const $cardWrapper: ThemedStyle<ViewStyle> = () => ({
 
 const $rightRail: ThemedStyle<ViewStyle> = (theme) => ({
   position: "absolute",
-  justifyContent: "center",
+  justifyContent: "flex-end",
+  alignItems: "flex-end",
   borderLeftWidth: 1,
   borderLeftColor: theme.colors.border,
-  overflow: "visible", 
+  overflow: "visible",
+  paddingBottom: 14,
+  paddingRight: 8,
 })
 
 const $railButtons: ThemedStyle<ViewStyle> = () => ({
-  flex: 1,
-  justifyContent: "center",
-  paddingHorizontal: 10,
+  justifyContent: "flex-end",
+  alignItems: "stretch",
+  width: "100%",
+  paddingHorizontal: 2,
 })
 
 const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
@@ -679,6 +690,16 @@ const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: theme.colors.itemBackground,
+})
+
+const $winnerButton: ThemedStyle<ViewStyle> = (theme) => ({
+  //height: 70,
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: theme.colors.palette.green500,
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: theme.colors.palette.green500,
 })
 
 const $railButtonText: ThemedStyle<TextStyle> = (theme) => ({
@@ -726,4 +747,28 @@ const $joinZoneText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 12,
   textAlign: "center",
   paddingHorizontal: 10,
+})
+
+const $centerNumberBox: ThemedStyle<ViewStyle> = (theme) => ({
+  width: "100%",
+  height: 36,
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  backgroundColor: theme.colors.surface,
+  alignItems: "center",
+  justifyContent: "center",
+})
+
+const $centerNumberText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontWeight: "700",
+  fontSize: 16,
+})
+
+const $centerNumbersStack: ThemedStyle<ViewStyle> = () => ({
+  position: "absolute",
+  left: 2,
+  right: 10,
+  gap: 8,
 })

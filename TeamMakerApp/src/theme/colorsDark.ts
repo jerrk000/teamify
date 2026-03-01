@@ -30,6 +30,10 @@ const palette = {
   accent200: "#FBC878",
   accent100: "#FFBB50",
 
+  green100: "#DFF5E3", // I didnt switch the order of these
+  green200: "#CDEED3",
+  green500: "#2E7D32",
+
   angry100: "#F2D6CD",
   angry500: "#C03403",
 

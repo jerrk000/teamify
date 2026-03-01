@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react"
 import { Text, TouchableOpacity, View, type TextStyle, type ViewStyle } from "react-native"
 import { useListStore } from "../../../store/useListStore"
 import BackgroundPicture from "@/components/ImageBackground"
-import { Button } from "@/components/Button"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 import {
@@ -12,6 +11,7 @@ import {
   type TeamId,
   type TeamGridPlayer,
 } from "@/components/ui/TeamPlayerGrid"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 // Example “diamond” layout for 4 slots (normalized inside the team area)
 const DIAMOND_4 = [
@@ -111,7 +111,7 @@ const SavedItemsScreen = () => {
   }
 
   return (
-    <View style={themed($outerContainer)}>
+    <SafeAreaView style={themed($outerContainer)}>
       <BackgroundPicture
         source={require('../../../../assets/images/volleyball_court.png')}
         width="90%"
@@ -135,6 +135,9 @@ const SavedItemsScreen = () => {
             teamABorderColor={theme.colors.volleyColors.volleyblue}
             teamBBorderColor={theme.colors.volleyColors.volleyred}
             themed={themed}
+            theme={theme}
+            leftCenterNumber={teams.teamA.length}
+            rightCenterNumber={teams.teamB.length}
           />
           {/* Randomize Teams Button 
           <View style={themed($simplebuttonContainer)}>
@@ -177,7 +180,7 @@ const SavedItemsScreen = () => {
           ) : null}
         </View>
       </BackgroundPicture>
-    </View>
+    </SafeAreaView>
   )
 }
 

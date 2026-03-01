@@ -246,6 +246,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Doublecheck the Star if it is a pressable button even though it is deactivted. Didnt destructure the prop correctly, fixed it.
 - [ ] Think about all the margins used in the app. Either tokenize it or think about if they are actually needed, wherever they are.
 - [ ] Read up on how caching works. Is it smart to cache friends-list, or possible teams including winrates and possible combinations?
+- [ ] Fix theoretical errors in IconSymbol. Somehow it says there are errors, but it still works.
 - [ ] MakeTeamsScreen changes: change sizes of PlayerCard (and maybe make it look cooler, like in FIFA?)
 - [ ] MakeTeamsScreen changes: Make opposing team drop-zones and switchable players glow when dragging a player. 
 - [x] MakeTeamsScreen changes: Make opposing team drop-zones only visible when dragging?
@@ -257,3 +258,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] MakeTeamsScreen changes: Make a button to display more information (individual winrates, maybe overall team score). Make a cool animation where every PlayerCard turns around to display more information. Would also be cool if i could put the combined radarchart somewhere. Maybe there is space somewhere, or in the background of both teams, if it is visible enough.
 - [ ] MakeTeamsScreen changes: Update colors of buttons.
 - [ ] MakeTeamsScreen changes:Animation where every PlayerCard moves to correct location when a new player is added to the team and amount of players change. Also add an animation when two players switch place.
+- [ ] Check other screensizes and iphone to check if layout breaks somewhere or is absolute and does not work
