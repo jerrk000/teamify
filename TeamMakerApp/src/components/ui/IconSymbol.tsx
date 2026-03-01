@@ -18,6 +18,7 @@ const MATERIAL_ICONS_MAPPING = {
   'sportscourt': 'sports-volleyball',
   'gear': 'settings',
   'delete': 'delete',
+  'info-outline': 'info',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -36,6 +37,7 @@ const FONT_AWESOME_MAPPING = {
   'star': 'star',
   'star-o': 'star-o',
   'chevron.down': 'chevron-down',
+  'check': 'check',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -48,6 +50,7 @@ const FONT_AWESOME6_MAPPING = {
   'delete.left.fill': 'delete-left',
   'magnifying-glass': 'magnifying-glass',
   'xmark': 'xmark',
+  'shuffle': 'shuffle',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],

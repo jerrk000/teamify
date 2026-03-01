@@ -111,67 +111,82 @@ const SavedItemsScreen = () => {
   }
 
   return (
-    <BackgroundPicture>
-      <View style={themed($container)}>
-        {/*<Text style={themed($teamTitle)}>Teams</Text>*/}
+    <View style={themed($outerContainer)}>
+      <BackgroundPicture
+        source={require('../../../../assets/images/volleyball_court.png')}
+        width="90%"
+        height="100%"
+        horizontalPosition="left"
+        resizeMode="stretch"
+        contentFullWidth
+      >
 
-        <CombinedTeamsGrid
-          teamA={teams.teamA}
-          teamB={teams.teamB}
-          layoutA={DIAMOND_4}
-          layoutB={DIAMOND_4}
-          onSwapAcrossTeams={swapAcrossTeams}
-          onMoveIntoTeam={moveIntoTeam}
-          placeholderAvatarSource={placeholderAvatar}
-          teamABorderColor={theme.colors.volleyColors.volleyblue}
-          teamBBorderColor={theme.colors.volleyColors.volleyred}
-          themed={themed}
-        />
-        {/* Randomize Teams Button 
-        <View style={themed($simplebuttonContainer)}>
-          <Button
-            text="Randomize Teams"
-            onPress={randomizeItems}
-            style={[themed($randomizeButton), { backgroundColor: "red" }]}
+        <View style={themed($container)}>
+          {/*<Text style={themed($teamTitle)}>Teams</Text>*/}
+
+          <CombinedTeamsGrid
+            teamA={teams.teamA}
+            teamB={teams.teamB}
+            layoutA={DIAMOND_4}
+            layoutB={DIAMOND_4}
+            onSwapAcrossTeams={swapAcrossTeams}
+            onMoveIntoTeam={moveIntoTeam}
+            placeholderAvatarSource={placeholderAvatar}
+            teamABorderColor={theme.colors.volleyColors.volleyblue}
+            teamBBorderColor={theme.colors.volleyColors.volleyred}
+            themed={themed}
           />
-        </View>
-
-        <View style={themed($simplebuttonContainer)}>
-          <Button
-            text="Choose winner"
-            onPress={() => setShowAdditionalButtons(!showAdditionalButtons)}
-            style={{ backgroundColor: "red" }} // TODO this is hardcoded
-          />
-        </View>
-        */}
-
-        {/* Overlay with Additional Buttons */}
-        {showAdditionalButtons ? (
-          <View style={themed($overlay)}>
-            <TouchableOpacity
-              style={themed($overlayBackground)}
-              activeOpacity={1}
-              onPress={() => setShowAdditionalButtons(false)}
+          {/* Randomize Teams Button 
+          <View style={themed($simplebuttonContainer)}>
+            <Button
+              text="Randomize Teams"
+              onPress={randomizeItems}
+              style={[themed($randomizeButton), { backgroundColor: "red" }]}
             />
-
-            <TouchableOpacity
-              style={[themed($button), { backgroundColor: theme.colors.volleyColors.volleyredTransparent }]}
-              onPress={() => alert("Team Red will be saved as winner")}
-            >
-              <Text style={themed($buttonText)}>Winner</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={themed($button)} onPress={() => alert("Team Blue will be saved as winner")}>
-              <Text style={themed($buttonText)}>Winner</Text>
-            </TouchableOpacity>
           </View>
-        ) : null}
-      </View>
-    </BackgroundPicture>
+
+          <View style={themed($simplebuttonContainer)}>
+            <Button
+              text="Choose winner"
+              onPress={() => setShowAdditionalButtons(!showAdditionalButtons)}
+              style={{ backgroundColor: "red" }} // TODO this is hardcoded
+            />
+          </View>
+          */}
+
+          {/* Overlay with Additional Buttons */}
+          {showAdditionalButtons ? (
+            <View style={themed($overlay)}>
+              <TouchableOpacity
+                style={themed($overlayBackground)}
+                activeOpacity={1}
+                onPress={() => setShowAdditionalButtons(false)}
+              />
+
+              <TouchableOpacity
+                style={[themed($button), { backgroundColor: theme.colors.volleyColors.volleyredTransparent }]}
+                onPress={() => alert("Team Red will be saved as winner")}
+              >
+                <Text style={themed($buttonText)}>Winner</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={themed($button)} onPress={() => alert("Team Blue will be saved as winner")}>
+                <Text style={themed($buttonText)}>Winner</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+        </View>
+      </BackgroundPicture>
+    </View>
   )
 }
 
-const $container: ThemedStyle<ViewStyle> = () => ({
+const $outerContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1,
+  backgroundColor: theme.colors.palette.neutral100, //TODO make it an official color of theme, maybe theme.colors.backgroundLight
+})
+
+const $container: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 1,
   padding: 16,
   alignItems: "center",

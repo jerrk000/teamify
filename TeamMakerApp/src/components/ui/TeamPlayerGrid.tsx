@@ -13,6 +13,8 @@ import {
 } from "react-native"
 import { ThemedStyle } from "@/theme/types"
 import { Player } from "@/types/PlayerType"
+import { Button } from "@/components/Button"
+import { IconSymbol } from "@/components/ui/IconSymbol"
 
 export type TeamGridPlayer = Player & { avatarUri?: string }
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
@@ -589,15 +591,56 @@ const zoneBTarget: LayoutRectangle = {
         </>
         ) : (
           <View style={themed($railButtons)}>
-            <Pressable style={themed($railButton)} onPress={onPressTeamAButton}>
-              <Text style={themed($railButtonText)}>{teamAButtonLabel}</Text>
-            </Pressable>
+             <Button // TODO maybe paremetrize this button
+              onPress={() => alert('Close')}
+              style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
+              //textStyle={themed($railButtonText)} //not needed
+              RightAccessory={({ style }) => (
+                <View style={style}>
+                  <IconSymbol
+                    size={28}
+                    name="check"
+                    color={themed((theme) => theme.colors.iconColor)} //workaround to get theme in this context, i dont like it
+                    iconSet="fontawesome"
+                  />
+                </View>
+              )}
+            />
+
+            <View style={{ height: 12 }} />
+            <Button // TODO maybe paremetrize this button
+              onPress={() => alert('Close')}
+              style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
+              //textStyle={themed($railButtonText)} //not needed
+              RightAccessory={({ style }) => (
+                <View style={style}>
+                  <IconSymbol
+                    size={28}
+                    name="shuffle"
+                    color={themed((theme) => theme.colors.iconColor)} //workaround to get theme in this context, i dont like it
+                    iconSet="fontawesome6"
+                  />
+                </View>
+              )}
+            />
 
             <View style={{ height: 12 }} />
 
-            <Pressable style={themed($railButton)} onPress={onPressTeamBButton}>
-              <Text style={themed($railButtonText)}>{teamBButtonLabel}</Text>
-            </Pressable>
+            <Button // TODO maybe paremetrize this button
+              onPress={() => alert('Close')}
+              style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
+              //textStyle={themed($railButtonText)} //not needed
+              RightAccessory={({ style }) => (
+                <View style={style}>
+                  <IconSymbol
+                    size={28}
+                    name="info-outline"
+                    color={themed((theme) => theme.colors.iconColor)} //workaround to get theme in this context, i dont like it
+                    iconSet="material"
+                  />
+                </View>
+              )}
+            />
           </View>
         )}
       </View>
@@ -629,7 +672,7 @@ const $railButtons: ThemedStyle<ViewStyle> = () => ({
 })
 
 const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 44,
+  //height: 70,
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.border,
