@@ -16,7 +16,27 @@ export default function PreviewScreen() {
           name="Sample Player"
           number={67}
           placeholderAvatarSource={require("../../../../assets/avatar-placeholder.png")}
-          cardWidth={180}
+          cardWidth={200}
+          //cardHeight={180} //dont provide this, so aspectRatio can keep proportions
+          themed={themed}
+        />
+      </View>
+      <View style={themed($cardWrap)}>
+        <PlayerCard
+          name="Nikolaus"
+          number={100}
+          placeholderAvatarSource={require("../../../../assets/avatar-placeholder.png")}
+          cardWidth={100}
+          //cardHeight={180} //dont provide this, so aspectRatio can keep proportions
+          themed={themed}
+        />
+      </View>
+      <View style={themed($cardWrap)}>
+        <PlayerCard
+          name="Maximus-MaximilianMeridian"
+          number={9}
+          placeholderAvatarSource={require("../../../../assets/avatar-placeholder.png")}
+          cardWidth={80}
           //cardHeight={180} //dont provide this, so aspectRatio can keep proportions
           themed={themed}
         />

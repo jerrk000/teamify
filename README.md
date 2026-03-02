@@ -167,6 +167,7 @@ Animations are still missing though.
 - [ ] Use Hermes v1 when Expo 55 is released.
 - [ ] Check in general if it makes a difference to change the pressedStyle of buttons (e.g. changing backgroundcolor when pressed)
 - [ ] Think about doing a dashboard-like landing page, big buttons.  with one press for making a game, friends list, settings, notifications (!), stats. Similar to the pokemon tcg pocket one.
+- [ ] Make an editor with which You can choose how your own card looks like (like move your cutout picture how you like it)
 
 ### Ideas for possible pro features
 - [ ] Full art player card with cool customization possiblitiies (rainbow borders or sth like that)
@@ -271,3 +272,6 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] MakeTeamsScreen changes: Right rail better padding, also more padding for centerboxes
 - [ ] Change colors of buttons for playerselectionscreen, i feel like they are too dark.
 - [ ] MakeTeamsScreen changes: Header also dark when darkmode.
+- [ ] Use this website to make background transparent from png with blue and red border https://onlinepngtools.com/create-transparent-png
+- [ ] Make PlayerCard-Prop which makes it possible to change the card in the background.
+- [ ] Exchange the placeholder-avatar for the new one (after trimming parts to be transparent)
