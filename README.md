@@ -275,3 +275,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Use this website to make background transparent from png with blue and red border https://onlinepngtools.com/create-transparent-png
 - [ ] Make PlayerCard-Prop which makes it possible to change the card in the background.
 - [ ] Exchange the placeholder-avatar for the new one (after trimming parts to be transparent)
+- [ ] Think about making the player cards lower quality, as they tiny most of the time (but not always, so maybe i need both)
