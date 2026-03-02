@@ -168,6 +168,9 @@ Animations are still missing though.
 - [ ] Check in general if it makes a difference to change the pressedStyle of buttons (e.g. changing backgroundcolor when pressed)
 - [ ] Think about doing a dashboard-like landing page, big buttons.  with one press for making a game, friends list, settings, notifications (!), stats. Similar to the pokemon tcg pocket one.
 
+### Ideas for possible pro features
+- [ ] Full art player card with cool customization possiblitiies (rainbow borders or sth like that)
+
 
 ### Auth and friends
 - [ ] use MMKV to stay logged in even after closing the app. Doublecheck because kind of implemented with `persistent` in `AuthStore`.
@@ -251,11 +254,20 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] MakeTeamsScreen changes: Make opposing team drop-zones and switchable players glow when dragging a player. 
 - [x] MakeTeamsScreen changes: Make opposing team drop-zones only visible when dragging?
 - [ ] MakeTeamsScreen changes: Make different grid layout depending on amount of players
-- [ ] MakeTeamsScreen changes: Make background change color when darkmode
-- [ ] MakeTeamsScreen changes: Make background align with teams (maybe space on the side of field for drop-zone? Then i would also have space for information button or randomize/shuffle (maybe remix icon like spotify?) button. I would say space on the right side.)
+- [x] MakeTeamsScreen changes: Make background change color when darkmode
+- [x] MakeTeamsScreen changes: Make background align with teams (maybe space on the side of field for drop-zone? Then i would also have space for information button or randomize/shuffle (maybe remix icon like spotify?) button. I would say space on the right side.)
 - [x] MakeTeamsScreen changes: Make Dropzones vertically full?
-- [ ] MakeTeamsScreen changes: Display information about the game, like winrate (doublecheck tasks for this screen)
+- [x] MakeTeamsScreen changes: Display information about the game, like winrate (doublecheck tasks for this screen)
 - [ ] MakeTeamsScreen changes: Make a button to display more information (individual winrates, maybe overall team score). Make a cool animation where every PlayerCard turns around to display more information. Would also be cool if i could put the combined radarchart somewhere. Maybe there is space somewhere, or in the background of both teams, if it is visible enough.
-- [ ] MakeTeamsScreen changes: Update colors of buttons.
+- [x] MakeTeamsScreen changes: Update colors of buttons.
 - [ ] MakeTeamsScreen changes:Animation where every PlayerCard moves to correct location when a new player is added to the team and amount of players change. Also add an animation when two players switch place.
 - [ ] Check other screensizes and iphone to check if layout breaks somewhere or is absolute and does not work
+- [ ] Rework the rightrail of MakeTeamsScreen so every button is quadratic, has a size relative to the space available (+ padding)
+- [ ] Aus-checken why the placeholder-avatar at player selection isnt transparent.
+- [ ] Make own design of PlayerCard, so it looks easier to look at (upper part smoother, and )
+- [ ] Make silver-version of PlayerCard for darkmode
+- [ ] Think about putting a general number on the playercard, and putting the png more to the right.
+- [ ] Maybe think about rewriting TeamPlayerGrid for easier scaling and positioning of PlayerCards
+- [ ] MakeTeamsScreen changes: Right rail better padding, also more padding for centerboxes
+- [ ] Change colors of buttons for playerselectionscreen, i feel like they are too dark.
+- [ ] MakeTeamsScreen changes: Header also dark when darkmode.
