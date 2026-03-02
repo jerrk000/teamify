@@ -18,6 +18,12 @@ export default function AppLayout() {
           title: "Teams",
         }}
       />
+      <Stack.Screen
+        name="(non-tabs)/PreviewScreen"
+        options={{
+          title: "Player Card Preview",
+        }}
+      />
     </Stack>
   )
 }

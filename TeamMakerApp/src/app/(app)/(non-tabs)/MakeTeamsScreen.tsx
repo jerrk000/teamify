@@ -51,6 +51,9 @@ const SavedItemsScreen = () => {
   const internalStoreUpdateRef = useRef(false)
 
   const placeholderAvatar = require("../../../../assets/avatar-placeholder.png")
+  const courtBackgroundSource = theme.isDark
+    ? require("../../../../assets/images/volleyball_court_black.png")
+    : require("../../../../assets/images/volleyball_court.png")
 
   useEffect(() => {
     if (internalStoreUpdateRef.current) {
@@ -113,7 +116,7 @@ const SavedItemsScreen = () => {
   return (
     <SafeAreaView style={themed($outerContainer)}>
       <BackgroundPicture
-        source={require('../../../../assets/images/volleyball_court.png')}
+        source={courtBackgroundSource}
         width="90%"
         height="100%"
         horizontalPosition="left"

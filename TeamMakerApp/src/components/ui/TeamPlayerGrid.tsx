@@ -1,12 +1,9 @@
 import React, { useMemo, useRef, useState } from "react"
 import {
   Animated,
-  Image,
   PanResponder,
   Text,
   View,
-  Pressable,
-  type ImageStyle,
   type LayoutRectangle,
   type TextStyle,
   type ViewStyle,
@@ -15,6 +12,8 @@ import type { Theme, ThemedStyle } from "@/theme/types"
 import { Player } from "@/types/PlayerType"
 import { Button } from "@/components/Button"
 import { IconSymbol } from "@/components/ui/IconSymbol"
+import { PlayerCard } from "@/components/ui/PlayerCard"
+import { router } from "expo-router"
 
 export type TeamGridPlayer = Player & { avatarUri?: string }
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
@@ -60,7 +59,7 @@ export type CombinedTeamsGridProps = {
 }
 
 const GRID_GAP = 12
-const PLAYER_CARD_HEIGHT = 92
+const PLAYER_CARD_HEIGHT = 200 //92
 
 const RAIL_MIN_W = 110
 const RAIL_MAX_W = 160
@@ -178,34 +177,6 @@ function slotRectFromNormalized(params: {
   }
 }
 
-type PlayerCardProps = {
-  player: TeamGridPlayer
-  placeholderAvatarSource: any
-  cardWidth: number
-  cardHeight: number
-  borderColor: string
-  themed: ThemeFn
-}
-
-const PlayerCard = ({
-  player,
-  placeholderAvatarSource,
-  cardWidth,
-  cardHeight,
-  borderColor,
-  themed,
-}: PlayerCardProps) => {
-  const imageSource = player.avatarUri ? { uri: player.avatarUri } : placeholderAvatarSource
-  return (
-    <View style={[themed($playerCard), { width: cardWidth, height: cardHeight, borderColor }]}>
-      <Image source={imageSource} style={themed($playerAvatar)} resizeMode="cover" />
-      <Text style={themed($playerName)} numberOfLines={1} ellipsizeMode="tail">
-        {player.name}
-      </Text>
-    </View>
-  )
-}
-
 type DraggablePlayerCellCombinedProps = {
   player: TeamGridPlayer
   team: TeamId
@@ -300,12 +271,14 @@ const DraggablePlayerCellCombined = ({
       ]}
     >
       <PlayerCard
-        player={player}
+        name={player.name}
+        number={index + 1}
+        playerPng={player.avatarUri ? { uri: player.avatarUri } : undefined}
         placeholderAvatarSource={placeholderAvatarSource}
         cardWidth={cardWidth}
         cardHeight={PLAYER_CARD_HEIGHT}
-        borderColor={borderColor}
         themed={themed}
+        style={{ borderColor, borderWidth: 2 }}
       />
     </Animated.View>
   )
@@ -355,11 +328,13 @@ const leftW = useMemo(() => {
   const rowsB = Math.max(1, Math.ceil(teamB.length / columns))
 
   // Card width is driven by leftW and columns.
-  const cardWidth = useMemo(() => {
+  const cardWidth = PLAYER_CARD_HEIGHT / 1.5
+  /* = useMemo(() => {
     if (leftW <= 0) return 120
     const base = (leftW - GRID_GAP * (columns - 1)) / columns
     return Math.max(72, base - CARD_WIDTH_SHRINK) // keep a sensible min
   }, [columns, leftW])
+  */
 
   const teamAHeight = containerH / 2 - GRID_GAP / 2
   const teamBHeight = containerH / 2 - GRID_GAP / 2
@@ -623,7 +598,7 @@ const zoneBTarget: LayoutRectangle = {
             <View style={{ height: 12 }} />
 
             <Button // TODO maybe paremetrize this button
-              onPress={() => alert('Info')}
+              onPress={() => router.push('/PreviewScreen')} //TODO this is just temporary, change this later.
               style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
               //textStyle={themed($railButtonText)} //not needed
               RightAccessory={({ style }) => (
@@ -672,7 +647,8 @@ const $rightRail: ThemedStyle<ViewStyle> = (theme) => ({
   borderLeftColor: theme.colors.border,
   overflow: "visible",
   paddingBottom: 14,
-  paddingRight: 8,
+  paddingLeft: 8,
+  paddingRight: 4,
 })
 
 const $railButtons: ThemedStyle<ViewStyle> = () => ({
@@ -708,29 +684,6 @@ const $railButtonText: ThemedStyle<TextStyle> = (theme) => ({
 })
 
 
-
-const $playerAvatar: ThemedStyle<ImageStyle> = () => ({
-  width: 44,           // was 58
-  height: 44,          // was 58
-  borderRadius: 22,    // half of width/height
-  marginBottom: 8,     // was 10
-})
-
-const $playerCard: ThemedStyle<ViewStyle> = (theme) => ({
-  borderRadius: 12,
-  borderWidth: 2,
-  backgroundColor: theme.colors.itemBackground,
-  alignItems: "center",
-  justifyContent: "center",
-  padding: 8,   
-})
-
-const $playerName: ThemedStyle<TextStyle> = (theme) => ({
-  color: theme.colors.text,
-  fontWeight: "700",
-  textAlign: "center",
-  fontSize: 13, // TODO may need to adjust based on card width or name length
-})
 
 const $joinZone: ThemedStyle<ViewStyle> = (theme) => ({
   position: "absolute",
@@ -768,7 +721,7 @@ const $centerNumberText: ThemedStyle<TextStyle> = (theme) => ({
 
 const $centerNumbersStack: ThemedStyle<ViewStyle> = () => ({
   position: "absolute",
-  left: 2,
-  right: 10,
+  left: 6,
+  right: 6,
   gap: 8,
 })
