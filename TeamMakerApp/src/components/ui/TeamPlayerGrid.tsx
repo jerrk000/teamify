@@ -4,6 +4,7 @@ import {
   PanResponder,
   Text,
   View,
+  type ImageSourcePropType,
   type LayoutRectangle,
   type TextStyle,
   type ViewStyle,
@@ -17,6 +18,10 @@ import { router } from "expo-router"
 
 export type TeamGridPlayer = Player & { avatarUri?: string }
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
+type CardVisualPreset = {
+  cardBackgroundSource: ImageSourcePropType
+  textColor: string
+}
 
 export type TeamId = "teamA" | "teamB"
 export type PlayerPointer = { team: TeamId; index: number }
@@ -58,8 +63,30 @@ export type CombinedTeamsGridProps = {
   rightCenterNumber?: number | string
 }
 
+const LIGHT_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
+  teamA: {
+    cardBackgroundSource: require("../../../assets/images/playercard_gold_blue.png"),
+    textColor: "#111111",
+  },
+  teamB: {
+    cardBackgroundSource: require("../../../assets/images/playercard_gold_red.png"),
+    textColor: "#111111",
+  },
+}
+
+const DARK_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
+  teamA: {
+    cardBackgroundSource: require("../../../assets/images/playercard_silver_blue.png"),
+    textColor: "#111111",//"#F5F7FA",
+  },
+  teamB: {
+    cardBackgroundSource: require("../../../assets/images/playercard_silver_red.png"),
+    textColor: "#111111",//"#F5F7FA",
+  },
+}
+
 const GRID_GAP = 12
-const PLAYER_CARD_HEIGHT = 200 //92
+const PLAYER_CARD_HEIGHT = 110 //92
 
 const RAIL_MIN_W = 110
 const RAIL_MAX_W = 160
@@ -185,6 +212,7 @@ type DraggablePlayerCellCombinedProps = {
   cardWidth: number
   borderColor: string
   placeholderAvatarSource: any
+  cardVisualPreset: CardVisualPreset
   themed: ThemeFn
 
   getDropTarget: (from: PlayerPointer, dx: number, dy: number) => DropTarget | null
@@ -203,6 +231,7 @@ const DraggablePlayerCellCombined = ({
   cardWidth,
   borderColor,
   placeholderAvatarSource,
+  cardVisualPreset,
   themed,
   getDropTarget,
   onDropOnTarget,
@@ -275,6 +304,8 @@ const DraggablePlayerCellCombined = ({
         number={index + 1}
         playerPng={player.avatarUri ? { uri: player.avatarUri } : undefined}
         placeholderAvatarSource={placeholderAvatarSource}
+        cardBackgroundSource={cardVisualPreset.cardBackgroundSource}
+        textColor={cardVisualPreset.textColor}
         cardWidth={cardWidth}
         cardHeight={PLAYER_CARD_HEIGHT}
         themed={themed}
@@ -307,6 +338,7 @@ export const CombinedTeamsGrid = ({
   const [containerW, setContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const teamCardPresets = theme.isDark ? DARK_TEAM_CARD_PRESETS : LIGHT_TEAM_CARD_PRESETS
 
 
   const LEFT_RATIO = 0.80
@@ -526,6 +558,7 @@ const zoneBTarget: LayoutRectangle = {
           cardWidth={cardWidth}
           borderColor={teamABorderColor}
           placeholderAvatarSource={placeholderAvatarSource}
+          cardVisualPreset={teamCardPresets.teamA}
           themed={themed}
           getDropTarget={getDropTarget}
           onDropOnTarget={onDropOnTarget}
@@ -544,6 +577,7 @@ const zoneBTarget: LayoutRectangle = {
           cardWidth={cardWidth}
           borderColor={teamBBorderColor}
           placeholderAvatarSource={placeholderAvatarSource}
+          cardVisualPreset={teamCardPresets.teamB}
           themed={themed}
           getDropTarget={getDropTarget}
           onDropOnTarget={onDropOnTarget}

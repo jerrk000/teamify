@@ -1,7 +1,7 @@
 import React from "react"
-import { Image, ImageBackground, StyleSheet, Text, View, Pressable, ViewStyle } from "react-native"
+import { Image, ImageBackground, StyleSheet, Text, View, Pressable, ViewStyle, type ImageSourcePropType } from "react-native"
 
-type Img = any // require(...) or { uri: string }
+type Img = ImageSourcePropType
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
 
 
@@ -12,6 +12,8 @@ export type PlayerCardProps = {
   number: number
   playerPng?: Img
   placeholderAvatarSource?: Img
+  cardBackgroundSource?: Img
+  textColor?: string
   cardWidth?: number  // Provide this if possible!
   cardHeight?: number // dont provide this, so aspectRatio can maintain consistent card proportions across different widths
   themed?: ThemeFn
@@ -27,6 +29,8 @@ export function PlayerCard({
   number,
   playerPng,
   placeholderAvatarSource,
+  cardBackgroundSource = require("../../../assets/images/playercard_gold.png"),
+  textColor,
   cardWidth,
   cardHeight,
   themed,
@@ -45,7 +49,7 @@ export function PlayerCard({
   return (
     <View style={[styles.wrap, sizeStyle, style]}>
         <ImageBackground
-            source={require("../../../assets/images/playercard_gold.png")}
+            source={cardBackgroundSource}
             resizeMode="cover"
             style={styles.bg}
         >
@@ -56,14 +60,14 @@ export function PlayerCard({
                 <Image source={imageSource} resizeMode="contain" style={styles.playerImg} />
             ) : null}
             <View style={{ position: "absolute", top: 0, left: 6 }}>
-                <Text style={[styles.number, { fontSize: 30 * scale, paddingHorizontal: 5 * scale, }, themed ? themed($numberText) : null]} numberOfLines={1}>
+                <Text style={[styles.number, { fontSize: 30 * scale, paddingHorizontal: 5 * scale, }, themed ? themed($numberText) : null, textColor ? { color: textColor } : null]} numberOfLines={1}>
                     {number}
                 </Text>
             </View>
         </View>
 
         <View style={{ flex: 3, alignItems: "center", justifyContent: "flex-start" }}>
-            <Text style={[styles.name, { fontSize: 18 * scale, paddingHorizontal: 6 * scale, }, themed ? themed($nameText) : null]} numberOfLines={1}>
+            <Text style={[styles.name, { fontSize: 20 * scale, paddingHorizontal: 6 * scale, }, themed ? themed($nameText) : null, textColor ? { color: textColor } : null]} numberOfLines={1}>
                 {name}
             </Text>
         </View>
