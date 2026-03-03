@@ -251,10 +251,10 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Think about all the margins used in the app. Either tokenize it or think about if they are actually needed, wherever they are.
 - [ ] Read up on how caching works. Is it smart to cache friends-list, or possible teams including winrates and possible combinations?
 - [ ] Fix theoretical errors in IconSymbol. Somehow it says there are errors, but it still works.
-- [ ] MakeTeamsScreen changes: change sizes of PlayerCard (and maybe make it look cooler, like in FIFA?)
+- [x] MakeTeamsScreen changes: change sizes of PlayerCard (and maybe make it look cooler, like in FIFA?)
 - [ ] MakeTeamsScreen changes: Make opposing team drop-zones and switchable players glow when dragging a player. 
 - [x] MakeTeamsScreen changes: Make opposing team drop-zones only visible when dragging?
-- [ ] MakeTeamsScreen changes: Make different grid layout depending on amount of players
+- [x] MakeTeamsScreen changes: Make different grid layout depending on amount of players
 - [x] MakeTeamsScreen changes: Make background change color when darkmode
 - [x] MakeTeamsScreen changes: Make background align with teams (maybe space on the side of field for drop-zone? Then i would also have space for information button or randomize/shuffle (maybe remix icon like spotify?) button. I would say space on the right side.)
 - [x] MakeTeamsScreen changes: Make Dropzones vertically full?
@@ -264,17 +264,18 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] MakeTeamsScreen changes:Animation where every PlayerCard moves to correct location when a new player is added to the team and amount of players change. Also add an animation when two players switch place.
 - [ ] Check other screensizes and iphone to check if layout breaks somewhere or is absolute and does not work
 - [ ] Rework the rightrail of MakeTeamsScreen so every button is quadratic, has a size relative to the space available (+ padding)
-- [ ] Aus-checken why the placeholder-avatar at player selection isnt transparent.
-- [ ] Make own design of PlayerCard, so it looks easier to look at (upper part smoother, and )
-- [ ] Make silver-version of PlayerCard for darkmode
-- [ ] Think about putting a general number on the playercard, and putting the png more to the right.
+- [x] Aus-checken why the placeholder-avatar at player selection isnt transparent.
+- [x] Make own design of PlayerCard, so it looks easier to look at (upper part smoother, and )
+- [x] Make silver-version of PlayerCard for darkmode
+- [x] Think about putting a general number on the playercard, and putting the png more to the right.
 - [ ] Maybe think about rewriting TeamPlayerGrid for easier scaling and positioning of PlayerCards
 - [ ] MakeTeamsScreen changes: Right rail better padding, also more padding for centerboxes
-- [ ] Change colors of buttons for playerselectionscreen, i feel like they are too dark.
+- [x] Change colors of buttons for playerselectionscreen, i feel like they are too dark.
 - [ ] MakeTeamsScreen changes: Header also dark when darkmode.
 - [x] Use this website to make background transparent from png with blue and red border https://onlinepngtools.com/create-transparent-png
 - [x] Make PlayerCard-Prop which makes it possible to change the card in the background.
-- [ ] Exchange the placeholder-avatar for the new one (after trimming parts to be transparent)
+- [x] Exchange the placeholder-avatar for the new one (after trimming parts to be transparent)
 - [ ] Think about making the player cards lower quality, as they tiny most of the time (but not always, so maybe i need both)
 - [ ] Somehow there is too much room when a row consists of 3 PlayerCards  in MakeTeamsScreen. (i mean more room between two cards than between the two others.)
 - [x] Change the size of the PlayerCards (with cardWidth), because with few players i think they are too big, and with many players maybe??? too small
+- [x] When darkmode, think about using a background for the avatar again, so that people with black hair can see their hair

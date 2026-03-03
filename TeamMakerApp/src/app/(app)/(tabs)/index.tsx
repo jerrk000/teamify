@@ -45,7 +45,11 @@ const HomeScreen = () => {
     themed, theme, themeContext,
   } = useAppTheme()
 
-  const placeholderAvatar = require("../../../../assets/avatar_placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
+  const placeholderAvatar = theme.isDark
+    ? require("../../../../assets/avatar_placeholder_white.png")
+    : require("../../../../assets/avatar_placeholder.png")
+
+  require("../../../../assets/avatar_placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
@@ -332,7 +336,7 @@ const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
   borderWidth: 1,
   borderColor: theme.colors.border,
   padding: 8,
-  backgroundColor: theme.colors.buttonBackground,
+  backgroundColor: theme.colors.itemBackground,
 });
 
 const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
@@ -340,7 +344,7 @@ const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
 });
 
 const $Button: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.buttonBackground,
+  backgroundColor: theme.colors.itemBackground, //itembackground for buttoncolor looks better, but not good designwise
   color: theme.colors.text,
 })
 

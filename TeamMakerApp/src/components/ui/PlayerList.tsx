@@ -57,7 +57,8 @@ export const PlayerRow = memo(function PlayerRow({
       <View style={[themed($itemRow), isSelected ? themed($clickedItem) : undefined]}>
         <Image
           source={avatarSource ?? placeholderAvatarSource}
-          style={themed((t) => $avatar(t, avatarSize))}
+          style={[themed((t) => $avatar(t, avatarSize)), 
+                  (avatarSource && theme.isDark) && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },]} //when darkmode and no avatar, make grey background
           accessibilityLabel={`${item.name} avatar`}
         />
 
@@ -185,7 +186,7 @@ const $avatar = ({ colors }: any, size: number): ImageStyle => ({
   height: size,
   borderRadius: size / 2,
   marginRight: 12,
-  backgroundColor: colors?.neutral200 ?? "#eee",
+  //backgroundColor: colors?.neutral200 ?? "#eee", //not needed
 })
 
 const $name: ThemedStyle<TextStyle> = (theme) => ({
