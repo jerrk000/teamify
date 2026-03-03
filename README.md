@@ -268,7 +268,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Make own design of PlayerCard, so it looks easier to look at (upper part smoother, and )
 - [x] Make silver-version of PlayerCard for darkmode
 - [x] Think about putting a general number on the playercard, and putting the png more to the right.
-- [ ] Maybe think about rewriting TeamPlayerGrid for easier scaling and positioning of PlayerCards
+- [x] Maybe think about rewriting TeamPlayerGrid for easier scaling and positioning of PlayerCards
 - [ ] MakeTeamsScreen changes: Right rail better padding, also more padding for centerboxes
 - [x] Change colors of buttons for playerselectionscreen, i feel like they are too dark.
 - [x] MakeTeamsScreen changes: Header also dark when darkmode.

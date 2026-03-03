@@ -321,8 +321,6 @@ export const CombinedTeamsGrid = ({
   onSwapAcrossTeams,
   onMoveIntoTeam,
   placeholderAvatarSource,
-  teamABorderColor,
-  teamBBorderColor,
   themed,
   theme,
   layoutA,
@@ -518,10 +516,10 @@ export const CombinedTeamsGrid = ({
 
         {isDragging ? (
           <>
-            <View pointerEvents="none" style={[themed($joinZone), { borderColor: teamABorderColor }, rectToStyle({ x: 0, y: 0, width: railRect.width, height: zoneHeight })]}>
+            <View pointerEvents="none" style={[themed($joinZone), rectToStyle({ x: 0, y: 0, width: railRect.width, height: zoneHeight })]}>
               <Text style={themed($joinZoneText)}>Drop to join Team A</Text>
             </View>
-            <View pointerEvents="none" style={[themed($joinZone), { borderColor: teamBBorderColor }, rectToStyle({ x: 0, y: zoneHeight + ZONE_GAP, width: railRect.width, height: zoneHeight })]}>
+            <View pointerEvents="none" style={[themed($joinZone), rectToStyle({ x: 0, y: zoneHeight + ZONE_GAP, width: railRect.width, height: zoneHeight })]}>
               <Text style={themed($joinZoneText)}>Drop to join Team B</Text>
             </View>
           </>
@@ -547,6 +545,18 @@ export const CombinedTeamsGrid = ({
                 </View>
               )}
             />
+            <View style={{ height: 12 }} />
+
+            <Button // TODO maybe paremetrize this button
+              onPress={() => alert('Show past matches')} //TODO this is just temporary, change this later.
+              style={[themed($railButton),]} 
+              RightAccessory={({ style }) => (
+                <View style={style}>
+                  <IconSymbol size={28} name="book" color={theme.colors.iconColor} iconSet="fontawesome" />
+                </View>
+              )}
+            />
+
             <View style={{ height: 12 }} />
 
             <Button // TODO maybe paremetrize this button

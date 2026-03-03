@@ -18,7 +18,7 @@ const MATERIAL_ICONS_MAPPING = {
   'sportscourt': 'sports-volleyball',
   'gear': 'settings',
   'delete': 'delete',
-  'info-outline': 'info',
+  'info-outline': 'info-outline',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -38,6 +38,7 @@ const FONT_AWESOME_MAPPING = {
   'star-o': 'star-o',
   'chevron.down': 'chevron-down',
   'check': 'check',
+  'book': 'book',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
