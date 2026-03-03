@@ -18,6 +18,7 @@ import { router } from "expo-router"
 
 export type TeamGridPlayer = Player & { avatarUri?: string }
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
+
 type CardVisualPreset = {
   cardBackgroundSource: ImageSourcePropType
   textColor: string
@@ -34,9 +35,6 @@ export type CombinedTeamsGridProps = {
   teamA: TeamGridPlayer[]
   teamB: TeamGridPlayer[]
 
-  /** Left grid columns (for 4 players per team you probably want 2). */
-  columns?: number
-
   onSwapAcrossTeams: (from: PlayerPointer, to: PlayerPointer) => void
   onMoveIntoTeam: (from: PlayerPointer, toTeam: TeamId) => void
 
@@ -46,63 +44,37 @@ export type CombinedTeamsGridProps = {
   themed: ThemeFn
   theme: Theme
 
-  /**
-   * Optional: define slot positions per team as normalized coords [0..1]
-   * relative to the TEAM AREA (not the whole screen).
-   * If omitted, defaults to a 2x2 layout for the first 4 indices.
-   */
+  // Optional: define slot positions per team as normalized coords between 0 and 1
   layoutA?: readonly { x: number; y: number }[]
   layoutB?: readonly { x: number; y: number }[]
 
-  /** Optional right-rail button labels (idle state) */
-  teamAButtonLabel?: string
-  teamBButtonLabel?: string
-  onPressTeamAButton?: () => void
-  onPressTeamBButton?: () => void
   leftCenterNumber?: number | string
   rightCenterNumber?: number | string
 }
 
 const LIGHT_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
-  teamA: {
-    cardBackgroundSource: require("../../../assets/images/playercard_gold_blue.png"),
-    textColor: "#111111",
-  },
-  teamB: {
-    cardBackgroundSource: require("../../../assets/images/playercard_gold_red.png"),
-    textColor: "#111111",
-  },
+  teamA: { cardBackgroundSource: require("../../../assets/images/playercard_gold_blue.png"), textColor: "#111111" }, //TODO hardcoded color
+  teamB: { cardBackgroundSource: require("../../../assets/images/playercard_gold_red.png"), textColor: "#111111" },
 }
 
 const DARK_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
-  teamA: {
-    cardBackgroundSource: require("../../../assets/images/playercard_silver_blue.png"),
-    textColor: "#111111",//"#F5F7FA",
-  },
-  teamB: {
-    cardBackgroundSource: require("../../../assets/images/playercard_silver_red.png"),
-    textColor: "#111111",//"#F5F7FA",
-  },
+  teamA: { cardBackgroundSource: require("../../../assets/images/playercard_silver_blue.png"), textColor: "#111111" },
+  teamB: { cardBackgroundSource: require("../../../assets/images/playercard_silver_red.png"), textColor: "#111111" },
 }
 
 const GRID_GAP = 12
+const ZONE_GAP = 10
 
-const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
+const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max)
 
 const rectCenter = (r: LayoutRectangle) => ({ x: r.x + r.width / 2, y: r.y + r.height / 2 })
-
 const dist2 = (a: { x: number; y: number }, b: { x: number; y: number }) => {
   const dx = a.x - b.x
   const dy = a.y - b.y
   return dx * dx + dy * dy
 }
 
-const rectToStyle = (r: LayoutRectangle) => ({
-  left: r.x,
-  top: r.y,
-  width: r.width,
-  height: r.height,
-})
+const rectToStyle = (r: LayoutRectangle) => ({ left: r.x, top: r.y, width: r.width, height: r.height })
 
 const intersectionArea = (a: LayoutRectangle, b: LayoutRectangle) => {
   const x1 = Math.max(a.x, b.x)
@@ -131,21 +103,14 @@ function rowXs(n: number, left = 0.18, right = 0.82): number[] {
 function rowsLayout(rows: number[], ys: number[]): NormPoint[] {
   const pts: NormPoint[] = []
   for (let r = 0; r < rows.length; r++) {
-    const xs = rowXs(rows[r])
-    for (const x of xs) pts.push({ x, y: ys[r] })
+    for (const x of rowXs(rows[r])) pts.push({ x, y: ys[r] })
   }
   return pts
 }
 
-/**
- * 1–6: volleyball-ish
- * 7–11: soccer-ish (back line -> midfield -> forwards)
- *
- * Coordinates are normalized CENTERS in [0..1].
- */
+/** normalized CENTER positions in [0..1] */
 export function layoutPreset(count: number): NormPoint[] {
   switch (count) {
-    // ---- volleyball-ish ----
     case 1:
       return [{ x: 0.5, y: 0.5 }]
     case 2:
@@ -161,10 +126,10 @@ export function layoutPreset(count: number): NormPoint[] {
       ]
     case 4:
       return [
-        { x: 0.5, y: 0.20 },
-        { x: 0.20, y: 0.5 },
-        { x: 0.80, y: 0.5 },
-        { x: 0.5, y: 0.80 },
+        { x: 0.5, y: 0.2 },
+        { x: 0.2, y: 0.5 },
+        { x: 0.8, y: 0.5 },
+        { x: 0.5, y: 0.8 },
       ]
     case 5:
       return [
@@ -175,19 +140,14 @@ export function layoutPreset(count: number): NormPoint[] {
         { x: 0.65, y: 0.70 },
       ]
     case 6:
-      // classic 3x2
       return [
         { x: 0.25, y: 0.32 },
         { x: 0.5, y: 0.32 },
         { x: 0.75, y: 0.32 },
-        { x: 0.25, y: 0.70 },
-        { x: 0.5, y: 0.70 },
-        { x: 0.75, y: 0.70 },
+        { x: 0.25, y: 0.7 },
+        { x: 0.5, y: 0.7 },
+        { x: 0.75, y: 0.7 },
       ]
-
-    // ---- soccer-ish ----
-    // y's are back -> front (defenders near top, forwards near bottom)
-    // tweak these 3 values if you want tighter spacing
     case 7:
       // 3-3-1
       return rowsLayout([3, 3, 1], [0.22, 0.50, 0.78])
@@ -205,85 +165,48 @@ export function layoutPreset(count: number): NormPoint[] {
       return rowsLayout([4, 3, 3], [0.20, 0.50, 0.80])
 
     default: {
-      // generic: pick a sensible soccer-ish distribution
+      // generic: sensible soccer-ish distribution
       // up to 14: keep 3 rows; beyond that: 4 rows
       if (count <= 14) {
         const back = Math.min(5, Math.max(3, Math.round(count * 0.36)))
         const front = Math.min(4, Math.max(2, Math.round(count * 0.27)))
         const mid = count - back - front
-        return rowsLayout([back, mid, front], [0.20, 0.50, 0.80])
+        return rowsLayout([back, mid, front], [0.2, 0.5, 0.8])
       }
-
-      // 4-row fallback (rare)
       const cols = 4
       const rows = Math.ceil(count / cols)
-      const pts: NormPoint[] = []
-      for (let i = 0; i < count; i++) {
+      return Array.from({ length: count }, (_, i) => {
         const c = i % cols
         const r = Math.floor(i / cols)
-        const x = (c + 1) / (cols + 1)
-        const y = (r + 1) / (rows + 1)
-        pts.push({ x, y })
-      }
-      return pts
+        return { x: (c + 1) / (cols + 1), y: (r + 1) / (rows + 1) }
+      })
     }
-  }
-}
-
-function getSlotPositionNormalized(
-  index: number,
-  layout?: readonly { x: number; y: number }[],
-  columnsFallback = 2,
-  totalCount = 1,
-) {
-  if (layout && layout[index]) return layout[index]
-
-  const cols = Math.max(1, columnsFallback)
-  const rows = Math.max(1, Math.ceil(totalCount / cols))
-
-  const col = index % cols
-  const row = Math.floor(index / cols)
-
-  // normalized CENTER positions
-  return {
-    x: (col + 1) / (cols + 1),
-    y: (row + 1) / (rows + 1),
   }
 }
 
 function slotRectFromNormalized(params: {
   index: number
-  count: number
   teamRect: LayoutRectangle
   cardWidth: number
   cardHeight: number
-  gap: number
-  layout?: readonly { x: number; y: number }[]
-  columnsFallback: number
-}) {
-  const { index, teamRect, cardWidth, cardHeight, gap, layout, columnsFallback } = params
+  layout: readonly { x: number; y: number }[]
+}): LayoutRectangle {
+  const { index, teamRect, cardWidth, cardHeight, layout } = params
 
-  const p = getSlotPositionNormalized(index, layout, columnsFallback, params.count)
+  const p = layout[index]
+  if (!p) {
+    throw new Error(`Missing layout position for index ${index}`)
+  }
 
-  const usableW = teamRect.width
-  const usableH = teamRect.height
+  const cx = p.x * teamRect.width
+  const cy = p.y * teamRect.height
 
-  // Interpret p.x/p.y as normalized CENTER positions in [0..1]
-  // (0,0) = top-left corner of the TEAM AREA, (1,1) = bottom-right
-  const cx = p.x * usableW
-  const cy = p.y * usableH
-
-  // Convert center to top-left
   const rawX = cx - cardWidth / 2
   const rawY = cy - cardHeight / 2
 
-  // Snap to grid a bit (optional) //We do not want snapping anymore
-  const snappedX = rawX // or snap only X if you really want
-  const snappedY = rawY
-
   return {
-    x: teamRect.x + clamp(snappedX, 0, Math.max(0, usableW - cardWidth)),
-    y: teamRect.y + clamp(snappedY, 0, Math.max(0, usableH - cardHeight)),
+    x: teamRect.x + clamp(rawX, 0, Math.max(0, teamRect.width - cardWidth)),
+    y: teamRect.y + clamp(rawY, 0, Math.max(0, teamRect.height - cardHeight)),
     width: cardWidth,
     height: cardHeight,
   }
@@ -295,7 +218,6 @@ type DraggablePlayerCellCombinedProps = {
   index: number
 
   cardWidth: number
-  borderColor: string
   placeholderAvatarSource: any
   cardVisualPreset: CardVisualPreset
   themed: ThemeFn
@@ -305,7 +227,6 @@ type DraggablePlayerCellCombinedProps = {
 
   // absolute rect (within the container) where this slot sits
   slotRect: LayoutRectangle
-
   onDragStateChange: (dragging: boolean) => void
 }
 
@@ -314,7 +235,6 @@ const DraggablePlayerCellCombined = ({
   team,
   index,
   cardWidth,
-  borderColor,
   placeholderAvatarSource,
   cardVisualPreset,
   themed,
@@ -329,19 +249,16 @@ const DraggablePlayerCellCombined = ({
   const panResponder = useMemo(
     () =>
       PanResponder.create({
-        onMoveShouldSetPanResponder: (_evt, gestureState) => {
-          const movement = Math.abs(gestureState.dx) + Math.abs(gestureState.dy)
-          return movement > 4
-        },
+        onMoveShouldSetPanResponder: (_evt, g) => Math.abs(g.dx) + Math.abs(g.dy) > 4,
         onPanResponderGrant: () => {
           setIsActive(true)
           onDragStateChange(true)
           pan.setValue({ x: 0, y: 0 })
         },
         onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
-        onPanResponderRelease: (_evt, gestureState) => {
+        onPanResponderRelease: (_evt, g) => {
           const from: PlayerPointer = { team, index }
-          const target = getDropTarget(from, gestureState.dx, gestureState.dy)
+          const target = getDropTarget(from, g.dx, g.dy)
           if (target) onDropOnTarget(from, target)
 
           Animated.spring(pan, {
@@ -393,7 +310,6 @@ const DraggablePlayerCellCombined = ({
         textColor={cardVisualPreset.textColor}
         cardWidth={cardWidth}
         themed={themed}
-        //style={{ borderColor, borderWidth: 2 }} //TODO bordercolor is still a prop for many parts here, but it is no longer needed
       />
     </Animated.View>
   )
@@ -402,7 +318,6 @@ const DraggablePlayerCellCombined = ({
 export const CombinedTeamsGrid = ({
   teamA,
   teamB,
-  columns = 2,
   onSwapAcrossTeams,
   onMoveIntoTeam,
   placeholderAvatarSource,
@@ -412,156 +327,83 @@ export const CombinedTeamsGrid = ({
   theme,
   layoutA,
   layoutB,
-  teamAButtonLabel = "Team A",
-  teamBButtonLabel = "Team B",
-  onPressTeamAButton,
-  onPressTeamBButton,
   leftCenterNumber = 0,
   rightCenterNumber = 0,
 }: CombinedTeamsGridProps) => {
   const [containerW, setContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+
   const teamCardPresets = theme.isDark ? DARK_TEAM_CARD_PRESETS : LIGHT_TEAM_CARD_PRESETS
 
+  const leftW = containerW * 0.8 //LEFT CONTAINER
+  const railW = containerW * 0.2 //RIGHT CONTAINER
 
-const LEFT_RATIO = 0.80
-const RAIL_RATIO = 0.20
+  const cardWidth = useMemo(() => {
+    if (leftW <= 0) return 75
+    const maxCount = Math.max(teamA.length, teamB.length)
+    const scaling = maxCount <= 2 ? 1 : maxCount <= 4 ? 1.5 : maxCount <= 6 ? 2 : 3
+    return Math.max(72, (leftW * 0.4) / scaling)
+  }, [leftW, teamA.length, teamB.length])
 
-const railWidth = useMemo(() => {
-  if (containerW <= 0) return 80
-  return containerW * RAIL_RATIO
-}, [containerW])
-
-const leftW = useMemo(() => {
-  if (containerW <= 0) return 100 // maybe dont return 0
-  return containerW * LEFT_RATIO
-}, [containerW])
-
-const cardWidth = useMemo(() => {
-  if (leftW <= 0) return 75                               // if width is not defined, use predefined size
-  // choose a “preferred cols” for current team size
-  const maxCount = Math.max(teamA.length, teamB.length)   // take bigger size of both teams
-  const scaling_factor = maxCount <= 2 ? 1 : maxCount <= 4 ? 1.5 : maxCount <= 6 ? 2 : 3
-  const base = (leftW * 0.4) / scaling_factor
-  return Math.max(72, base)
-}, [leftW, teamA.length, teamB.length])
-
-const cardHeight = Math.round(cardWidth / 0.71)
+  const cardHeight = Math.round(cardWidth / 0.71)
 
   const teamAHeight = containerH / 2 - GRID_GAP / 2
   const teamBHeight = containerH / 2 - GRID_GAP / 2
 
-  // We stack team A and B on the left with a gap between.
-  const dividerGap = GRID_GAP
-  const leftHeight = teamAHeight + dividerGap + teamBHeight
-  const totalHeight = Math.max(leftHeight, Math.max(0, containerH)) // allow container to drive too
-
-  // Left-side rectangles for teams (in container coordinates)
   const teamARect: LayoutRectangle = { x: 0, y: 0, width: leftW, height: teamAHeight }
-  const teamBRect: LayoutRectangle = {
-    x: 0,
-    y: teamAHeight + dividerGap,
-    width: leftW,
-    height: teamBHeight,
+  const teamBRect: LayoutRectangle = { x: 0, y: teamAHeight + GRID_GAP, width: leftW, height: teamBHeight }
+  const railRect: LayoutRectangle = { x: leftW, y: 0, width: railW, height: containerH }
+
+  const zoneHeight = (railRect.height - ZONE_GAP) / 2
+  const zoneATarget: LayoutRectangle = { x: railRect.x, y: railRect.y, width: railRect.width, height: zoneHeight }
+  const zoneBTarget: LayoutRectangle = {
+    x: railRect.x,
+    y: railRect.y + zoneHeight + ZONE_GAP,
+    width: railRect.width,
+    height: zoneHeight,
   }
 
- // Rail is in container coords
-const railRect: LayoutRectangle = {
-  x: leftW,
-  y: 0,
-  width: railWidth,
-  height: containerH,
-}
+  type TargetRect = { target: DropTarget; rect: LayoutRectangle }
+  const targetRectsRef = useRef<TargetRect[]>([])
 
-const ZONE_GAP = 10
-const zoneHeight = (railRect.height - ZONE_GAP) / 2
+  const effectiveLayoutA = layoutA?.length ? layoutA : layoutPreset(teamA.length)
+  const effectiveLayoutB = layoutB?.length ? layoutB : layoutPreset(teamB.length)
 
-  const centerNumbersTop = Math.max(10, containerH / 2 - 44)
-
-// 1) RENDER rects (relative to rail)
-const zoneAView: LayoutRectangle = {
-  x: 0,
-  y: 0,
-  width: railRect.width,
-  height: zoneHeight,
-}
-
-const zoneBView: LayoutRectangle = {
-  x: 0,
-  y: zoneHeight + ZONE_GAP,
-  width: railRect.width,
-  height: zoneHeight,
-}
-
-// 2) TARGET rects (absolute in container, used for drop detection)
-const zoneATarget: LayoutRectangle = {
-  x: railRect.x + zoneAView.x,
-  y: railRect.y + zoneAView.y,
-  width: zoneAView.width,
-  height: zoneAView.height,
-}
-
-const zoneBTarget: LayoutRectangle = {
-  x: railRect.x + zoneBView.x,
-  y: railRect.y + zoneBView.y,
-  width: zoneBView.width,
-  height: zoneBView.height,
-}
-
-type TargetRect = { target: DropTarget; rect: LayoutRectangle }
-const targetRectsRef = useRef<TargetRect[]>([])
-
-const effectiveLayoutA = (layoutA && layoutA.length > 0) ? layoutA : layoutPreset(teamA.length)
-const effectiveLayoutB = (layoutB && layoutB.length > 0) ? layoutB : layoutPreset(teamB.length)
-
-const slotRectsA = useMemo(() => {
-  return teamA.map((_p, i) =>
-    slotRectFromNormalized({
-      index: i,
-      count: teamA.length,
-      teamRect: teamARect,
-      cardWidth,
-      cardHeight: cardHeight,
-      gap: GRID_GAP,
-      layout: effectiveLayoutA,
-      columnsFallback: columns,
-    }),
+  const slotRectsA = useMemo(
+    () =>
+      teamA.map((_p, i) =>
+        slotRectFromNormalized({
+          index: i,
+          teamRect: teamARect,
+          cardWidth,
+          cardHeight,
+          layout: effectiveLayoutA,
+        }),
+      ),
+    [cardWidth, cardHeight, effectiveLayoutA, teamA, teamARect],
   )
-}, [cardWidth, columns, effectiveLayoutA, teamA, teamARect])
 
-const slotRectsB = useMemo(() => {
-  return teamB.map((_p, i) =>
-    slotRectFromNormalized({
-      index: i,
-      count: teamB.length,
-      teamRect: teamBRect,
-      cardWidth,
-      cardHeight: cardHeight,
-      gap: GRID_GAP,
-      layout: effectiveLayoutB,
-      columnsFallback: columns,
-    }),
+  const slotRectsB = useMemo(
+    () =>
+      teamB.map((_p, i) =>
+        slotRectFromNormalized({
+          index: i,
+          teamRect: teamBRect,
+          cardWidth,
+          cardHeight,
+          layout: effectiveLayoutB,
+        }),
+      ),
+    [cardWidth, cardHeight, effectiveLayoutB, teamB, teamBRect],
   )
-}, [cardWidth, columns, effectiveLayoutB, teamB, teamBRect])
 
   const targets = useMemo(() => {
     const t: TargetRect[] = []
-
-    // Player targets Team A
-    for (let i = 0; i < slotRectsA.length; i++) {
-      t.push({ target: { kind: "player", team: "teamA", index: i }, rect: slotRectsA[i] })
-    }
-
-    // Player targets Team B
-    for (let i = 0; i < slotRectsB.length; i++) {
-      t.push({ target: { kind: "player", team: "teamB", index: i }, rect: slotRectsB[i] })
-    }
-
-    // Join zones on the right rail
+    for (let i = 0; i < slotRectsA.length; i++) t.push({ target: { kind: "player", team: "teamA", index: i }, rect: slotRectsA[i] })
+    for (let i = 0; i < slotRectsB.length; i++) t.push({ target: { kind: "player", team: "teamB", index: i }, rect: slotRectsB[i] })
     t.push({ target: { kind: "zone", team: "teamA" }, rect: zoneATarget })
     t.push({ target: { kind: "zone", team: "teamB" }, rect: zoneBTarget })
-
     return t
   }, [slotRectsA, slotRectsB, zoneATarget, zoneBTarget])
 
@@ -569,22 +411,14 @@ const slotRectsB = useMemo(() => {
 
   const getDropTarget = (from: PlayerPointer, dx: number, dy: number): DropTarget | null => {
     const rects = targetRectsRef.current
-    if (rects.length === 0) return null
+    if (!rects.length) return null
 
-    // Build dragged rect from the originating slot rect.
-    const originRect =
-      from.team === "teamA" ? slotRectsA[from.index] : slotRectsB[from.index]
-
+    const originRect = from.team === "teamA" ? slotRectsA[from.index] : slotRectsB[from.index]
     if (!originRect) return null
 
-    const draggedRect: LayoutRectangle = {
-      x: originRect.x + dx,
-      y: originRect.y + dy,
-      width: originRect.width,
-      height: originRect.height,
-    }
+    const draggedRect: LayoutRectangle = { x: originRect.x + dx, y: originRect.y + dy, width: originRect.width, height: originRect.height }
 
-    // 1) Prefer overlap: largest intersection wins
+    // overlap first
     let bestOverlap: TargetRect | null = null
     let bestArea = 0
     for (const r of rects) {
@@ -596,15 +430,14 @@ const slotRectsB = useMemo(() => {
     }
     if (bestOverlap && bestArea > 0) return bestOverlap.target
 
-    // 2) Fallback to nearest center
-    const draggedCenter = { x: draggedRect.x + draggedRect.width / 2, y: draggedRect.y + draggedRect.height / 2 }
+    // fallback nearest center
+    const draggedCenter = rectCenter(draggedRect)
     let best: TargetRect | null = null
     let bestD2 = Number.POSITIVE_INFINITY
     for (const r of rects) {
-      const c = rectCenter(r.rect)
-      const d2 = dist2(draggedCenter, c)
-      if (d2 < bestD2) {
-        bestD2 = d2
+      const d2v = dist2(draggedCenter, rectCenter(r.rect))
+      if (d2v < bestD2) {
+        bestD2 = d2v
         best = r
       }
     }
@@ -623,6 +456,8 @@ const slotRectsB = useMemo(() => {
     onMoveIntoTeam(from, target.team)
   }
 
+  const centerNumbersTop = Math.max(10, containerH / 2 - 44)
+
   return (
     <View
       onLayout={(event) => {
@@ -640,7 +475,6 @@ const slotRectsB = useMemo(() => {
           team="teamA"
           index={index}
           cardWidth={cardWidth}
-          borderColor={teamABorderColor}
           placeholderAvatarSource={placeholderAvatarSource}
           cardVisualPreset={teamCardPresets.teamA}
           themed={themed}
@@ -659,7 +493,6 @@ const slotRectsB = useMemo(() => {
           team="teamB"
           index={index}
           cardWidth={cardWidth}
-          borderColor={teamBBorderColor}
           placeholderAvatarSource={placeholderAvatarSource}
           cardVisualPreset={teamCardPresets.teamB}
           themed={themed}
@@ -683,64 +516,48 @@ const slotRectsB = useMemo(() => {
           </View>
         </View>
 
-      {isDragging ? (
-        <>
-          <View
-            pointerEvents="none"
-            style={[themed($joinZone), { borderColor: teamABorderColor }, rectToStyle(zoneAView)]}
-          >
-            <Text style={themed($joinZoneText)}>Drop to join Team A</Text>
-          </View>
-
-          <View
-            pointerEvents="none"
-            style={[themed($joinZone), { borderColor: teamBBorderColor }, rectToStyle(zoneBView)]}
-          >
-            <Text style={themed($joinZoneText)}>Drop to join Team B</Text>
-          </View>
-        </>
+        {isDragging ? (
+          <>
+            <View pointerEvents="none" style={[themed($joinZone), { borderColor: teamABorderColor }, rectToStyle({ x: 0, y: 0, width: railRect.width, height: zoneHeight })]}>
+              <Text style={themed($joinZoneText)}>Drop to join Team A</Text>
+            </View>
+            <View pointerEvents="none" style={[themed($joinZone), { borderColor: teamBBorderColor }, rectToStyle({ x: 0, y: zoneHeight + ZONE_GAP, width: railRect.width, height: zoneHeight })]}>
+              <Text style={themed($joinZoneText)}>Drop to join Team B</Text>
+            </View>
+          </>
         ) : (
           <View style={themed($railButtons)}>
             <Button // TODO maybe paremetrize this button
               onPress={() => alert('Shuffle')}
-              style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
-              //textStyle={themed($railButtonText)} //not needed
+              style={[themed($railButton),]} 
               RightAccessory={({ style }) => (
                 <View style={style}>
-                  <IconSymbol size={28} name="shuffle" color={theme.colors.iconColor} iconSet="fontawesome6"
-                  />
+                  <IconSymbol size={28} name="shuffle" color={theme.colors.iconColor} iconSet="fontawesome6" />
                 </View>
               )}
             />
-
             <View style={{ height: 12 }} />
 
             <Button // TODO maybe paremetrize this button
               onPress={() => router.push('/PreviewScreen')} //TODO this is just temporary, change this later.
-              style={[themed($railButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
-              //textStyle={themed($railButtonText)} //not needed
+              style={[themed($railButton),]} 
               RightAccessory={({ style }) => (
                 <View style={style}>
-                  <IconSymbol size={28} name="info-outline" color={theme.colors.iconColor} iconSet="material"
-                  />
+                  <IconSymbol size={28} name="info-outline" color={theme.colors.iconColor} iconSet="material" />
                 </View>
               )}
             />
-
             <View style={{ height: 12 }} />
 
             <Button // TODO maybe paremetrize this button
               onPress={() => alert('Winner')}
-              style={[themed($winnerButton),]} // { minHeight: 44, height:44, borderRadius: 10 }]}
-              //textStyle={themed($railButtonText)} //not needed
+              style={[themed($winnerButton),]}
               RightAccessory={({ style }) => (
                 <View style={style}>
-                  <IconSymbol size={28} name="check" color={theme.colors.iconColor} iconSet="fontawesome"
-                  />
+                  <IconSymbol size={28} name="check" color={theme.colors.iconColor} iconSet="fontawesome" />
                 </View>
               )}
             />
-
           </View>
         )}
       </View>
@@ -777,7 +594,6 @@ const $railButtons: ThemedStyle<ViewStyle> = () => ({
 })
 
 const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
-  //height: 70,
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.border,
@@ -787,7 +603,6 @@ const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
 })
 
 const $winnerButton: ThemedStyle<ViewStyle> = (theme) => ({
-  //height: 70,
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.palette.green500,
@@ -795,13 +610,6 @@ const $winnerButton: ThemedStyle<ViewStyle> = (theme) => ({
   justifyContent: "center",
   backgroundColor: theme.colors.palette.green500,
 })
-
-const $railButtonText: ThemedStyle<TextStyle> = (theme) => ({
-  color: theme.colors.text,
-  fontWeight: "700",
-})
-
-
 
 const $joinZone: ThemedStyle<ViewStyle> = (theme) => ({
   position: "absolute",
