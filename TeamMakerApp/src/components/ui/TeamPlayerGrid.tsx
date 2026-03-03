@@ -48,8 +48,8 @@ export type CombinedTeamsGridProps = {
   layoutA?: readonly { x: number; y: number }[]
   layoutB?: readonly { x: number; y: number }[]
 
-  leftCenterNumber?: number | string
-  rightCenterNumber?: number | string
+  upperCenterNumber?: number | string
+  lowerCenterNumber?: number | string
 }
 
 const LIGHT_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
@@ -325,8 +325,8 @@ export const CombinedTeamsGrid = ({
   theme,
   layoutA,
   layoutB,
-  leftCenterNumber = 0,
-  rightCenterNumber = 0,
+  upperCenterNumber = 0,
+  lowerCenterNumber = 0,
 }: CombinedTeamsGridProps) => {
   const [containerW, setContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
@@ -507,10 +507,10 @@ export const CombinedTeamsGrid = ({
       >
         <View style={[themed($centerNumbersStack), { top: centerNumbersTop }]}>
           <View pointerEvents="none" style={themed($centerNumberBox)}>
-            <Text style={themed($centerNumberText)}>{leftCenterNumber}</Text>
+            <Text style={themed($centerNumberText)}>{upperCenterNumber}</Text>
           </View>
           <View pointerEvents="none" style={themed($centerNumberBox)}>
-            <Text style={themed($centerNumberText)}>{rightCenterNumber}</Text>
+            <Text style={themed($centerNumberText)}>{lowerCenterNumber}</Text>
           </View>
         </View>
 
@@ -587,7 +587,7 @@ const $cardWrapper: ThemedStyle<ViewStyle> = () => ({
 const $rightRail: ThemedStyle<ViewStyle> = (theme) => ({
   position: "absolute",
   justifyContent: "flex-end",
-  alignItems: "flex-end",
+  alignItems: "center",
   borderLeftWidth: 1,
   borderLeftColor: theme.colors.border,
   overflow: "visible",
@@ -597,13 +597,13 @@ const $rightRail: ThemedStyle<ViewStyle> = (theme) => ({
 })
 
 const $railButtons: ThemedStyle<ViewStyle> = () => ({
-  justifyContent: "flex-end",
-  alignItems: "stretch",
   width: "100%",
+  alignItems: "center",      // ✅ center buttons horizontally
   paddingHorizontal: 2,
 })
 
 const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
+  width: "90%",              // centered within rail
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.border,
@@ -613,6 +613,7 @@ const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
 })
 
 const $winnerButton: ThemedStyle<ViewStyle> = (theme) => ({
+  width: "90%",
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.palette.green500,
@@ -639,7 +640,7 @@ const $joinZoneText: ThemedStyle<TextStyle> = (theme) => ({
 })
 
 const $centerNumberBox: ThemedStyle<ViewStyle> = (theme) => ({
-  width: "100%",
+  width: "90%", 
   height: 36,
   borderRadius: 8,
   borderWidth: 1,
@@ -657,7 +658,8 @@ const $centerNumberText: ThemedStyle<TextStyle> = (theme) => ({
 
 const $centerNumbersStack: ThemedStyle<ViewStyle> = () => ({
   position: "absolute",
-  left: 6,
-  right: 6,
+  left: 0,
+  right: 0,                 // let it span rail
   gap: 8,
+  alignItems: "center",      // but center its children
 })
