@@ -277,9 +277,9 @@ function slotRectFromNormalized(params: {
   const rawX = cx - cardWidth / 2
   const rawY = cy - cardHeight / 2
 
-  // Snap to grid a bit (optional)
-  const snappedX = Math.round(rawX / gap) * gap
-  const snappedY = Math.round(rawY / gap) * gap
+  // Snap to grid a bit (optional) //We do not want snapping anymore
+  const snappedX = rawX // or snap only X if you really want
+  const snappedY = rawY
 
   return {
     x: teamRect.x + clamp(snappedX, 0, Math.max(0, usableW - cardWidth)),
