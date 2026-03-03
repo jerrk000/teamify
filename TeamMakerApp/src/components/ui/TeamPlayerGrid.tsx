@@ -87,8 +87,6 @@ const DARK_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
 
 const GRID_GAP = 12
 
-const CARD_WIDTH_SHRINK = 16
-
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
 const rectCenter = (r: LayoutRectangle) => ({ x: r.x + r.width / 2, y: r.y + r.height / 2 })
@@ -152,8 +150,8 @@ export function layoutPreset(count: number): NormPoint[] {
       return [{ x: 0.5, y: 0.5 }]
     case 2:
       return [
-        { x: 0.33, y: 0.5 },
-        { x: 0.66, y: 0.5 },
+        { x: 0.28, y: 0.5 },
+        { x: 0.72, y: 0.5 },
       ]
     case 3:
       return [
@@ -431,27 +429,22 @@ const LEFT_RATIO = 0.80
 const RAIL_RATIO = 0.20
 
 const railWidth = useMemo(() => {
-  if (containerW <= 0) return 120
+  if (containerW <= 0) return 80
   return containerW * RAIL_RATIO
 }, [containerW])
 
 const leftW = useMemo(() => {
-  if (containerW <= 0) return 0
+  if (containerW <= 0) return 100 // maybe dont return 0
   return containerW * LEFT_RATIO
 }, [containerW])
 
-  // Team area heights (left side).
-  // For 4 players with 2 columns => 2 rows. We compute from count.
-  const rowsA = Math.max(1, Math.ceil(teamA.length / columns))
-  const rowsB = Math.max(1, Math.ceil(teamB.length / columns))
-
 const cardWidth = useMemo(() => {
-  if (leftW <= 0) return 75
+  if (leftW <= 0) return 75                               // if width is not defined, use predefined size
   // choose a “preferred cols” for current team size
-  const maxCount = Math.max(teamA.length, teamB.length)
-  const cols = maxCount <= 4 ? 2 : maxCount <= 6 ? 3 : 4
-  const base = (leftW - GRID_GAP * (cols - 1)) / cols
-  return Math.max(72, base - CARD_WIDTH_SHRINK)
+  const maxCount = Math.max(teamA.length, teamB.length)   // take bigger size of both teams
+  const scaling_factor = maxCount <= 2 ? 1 : maxCount <= 4 ? 1.5 : maxCount <= 6 ? 2 : 3
+  const base = (leftW * 0.4) / scaling_factor
+  return Math.max(72, base)
 }, [leftW, teamA.length, teamB.length])
 
 const cardHeight = Math.round(cardWidth / 0.71)
