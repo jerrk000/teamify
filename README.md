@@ -271,7 +271,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Maybe think about rewriting TeamPlayerGrid for easier scaling and positioning of PlayerCards
 - [ ] MakeTeamsScreen changes: Right rail better padding, also more padding for centerboxes
 - [x] Change colors of buttons for playerselectionscreen, i feel like they are too dark.
-- [ ] MakeTeamsScreen changes: Header also dark when darkmode.
+- [x] MakeTeamsScreen changes: Header also dark when darkmode.
 - [x] Use this website to make background transparent from png with blue and red border https://onlinepngtools.com/create-transparent-png
 - [x] Make PlayerCard-Prop which makes it possible to change the card in the background.
 - [x] Exchange the placeholder-avatar for the new one (after trimming parts to be transparent)
