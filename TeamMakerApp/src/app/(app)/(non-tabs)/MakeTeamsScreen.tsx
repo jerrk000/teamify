@@ -41,7 +41,7 @@ const SavedItemsScreen = () => {
   // undoing cross-team transfers. This flag prevents that feedback loop.
   const internalStoreUpdateRef = useRef(false)
 
-  const placeholderAvatar = require("../../../../assets/avatar-placeholder.png")
+  const placeholderAvatar = require("../../../../assets/avatar_placeholder.png")
   const courtBackgroundSource = theme.isDark
     ? require("../../../../assets/images/volleyball_court_black.png")
     : require("../../../../assets/images/volleyball_court.png")

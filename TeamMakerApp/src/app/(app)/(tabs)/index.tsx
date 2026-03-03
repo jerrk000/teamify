@@ -45,7 +45,7 @@ const HomeScreen = () => {
     themed, theme, themeContext,
   } = useAppTheme()
 
-  const placeholderAvatar = require("../../../../assets/avatar-placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
+  const placeholderAvatar = require("../../../../assets/avatar_placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredData, setFilteredData] = useState<Item[]>([]);
