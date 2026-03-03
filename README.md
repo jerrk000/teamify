@@ -276,3 +276,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Make PlayerCard-Prop which makes it possible to change the card in the background.
 - [ ] Exchange the placeholder-avatar for the new one (after trimming parts to be transparent)
 - [ ] Think about making the player cards lower quality, as they tiny most of the time (but not always, so maybe i need both)
+- [ ] Somehow there is too much room when a row consists of 3 PlayerCards  in MakeTeamsScreen. (i mean more room between two cards than between the two others.)
+- [ ] Change the size of the PlayerCards (with cardWidth), because with few players i think they are too big, and with many players maybe??? too small

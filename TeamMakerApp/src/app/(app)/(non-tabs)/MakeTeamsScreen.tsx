@@ -6,20 +6,11 @@ import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 import {
   CombinedTeamsGrid,
-  //GRID_COLUMNS_DEFAULT, //OLD
   type PlayerPointer,
   type TeamId,
   type TeamGridPlayer,
 } from "@/components/ui/TeamPlayerGrid"
 import { SafeAreaView } from "react-native-safe-area-context"
-
-// Example “diamond” layout for 4 slots (normalized inside the team area)
-const DIAMOND_4 = [
-  { x: 0.5, y: 0.0 }, // top center
-  { x: 1.0, y: 0.5 }, // right center
-  { x: 0.5, y: 1.0 }, // bottom center
-  { x: 0.0, y: 0.5 }, // left center
-] as const
 
 type PlayerWithAvatar = TeamGridPlayer
 
@@ -125,18 +116,15 @@ const SavedItemsScreen = () => {
       >
 
         <View style={themed($container)}>
-          {/*<Text style={themed($teamTitle)}>Teams</Text>*/}
 
           <CombinedTeamsGrid
             teamA={teams.teamA}
             teamB={teams.teamB}
-            layoutA={DIAMOND_4}
-            layoutB={DIAMOND_4}
             onSwapAcrossTeams={swapAcrossTeams}
             onMoveIntoTeam={moveIntoTeam}
             placeholderAvatarSource={placeholderAvatar}
-            teamABorderColor={theme.colors.volleyColors.volleyblue}
-            teamBBorderColor={theme.colors.volleyColors.volleyred}
+            teamABorderColor={theme.colors.volleyColors.volleyblue} //not needed anymore...
+            teamBBorderColor={theme.colors.volleyColors.volleyred}  //TODO not needed anymore
             themed={themed}
             theme={theme}
             leftCenterNumber={teams.teamA.length}

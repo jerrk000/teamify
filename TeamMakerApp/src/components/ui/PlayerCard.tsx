@@ -80,7 +80,7 @@ export function PlayerCard({
 const styles = StyleSheet.create({
     wrap: {
         width: 110,
-        aspectRatio: 0.71, 
+        aspectRatio: 0.71, //if this ever changes, you also have to change aspect ratio in TeamPlayerGrid
     },
     bg: {
         flex: 1,

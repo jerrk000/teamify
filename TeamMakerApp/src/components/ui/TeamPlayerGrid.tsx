@@ -86,14 +86,6 @@ const DARK_TEAM_CARD_PRESETS: Record<TeamId, CardVisualPreset> = {
 }
 
 const GRID_GAP = 12
-const PLAYER_CARD_HEIGHT = 110 //92
-
-const RAIL_MIN_W = 110
-const RAIL_MAX_W = 160
-const RAIL_GAP = 12
-
-const ZONE_HEIGHT = 72
-const ZONE_GAP = 12
 
 const CARD_WIDTH_SHRINK = 16
 
@@ -125,33 +117,140 @@ const intersectionArea = (a: LayoutRectangle, b: LayoutRectangle) => {
   return w * h
 }
 
+type NormPoint = { x: number; y: number }
+
+/** evenly-spaced centers across a row inside [left..right] */
+function rowXs(n: number, left = 0.18, right = 0.82): number[] {
+  if (n <= 1) return [(left + right) / 2]
+  const step = (right - left) / (n - 1)
+  return Array.from({ length: n }, (_, i) => left + i * step)
+}
+
 /**
- * Default 2x2 normalized positions (4 slots).
- * (0,0) top-left; (1,1) bottom-right.
+ * Build rows (back -> front) with fixed y-levels.
+ * Example rows: [4,4,2] means 4 defenders, 4 mids, 2 forwards.
  */
-const DEFAULT_2X2_LAYOUT: ReadonlyArray<{ x: number; y: number }> = [
-  { x: 0, y: 0 },
-  { x: 1, y: 0 },
-  { x: 0, y: 1 },
-  { x: 1, y: 1 },
-]
+function rowsLayout(rows: number[], ys: number[]): NormPoint[] {
+  const pts: NormPoint[] = []
+  for (let r = 0; r < rows.length; r++) {
+    const xs = rowXs(rows[r])
+    for (const x of xs) pts.push({ x, y: ys[r] })
+  }
+  return pts
+}
+
+/**
+ * 1–6: volleyball-ish
+ * 7–11: soccer-ish (back line -> midfield -> forwards)
+ *
+ * Coordinates are normalized CENTERS in [0..1].
+ */
+export function layoutPreset(count: number): NormPoint[] {
+  switch (count) {
+    // ---- volleyball-ish ----
+    case 1:
+      return [{ x: 0.5, y: 0.5 }]
+    case 2:
+      return [
+        { x: 0.33, y: 0.5 },
+        { x: 0.66, y: 0.5 },
+      ]
+    case 3:
+      return [
+        { x: 0.5, y: 0.30 },
+        { x: 0.33, y: 0.68 },
+        { x: 0.67, y: 0.68 },
+      ]
+    case 4:
+      return [
+        { x: 0.5, y: 0.20 },
+        { x: 0.20, y: 0.5 },
+        { x: 0.80, y: 0.5 },
+        { x: 0.5, y: 0.80 },
+      ]
+    case 5:
+      return [
+        { x: 0.20, y: 0.28 },
+        { x: 0.5, y: 0.28 },
+        { x: 0.80, y: 0.28 },
+        { x: 0.35, y: 0.70 },
+        { x: 0.65, y: 0.70 },
+      ]
+    case 6:
+      // classic 3x2
+      return [
+        { x: 0.25, y: 0.32 },
+        { x: 0.5, y: 0.32 },
+        { x: 0.75, y: 0.32 },
+        { x: 0.25, y: 0.70 },
+        { x: 0.5, y: 0.70 },
+        { x: 0.75, y: 0.70 },
+      ]
+
+    // ---- soccer-ish ----
+    // y's are back -> front (defenders near top, forwards near bottom)
+    // tweak these 3 values if you want tighter spacing
+    case 7:
+      // 3-3-1
+      return rowsLayout([3, 3, 1], [0.22, 0.50, 0.78])
+    case 8:
+      // 3-3-2
+      return rowsLayout([3, 3, 2], [0.22, 0.50, 0.78])
+    case 9:
+      // 4-3-2
+      return rowsLayout([4, 3, 2], [0.22, 0.50, 0.78])
+    case 10:
+      // 4-4-2
+      return rowsLayout([4, 4, 2], [0.22, 0.50, 0.78])
+    case 11:
+      // 4-3-3
+      return rowsLayout([4, 3, 3], [0.20, 0.50, 0.80])
+
+    default: {
+      // generic: pick a sensible soccer-ish distribution
+      // up to 14: keep 3 rows; beyond that: 4 rows
+      if (count <= 14) {
+        const back = Math.min(5, Math.max(3, Math.round(count * 0.36)))
+        const front = Math.min(4, Math.max(2, Math.round(count * 0.27)))
+        const mid = count - back - front
+        return rowsLayout([back, mid, front], [0.20, 0.50, 0.80])
+      }
+
+      // 4-row fallback (rare)
+      const cols = 4
+      const rows = Math.ceil(count / cols)
+      const pts: NormPoint[] = []
+      for (let i = 0; i < count; i++) {
+        const c = i % cols
+        const r = Math.floor(i / cols)
+        const x = (c + 1) / (cols + 1)
+        const y = (r + 1) / (rows + 1)
+        pts.push({ x, y })
+      }
+      return pts
+    }
+  }
+}
 
 function getSlotPositionNormalized(
   index: number,
   layout?: readonly { x: number; y: number }[],
   columnsFallback = 2,
+  totalCount = 1,
 ) {
-  // If layout provided and has index, use it.
   if (layout && layout[index]) return layout[index]
 
-  // Otherwise fallback to grid-like normalized coords.
-  // For 4 players default feels best as 2x2.
-  if (!layout && index < DEFAULT_2X2_LAYOUT.length) return DEFAULT_2X2_LAYOUT[index]
+  const cols = Math.max(1, columnsFallback)
+  const rows = Math.max(1, Math.ceil(totalCount / cols))
 
-  // Generic fallback: columns-based normalized position
-  const col = index % columnsFallback
-  const row = Math.floor(index / columnsFallback)
-  return { x: col, y: row }
+  const col = index % cols
+  const row = Math.floor(index / cols)
+
+  // normalized CENTER positions
+  return {
+    x: (col + 1) / (cols + 1),
+    y: (row + 1) / (rows + 1),
+  }
 }
 
 function slotRectFromNormalized(params: {
@@ -166,35 +265,23 @@ function slotRectFromNormalized(params: {
 }) {
   const { index, teamRect, cardWidth, cardHeight, gap, layout, columnsFallback } = params
 
-  const n = getSlotPositionNormalized(index, layout, columnsFallback)
-
-  // If user layout is normalized [0..1], treat x/y as {0,1} for 2x2 etc.
-  // If user provides more granular values, it still works (relative).
-  // We interpret:
-  // - if x/y <= 1 => normalized
-  // - else => "grid units" (0..N) with implied normalization
-  const isNormalized = n.x <= 1 && n.y <= 1
+  const p = getSlotPositionNormalized(index, layout, columnsFallback, params.count)
 
   const usableW = teamRect.width
   const usableH = teamRect.height
 
-  // Place cards inside team rect with a simple scheme:
-  // - For normalized: x/y in [0..1], map to 2 columns/rows extents (0 or 1)
-  // - For grid units: spread similarly but without needing team rows count.
-  const denomX = isNormalized ? 1 : Math.max(1, n.x)
-  const denomY = isNormalized ? 1 : Math.max(1, n.y)
+  // Interpret p.x/p.y as normalized CENTER positions in [0..1]
+  // (0,0) = top-left corner of the TEAM AREA, (1,1) = bottom-right
+  const cx = p.x * usableW
+  const cy = p.y * usableH
 
-  const x = isNormalized
-    ? n.x * (usableW - cardWidth) // 0 or 1 will align left/right edges
-    : (n.x / denomX) * (usableW - cardWidth)
+  // Convert center to top-left
+  const rawX = cx - cardWidth / 2
+  const rawY = cy - cardHeight / 2
 
-  const y = isNormalized
-    ? n.y * (usableH - cardHeight) // 0 or 1 align top/bottom edges
-    : (n.y / denomY) * (usableH - cardHeight)
-
-  // Add a little internal padding-like spacing by snapping to gap grid.
-  const snappedX = Math.round(x / gap) * gap
-  const snappedY = Math.round(y / gap) * gap
+  // Snap to grid a bit (optional)
+  const snappedX = Math.round(rawX / gap) * gap
+  const snappedY = Math.round(rawY / gap) * gap
 
   return {
     x: teamRect.x + clamp(snappedX, 0, Math.max(0, usableW - cardWidth)),
@@ -307,9 +394,8 @@ const DraggablePlayerCellCombined = ({
         cardBackgroundSource={cardVisualPreset.cardBackgroundSource}
         textColor={cardVisualPreset.textColor}
         cardWidth={cardWidth}
-        cardHeight={PLAYER_CARD_HEIGHT}
         themed={themed}
-        style={{ borderColor, borderWidth: 2 }}
+        //style={{ borderColor, borderWidth: 2 }} //TODO bordercolor is still a prop for many parts here, but it is no longer needed
       />
     </Animated.View>
   )
@@ -341,7 +427,7 @@ export const CombinedTeamsGrid = ({
   const teamCardPresets = theme.isDark ? DARK_TEAM_CARD_PRESETS : LIGHT_TEAM_CARD_PRESETS
 
 
-  const LEFT_RATIO = 0.80
+const LEFT_RATIO = 0.80
 const RAIL_RATIO = 0.20
 
 const railWidth = useMemo(() => {
@@ -359,14 +445,16 @@ const leftW = useMemo(() => {
   const rowsA = Math.max(1, Math.ceil(teamA.length / columns))
   const rowsB = Math.max(1, Math.ceil(teamB.length / columns))
 
-  // Card width is driven by leftW and columns.
-  const cardWidth = PLAYER_CARD_HEIGHT / 1.5
-  /* = useMemo(() => {
-    if (leftW <= 0) return 120
-    const base = (leftW - GRID_GAP * (columns - 1)) / columns
-    return Math.max(72, base - CARD_WIDTH_SHRINK) // keep a sensible min
-  }, [columns, leftW])
-  */
+const cardWidth = useMemo(() => {
+  if (leftW <= 0) return 75
+  // choose a “preferred cols” for current team size
+  const maxCount = Math.max(teamA.length, teamB.length)
+  const cols = maxCount <= 4 ? 2 : maxCount <= 6 ? 3 : 4
+  const base = (leftW - GRID_GAP * (cols - 1)) / cols
+  return Math.max(72, base - CARD_WIDTH_SHRINK)
+}, [leftW, teamA.length, teamB.length])
+
+const cardHeight = Math.round(cardWidth / 0.71)
 
   const teamAHeight = containerH / 2 - GRID_GAP / 2
   const teamBHeight = containerH / 2 - GRID_GAP / 2
@@ -428,38 +516,41 @@ const zoneBTarget: LayoutRectangle = {
   height: zoneBView.height,
 }
 
-  type TargetRect = { target: DropTarget; rect: LayoutRectangle }
-  const targetRectsRef = useRef<TargetRect[]>([])
+type TargetRect = { target: DropTarget; rect: LayoutRectangle }
+const targetRectsRef = useRef<TargetRect[]>([])
 
-  const slotRectsA = useMemo(() => {
-    return teamA.map((_p, i) =>
-      slotRectFromNormalized({
-        index: i,
-        count: teamA.length,
-        teamRect: teamARect,
-        cardWidth,
-        cardHeight: PLAYER_CARD_HEIGHT,
-        gap: GRID_GAP,
-        layout: layoutA,
-        columnsFallback: columns,
-      }),
-    )
-  }, [cardWidth, columns, layoutA, teamA, teamARect])
+const effectiveLayoutA = (layoutA && layoutA.length > 0) ? layoutA : layoutPreset(teamA.length)
+const effectiveLayoutB = (layoutB && layoutB.length > 0) ? layoutB : layoutPreset(teamB.length)
 
-  const slotRectsB = useMemo(() => {
-    return teamB.map((_p, i) =>
-      slotRectFromNormalized({
-        index: i,
-        count: teamB.length,
-        teamRect: teamBRect,
-        cardWidth,
-        cardHeight: PLAYER_CARD_HEIGHT,
-        gap: GRID_GAP,
-        layout: layoutB,
-        columnsFallback: columns,
-      }),
-    )
-  }, [cardWidth, columns, layoutB, teamB, teamBRect])
+const slotRectsA = useMemo(() => {
+  return teamA.map((_p, i) =>
+    slotRectFromNormalized({
+      index: i,
+      count: teamA.length,
+      teamRect: teamARect,
+      cardWidth,
+      cardHeight: cardHeight,
+      gap: GRID_GAP,
+      layout: effectiveLayoutA,
+      columnsFallback: columns,
+    }),
+  )
+}, [cardWidth, columns, effectiveLayoutA, teamA, teamARect])
+
+const slotRectsB = useMemo(() => {
+  return teamB.map((_p, i) =>
+    slotRectFromNormalized({
+      index: i,
+      count: teamB.length,
+      teamRect: teamBRect,
+      cardWidth,
+      cardHeight: cardHeight,
+      gap: GRID_GAP,
+      layout: effectiveLayoutB,
+      columnsFallback: columns,
+    }),
+  )
+}, [cardWidth, columns, effectiveLayoutB, teamB, teamBRect])
 
   const targets = useMemo(() => {
     const t: TargetRect[] = []
