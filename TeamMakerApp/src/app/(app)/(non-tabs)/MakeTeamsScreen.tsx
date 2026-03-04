@@ -42,9 +42,10 @@ const SavedItemsScreen = () => {
   const internalStoreUpdateRef = useRef(false)
 
   const placeholderAvatar = require("../../../../assets/avatar_placeholder.png")
-  const courtBackgroundSource = theme.isDark
-    ? require("../../../../assets/images/volleyball_court_black.png")
-    : require("../../../../assets/images/volleyball_court.png")
+  const courtBackgroundSource = require("../../../../assets/images/volleyball_court_sand_overflowing_new.png")
+  //theme.isDark // TODO comment this back in and write better logic to change background picture
+  //  ? require("../../../../assets/images/volleyball_court_black.png")
+  //  : require("../../../../assets/images/volleyball_court.png")
 
   useEffect(() => {
     if (internalStoreUpdateRef.current) {
