@@ -127,8 +127,8 @@ const SavedItemsScreen = () => {
             teamBBorderColor={theme.colors.volleyColors.volleyred}  //TODO not needed anymore
             themed={themed}
             theme={theme}
-            leftCenterNumber={teams.teamA.length}
-            rightCenterNumber={teams.teamB.length}
+            upperCenterNumber={teams.teamA.length}
+            lowerCenterNumber={teams.teamB.length}
           />
           {/* Randomize Teams Button 
           <View style={themed($simplebuttonContainer)}>

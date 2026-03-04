@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import {
   Animated,
   PanResponder,
@@ -15,6 +15,7 @@ import { Button } from "@/components/Button"
 import { IconSymbol } from "@/components/ui/IconSymbol"
 import { PlayerCard } from "@/components/ui/PlayerCard"
 import { router } from "expo-router"
+import { waitFor } from "@testing-library/react-native"
 
 export type TeamGridPlayer = Player & { avatarUri?: string }
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
@@ -85,6 +86,12 @@ const intersectionArea = (a: LayoutRectangle, b: LayoutRectangle) => {
   const h = y2 - y1
   if (w <= 0 || h <= 0) return 0
   return w * h
+}
+
+const formatElapsedTime = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60)
+  const seconds = totalSeconds % 60
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`
 }
 
 type NormPoint = { x: number; y: number }
@@ -331,8 +338,26 @@ export const CombinedTeamsGrid = ({
   const [containerW, setContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [isTimerRunning, setIsTimerRunning] = useState(true)
+  const timerStartedAtRef = useRef<number | null>(Date.now())
+  const accumulatedElapsedMsRef = useRef(0)
 
   const teamCardPresets = theme.isDark ? DARK_TEAM_CARD_PRESETS : LIGHT_TEAM_CARD_PRESETS
+
+  useEffect(() => {
+    const timerId = setInterval(() => {
+      if (!isTimerRunning || timerStartedAtRef.current === null) {
+        setElapsedSeconds(Math.floor(accumulatedElapsedMsRef.current / 1000))
+        return
+      }
+
+      const totalMs = accumulatedElapsedMsRef.current + (Date.now() - timerStartedAtRef.current)
+      setElapsedSeconds(Math.floor(totalMs / 1000))
+    }, 1000)
+
+    return () => clearInterval(timerId)
+  }, [isTimerRunning])
 
   const leftW = containerW * 0.8 //LEFT CONTAINER
   const railW = containerW * 0.2 //RIGHT CONTAINER
@@ -454,7 +479,47 @@ export const CombinedTeamsGrid = ({
     onMoveIntoTeam(from, target.team)
   }
 
-  const centerNumbersTop = Math.max(10, containerH / 2 - 44)
+  const centerNumbersTop = Math.max(10, containerH / 2 - 62)
+  const temporarilyStopTimer = () => {
+    if (timerStartedAtRef.current === null) return
+
+    accumulatedElapsedMsRef.current += Date.now() - timerStartedAtRef.current
+    timerStartedAtRef.current = null
+    setIsTimerRunning(false)
+    setElapsedSeconds(Math.floor(accumulatedElapsedMsRef.current / 1000))
+  }
+
+  const stopTimer = () => {
+    timerStartedAtRef.current = null
+    accumulatedElapsedMsRef.current = 0
+    setElapsedSeconds(0)
+    setIsTimerRunning(false)
+  }
+
+  const resumeTimer = () => {
+    if (timerStartedAtRef.current !== null) return
+    timerStartedAtRef.current = Date.now()
+    setIsTimerRunning(true)
+  }
+
+  const resetTimer = () => {
+    accumulatedElapsedMsRef.current = 0
+    timerStartedAtRef.current = Date.now()
+    setElapsedSeconds(0)
+    setIsTimerRunning(true)
+  }
+
+  const handleShufflePress = () => {
+    resetTimer()
+
+    // Put Shuffle logic here
+    alert("Shuffle Teams")
+  }
+
+  const handleWinnerPress = () => {
+    resetTimer()
+    alert("Winner")
+  }
 
   return (
     <View
@@ -510,6 +575,9 @@ export const CombinedTeamsGrid = ({
             <Text style={themed($centerNumberText)}>{upperCenterNumber}</Text>
           </View>
           <View pointerEvents="none" style={themed($centerNumberBox)}>
+            <Text style={themed($centerTimerText)}>{formatElapsedTime(elapsedSeconds)}</Text>
+          </View>
+          <View pointerEvents="none" style={themed($centerNumberBox)}>
             <Text style={themed($centerNumberText)}>{lowerCenterNumber}</Text>
           </View>
         </View>
@@ -526,7 +594,7 @@ export const CombinedTeamsGrid = ({
         ) : (
           <View style={themed($railButtons)}>
             <Button // TODO maybe paremetrize this button
-              onPress={() => alert('Shuffle')}
+              onPress={handleShufflePress}
               style={[themed($railButton),]} 
               RightAccessory={({ style }) => (
                 <View style={style}>
@@ -560,7 +628,7 @@ export const CombinedTeamsGrid = ({
             <View style={{ height: 12 }} />
 
             <Button // TODO maybe paremetrize this button
-              onPress={() => alert('Winner')}
+              onPress={handleWinnerPress}
               style={[themed($winnerButton),]}
               RightAccessory={({ style }) => (
                 <View style={style}>
@@ -654,6 +722,13 @@ const $centerNumberText: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.text,
   fontWeight: "700",
   fontSize: 16,
+})
+
+const $centerTimerText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontWeight: "700",
+  fontSize: 14,
+  letterSpacing: 0.6,
 })
 
 const $centerNumbersStack: ThemedStyle<ViewStyle> = () => ({
