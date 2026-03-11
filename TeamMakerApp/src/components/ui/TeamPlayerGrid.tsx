@@ -669,18 +669,18 @@ const $rightRail: ThemedStyle<ViewStyle> = (theme) => ({
   borderLeftColor: theme.colors.border,
   overflow: "visible",
   paddingBottom: 14,
-  paddingLeft: 8,
-  paddingRight: 4,
+  //paddingLeft: 30, //TODO check if you feel this somewhere
+  //paddingRight: 4,
 })
 
 const $railButtons: ThemedStyle<ViewStyle> = () => ({
   width: "100%",
-  alignItems: "center",      // ✅ center buttons horizontally
-  paddingHorizontal: 2,
+  alignItems: "center",      //  center buttons horizontally
+  //paddingHorizontal: 2,
 })
 
 const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
-  width: "90%",              // centered within rail
+  width: "85%",              // centered within rail
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.border,
@@ -690,7 +690,7 @@ const $railButton: ThemedStyle<ViewStyle> = (theme) => ({
 })
 
 const $winnerButton: ThemedStyle<ViewStyle> = (theme) => ({
-  width: "90%",
+  width: "85%",
   borderRadius: 12,
   borderWidth: 1,
   borderColor: theme.colors.palette.green500,

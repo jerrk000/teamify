@@ -282,3 +282,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Make the volleyball_court_sand_overflow_(new).png fit better, so same amount of space outside of field on both sides. Maybe also change positions/sizes of cards to make it fit better
 - [ ] Make current HomeScreen (=PlayerSelectionScreen) a new Screen that appears when choosing a new game. Make it a correct sequence ("New Game" on Dashboard -> PlayerSelectionScreen -> MakeTeamsScreen (maybe rename this screen))
 - [ ] Make new HomeScreen with different buttons which route you to important parts. Small part for notifications about past games.
+- [ ] Make parent give exact size to TeamPlayerGrid, so that it aligns with background picture.

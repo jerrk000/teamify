@@ -42,7 +42,7 @@ const SavedItemsScreen = () => {
   const internalStoreUpdateRef = useRef(false)
 
   const placeholderAvatar = require("../../../../assets/avatar_placeholder.png")
-  const courtBackgroundSource = require("../../../../assets/images/volleyball_court_sand_overflowing_new.png")
+  const courtBackgroundSource = require("../../../../assets/images/volleyball_court_sand_overflowing_new_new.png")
   //theme.isDark // TODO comment this back in and write better logic to change background picture
   //  ? require("../../../../assets/images/volleyball_court_black.png")
   //  : require("../../../../assets/images/volleyball_court.png")
@@ -109,7 +109,7 @@ const SavedItemsScreen = () => {
     <SafeAreaView style={themed($outerContainer)}>
       <BackgroundPicture
         source={courtBackgroundSource}
-        width="90%"
+        width="80%" // TODO temporary change only, to better see the line of the right rail
         height="100%"
         horizontalPosition="left"
         resizeMode="stretch"
@@ -183,7 +183,7 @@ const $outerContainer: ThemedStyle<ViewStyle> = (theme) => ({
 
 const $container: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 1,
-  padding: 16,
+  //padding: 16, //just makes it more difficult to have it with the same layout as TeamPlayerGrid
   alignItems: "center",
 })
 
