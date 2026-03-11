@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   Animated,
   PanResponder,
@@ -432,7 +432,7 @@ export const CombinedTeamsGrid = ({
 
   targetRectsRef.current = targets
 
-  const getDropTarget = (from: PlayerPointer, dx: number, dy: number): DropTarget | null => {
+  const getDropTarget = useCallback((from: PlayerPointer, dx: number, dy: number): DropTarget | null => {
     const rects = targetRectsRef.current
     if (!rects.length) return null
 
@@ -465,9 +465,9 @@ export const CombinedTeamsGrid = ({
       }
     }
     return best?.target ?? null
-  }
+  }, [slotRectsA, slotRectsB])
 
-  const onDropOnTarget = (from: PlayerPointer, target: DropTarget) => {
+  const onDropOnTarget = useCallback((from: PlayerPointer, target: DropTarget) => {
     if (target.kind === "player") {
       if (from.team === target.team && from.index === target.index) return
       onSwapAcrossTeams(from, { team: target.team, index: target.index })
@@ -477,7 +477,7 @@ export const CombinedTeamsGrid = ({
     // join zone
     if (target.team === from.team) return
     onMoveIntoTeam(from, target.team)
-  }
+  }, [onMoveIntoTeam, onSwapAcrossTeams])
 
   const centerNumbersTop = Math.max(10, containerH / 2 - 62)
   const temporarilyStopTimer = () => {
@@ -508,6 +508,15 @@ export const CombinedTeamsGrid = ({
     setElapsedSeconds(0)
     setIsTimerRunning(true)
   }
+
+  const handleDragStateChange = useCallback((dragging: boolean) => {
+    setIsDragging(dragging)
+    if (dragging) {
+      temporarilyStopTimer()
+      return
+    }
+    resumeTimer()
+  }, [])
 
   const handleShufflePress = () => {
     resetTimer()
@@ -544,7 +553,7 @@ export const CombinedTeamsGrid = ({
           getDropTarget={getDropTarget}
           onDropOnTarget={onDropOnTarget}
           slotRect={slotRectsA[index]}
-          onDragStateChange={setIsDragging}
+          onDragStateChange={handleDragStateChange}
         />
       ))}
 
@@ -562,7 +571,7 @@ export const CombinedTeamsGrid = ({
           getDropTarget={getDropTarget}
           onDropOnTarget={onDropOnTarget}
           slotRect={slotRectsB[index]}
-          onDragStateChange={setIsDragging}
+          onDragStateChange={handleDragStateChange}
         />
       ))}
 
