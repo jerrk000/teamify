@@ -279,3 +279,6 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Somehow there is too much room when a row consists of 3 PlayerCards  in MakeTeamsScreen. (i mean more room between two cards than between the two others.)
 - [x] Change the size of the PlayerCards (with cardWidth), because with few players i think they are too big, and with many players maybe??? too small
 - [x] When darkmode, think about using a background for the avatar again, so that people with black hair can see their hair
+- [ ] Make the volleyball_court_sand_overflow_(new).png fit better, so same amount of space outside of field on both sides. Maybe also change positions/sizes of cards to make it fit better
+- [ ] Make current HomeScreen (=PlayerSelectionScreen) a new Screen that appears when choosing a new game. Make it a correct sequence ("New Game" on Dashboard -> PlayerSelectionScreen -> MakeTeamsScreen (maybe rename this screen))
+- [ ] Make new HomeScreen with different buttons which route you to important parts. Small part for notifications about past games.
