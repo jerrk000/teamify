@@ -723,7 +723,7 @@ const $joinZoneText: ThemedStyle<TextStyle> = (theme) => ({
 })
 
 const $centerNumberBox: ThemedStyle<ViewStyle> = (theme) => ({
-  width: "90%", 
+  width: "85%",
   height: 36,
   borderRadius: 8,
   borderWidth: 1,
