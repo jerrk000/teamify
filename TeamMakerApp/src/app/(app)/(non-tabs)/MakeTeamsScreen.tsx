@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Text, TouchableOpacity, View, type TextStyle, type ViewStyle } from "react-native"
+import { Text, TouchableOpacity, View, type LayoutChangeEvent, type TextStyle, type ViewStyle } from "react-native"
 import { useListStore } from "../../../store/useListStore"
 import BackgroundPicture from "@/components/ImageBackground"
 import { useAppTheme } from "@/theme/context"
@@ -35,6 +35,7 @@ const SavedItemsScreen = () => {
   const setItems = useListStore((state) => state.setItems)
   const [showAdditionalButtons, setShowAdditionalButtons] = useState(false)
   const [teams, setTeams] = useState<TeamSplit>({ teamA: [], teamB: [] })
+  const [containerWidth, setContainerWidth] = useState(0)
 
   // When we persist a local drag/drop change into the global store, the `items`
   // subscription will fire and this screen's effect would re-split the list in half,
@@ -105,11 +106,17 @@ const SavedItemsScreen = () => {
     setItems(shuffled)
   }
 
+  const handleContainerLayout = (event: LayoutChangeEvent) => {
+    setContainerWidth(event.nativeEvent.layout.width)
+  }
+
+  const backgroundWidth = containerWidth > 0 ? containerWidth * 0.8 : "80%"
+
   return (
-    <SafeAreaView style={themed($outerContainer)}>
+    <SafeAreaView style={themed($outerContainer)} onLayout={handleContainerLayout}>
       <BackgroundPicture
         source={courtBackgroundSource}
-        width="80%" // TODO temporary change only, to better see the line of the right rail
+        width={backgroundWidth}
         height="100%"
         horizontalPosition="left"
         resizeMode="stretch"
@@ -128,6 +135,7 @@ const SavedItemsScreen = () => {
             teamBBorderColor={theme.colors.volleyColors.volleyred}  //TODO not needed anymore
             themed={themed}
             theme={theme}
+            containerWidth={containerWidth || undefined}
             upperCenterNumber={teams.teamA.length}
             lowerCenterNumber={teams.teamB.length}
           />

@@ -35,6 +35,7 @@ export type DropTarget =
 export type CombinedTeamsGridProps = {
   teamA: TeamGridPlayer[]
   teamB: TeamGridPlayer[]
+  containerWidth?: number
 
   onSwapAcrossTeams: (from: PlayerPointer, to: PlayerPointer) => void
   onMoveIntoTeam: (from: PlayerPointer, toTeam: TeamId) => void
@@ -325,6 +326,7 @@ const DraggablePlayerCellCombined = ({
 export const CombinedTeamsGrid = ({
   teamA,
   teamB,
+  containerWidth,
   onSwapAcrossTeams,
   onMoveIntoTeam,
   placeholderAvatarSource,
@@ -335,7 +337,7 @@ export const CombinedTeamsGrid = ({
   upperCenterNumber = 0,
   lowerCenterNumber = 0,
 }: CombinedTeamsGridProps) => {
-  const [containerW, setContainerW] = useState(0)
+  const [measuredContainerW, setMeasuredContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
@@ -359,8 +361,10 @@ export const CombinedTeamsGrid = ({
     return () => clearInterval(timerId)
   }, [isTimerRunning])
 
-  const leftW = containerW * 0.8 //LEFT CONTAINER
-  const railW = containerW * 0.2 //RIGHT CONTAINER
+  const effectiveContainerW = containerWidth ?? measuredContainerW
+
+  const leftW = effectiveContainerW * 0.8 //LEFT CONTAINER
+  const railW = effectiveContainerW * 0.2 //RIGHT CONTAINER
 
   const cardWidth = useMemo(() => {
     if (leftW <= 0) return 75
@@ -534,7 +538,9 @@ export const CombinedTeamsGrid = ({
     <View
       onLayout={(event) => {
         const { width, height } = event.nativeEvent.layout
-        setContainerW(width)
+        if (containerWidth === undefined) {
+          setMeasuredContainerW(width)
+        }
         setContainerH(height)
       }}
       style={[themed($gridContainer), { flex: 1 }]}

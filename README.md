@@ -284,4 +284,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Make new HomeScreen with different buttons which route you to important parts. Small part for notifications about past games.
 - [ ] HomeScreen-Button: Local, unrated game: quickly add players to a match, does not count to official stats. (maybe make it easier to add local players?)
 - [ ] In the place where a player can check their own profile and change their official name, card, stats etc., make an option where they can define additional positions like striker, left midfield for football or libero, middle for volleyball. This should then be used when creating teams, so that the teams can be split more evenly.
-- [ ] Make parent give exact size to TeamPlayerGrid, so that it aligns with background picture.
+- [x] Make parent give exact size to TeamPlayerGrid, so that it aligns with background picture.
