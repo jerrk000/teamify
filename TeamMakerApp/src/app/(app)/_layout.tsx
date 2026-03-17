@@ -30,6 +30,12 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="(non-tabs)/GameScreen"
+        options={{
+          title: "Teams",
+        }}
+      />
+      <Stack.Screen
         name="(non-tabs)/PreviewScreen"
         options={{
           title: "Player Card Preview",

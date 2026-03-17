@@ -1,253 +1,358 @@
-import React, { useEffect, useRef, useState } from "react"
-import { Text, TouchableOpacity, View, type LayoutChangeEvent, type TextStyle, type ViewStyle } from "react-native"
-import { useListStore } from "../../../store/useListStore"
-import BackgroundPicture from "@/components/ImageBackground"
-import { useAppTheme } from "@/theme/context"
-import { ThemedStyle } from "@/theme/types"
-import {
-  CombinedTeamsGrid,
-  type PlayerPointer,
-  type TeamId,
-  type TeamGridPlayer,
-} from "@/components/ui/TeamPlayerGrid"
-import { SafeAreaView } from "react-native-safe-area-context"
+import React, {useState, useEffect} from 'react';
+import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, ScrollView, useWindowDimensions, type TextStyle } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useListStore } from "../../../store/useListStore";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { IconSymbol } from '@/components/ui/IconSymbol';
+import { $styles } from '@/theme/styles';
+import { Button } from '@/components/Button'
+import SelectedPlayers from '@/components/ui/SelectedPlayers';
+import { useAppTheme } from '@/theme/context';
+import { ThemedStyle } from '@/theme/types';
+import { SearchField } from '@/components/SearchField';
+import { PlayerList } from '@/components/ui/PlayerList';
+import { OptionTabs } from "@/components/ui/OptionTabs"
+import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/GameOptionsTabs';
 
-type PlayerWithAvatar = TeamGridPlayer
+type Item = {
+  id: string;
+  name: string;
+};
 
-type TeamSplit = {
-  teamA: PlayerWithAvatar[]
-  teamB: PlayerWithAvatar[]
-}
+const MakeTeamsScreen = () => {
+  const router = useRouter();
+  const setItems = useListStore((state) => state.setItems);
+  const [data, setData] = useState<Item[]>([
+    { id: '1', name: 'Nikolaus' },
+    { id: '2', name: 'Silvester' },
+    { id: '3', name: 'David' },
+    { id: '4', name: 'Lukas' },
+    { id: '5', name: 'Anton' },
+    { id: '6', name: 'Maria' },
+    { id: '7', name: 'Josef' },
+    { id: '8', name: 'Mario' },
+    { id: '9', name: 'Simon' },
+    { id: '10', name: 'Markus' },
+    { id: '11', name: 'Bernd' },
+    { id: '12', name: 'Maximilian' },
+    { id: '13', name: 'Markus Aurelius Dominikus' },
+    { id: '14', name: 'Maximilian Baximilian Raximus' },
+    { id: '15', name: 'Servus Versus Cersus' },
+  ]);
 
-const splitIntoTeams = (allPlayers: PlayerWithAvatar[]): TeamSplit => {
-  const half = Math.ceil(allPlayers.length / 2)
 
-  return {
-    teamA: allPlayers.slice(0, half),
-    teamB: allPlayers.slice(half),
-  }
-}
+  const {
+    themed, theme, themeContext,
+  } = useAppTheme()
 
-const SavedItemsScreen = () => {
-  const { themed, theme } = useAppTheme()
+  const placeholderAvatar = theme.isDark
+    ? require("../../../../assets/avatar_placeholder_white.png")
+    : require("../../../../assets/avatar_placeholder.png")
 
-  const items = useListStore((state) => state.items as PlayerWithAvatar[])
-  const setItems = useListStore((state) => state.setItems)
-  const [showAdditionalButtons, setShowAdditionalButtons] = useState(false)
-  const [teams, setTeams] = useState<TeamSplit>({ teamA: [], teamB: [] })
-  const [containerWidth, setContainerWidth] = useState(0)
-
-  // When we persist a local drag/drop change into the global store, the `items`
-  // subscription will fire and this screen's effect would re-split the list in half,
-  // undoing cross-team transfers. This flag prevents that feedback loop.
-  const internalStoreUpdateRef = useRef(false)
-
-  const placeholderAvatar = require("../../../../assets/avatar_placeholder.png")
-  const courtBackgroundSource = require("../../../../assets/images/volleyball_court_sand_overflowing_new_new.png")
-  //theme.isDark // TODO comment this back in and write better logic to change background picture
-  //  ? require("../../../../assets/images/volleyball_court_black.png")
-  //  : require("../../../../assets/images/volleyball_court.png")
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredData, setFilteredData] = useState<Item[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Item[]>(() => {
+    // Initialize with the item that has id=1 //TODO change this to their own user
+    const initialItem = data.find(item => item.id === '1'); 
+    return initialItem ? [initialItem] : [];
+  });
+  const [inputName, setInputName] = useState('');
+  const { height: windowHeight } = useWindowDimensions();
+  const selectedPlayersMaxHeight = windowHeight * 0.3;
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const [tab, setTab] = useState<GameOptionsTagKey>(GAME_OPTIONS_TAGS[0].key);
 
   useEffect(() => {
-    if (internalStoreUpdateRef.current) {
-      internalStoreUpdateRef.current = false
-      return
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+  
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    const filtered = data.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredData(filtered);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery("");
+    setFilteredData(data);
+  };
+
+  const handleItemPress = (item: Item) => {
+    if (!selectedItems.some((selected) => selected.id === item.id)) {
+      setSelectedItems([...selectedItems, item]); //add item if not already selected
     }
+    else {
+      handleRemoveItem(item); //delete item if it was already selected
+    }
+  };
 
-    setTeams(splitIntoTeams(items))
-  }, [items])
+  const handleRemoveItem = (item: Item) => {
+    const updatedItems = selectedItems.filter((selected) => selected.id !== item.id);
+    setSelectedItems(updatedItems);
+  };
 
-  const syncStoreFromTeams = (nextTeams: TeamSplit) => {
-    internalStoreUpdateRef.current = true
-    setItems([...nextTeams.teamA, ...nextTeams.teamB])
+  const handleAddItem = () => {
+    if (inputName.trim()) {
+      const newItem: Item = {
+        id: String(data.length + 1),
+        name: inputName + " (temp)",
+      };
+      setData([...data, newItem]);
+      setInputName('');
+      if (!selectedItems.some((selected) => selected.id === newItem.id)) {
+        setSelectedItems([...selectedItems, newItem]); //add item if not already selected
+      } 
+    }
+  };
+
+  const handleClearSelectedItems = () => {
+    setSelectedItems([]);
+  };
+
+  const isItemSelected = (item: Item) => {
+    return selectedItems.some((selected) => selected.id === item.id);
+  };
+
+  const handleCreateTeams = () => {
+    setItems(selectedItems); // Store the list in Zustand
+    const actionByTab: Record<GameOptionsTagKey, () => void> = {
+      random: () =>router.push({pathname: '/MakeTeamsScreen',}),
+      custom: () => router.push({pathname: '/MakeTeamsScreen',}),
+      tournament: () => router.push({pathname: '/MakeTeamsScreen',}),
+      keepscore: () => router.push({pathname: '/MakeTeamsScreen',}),
+      // Dont forget to add cases here if new modes are implemented
   }
-
-  const swapAcrossTeams = (from: PlayerPointer, to: PlayerPointer) => {
-    setTeams((prev) => {
-      const next: TeamSplit = { teamA: [...prev.teamA], teamB: [...prev.teamB] }
-
-      const fromArr = from.team === "teamA" ? next.teamA : next.teamB
-      const toArr = to.team === "teamA" ? next.teamA : next.teamB
-
-      const tmp = fromArr[from.index]
-      fromArr[from.index] = toArr[to.index]
-      toArr[to.index] = tmp
-
-      syncStoreFromTeams(next)
-      return next
-    })
-  }
-
-  const moveIntoTeam = (from: PlayerPointer, toTeam: TeamId) => {
-    setTeams((prev) => {
-      if (from.team === toTeam) return prev
-
-      const next: TeamSplit = { teamA: [...prev.teamA], teamB: [...prev.teamB] }
-      const fromArr = from.team === "teamA" ? next.teamA : next.teamB
-      const toArr = toTeam === "teamA" ? next.teamA : next.teamB
-
-      const [moved] = fromArr.splice(from.index, 1)
-      if (!moved) return prev
-
-      // current behavior: append to the end of the target team.
-      toArr.push(moved)
-
-      syncStoreFromTeams(next)
-      return next
-    })
-  }
-
-  const randomizeItems = () => {
-    const allPlayers = [...teams.teamA, ...teams.teamB]
-    const shuffled = allPlayers.sort(() => Math.random() - 0.5)
-    const nextTeams = splitIntoTeams(shuffled)
-
-    setTeams(nextTeams)
-    setItems(shuffled)
-  }
-
-  const handleContainerLayout = (event: LayoutChangeEvent) => {
-    setContainerWidth(event.nativeEvent.layout.width)
-  }
-
-  const backgroundWidth = containerWidth > 0 ? containerWidth * 0.8 : "80%"
+  actionByTab[tab]()
+  };
 
   return (
-    <SafeAreaView style={themed($outerContainer)} onLayout={handleContainerLayout}>
-      <BackgroundPicture
-        source={courtBackgroundSource}
-        width={backgroundWidth}
-        height="100%"
-        horizontalPosition="left"
-        resizeMode="stretch"
-        contentFullWidth
-      >
+    <SafeAreaView style={themed($container)}>
+      <Text style={themed($header)}>Add Players</Text>
+      <View>
+        <OptionTabs
+          options={GAME_OPTIONS_TAGS}
+          value={tab}
+          onChange={setTab}
+          rightHint="fade"
+          showBottomDivider={false}
+        />
+      </View>
+      <View style={themed($searchContainer)}>
+        <SearchField
+          value={searchQuery}
+          onChangeText={handleSearch}
+          placeholder="Search Player…"
+          onClear={clearSearch}
+          onSubmit={(q) => handleSearch(q)}
+          testID="players-search"
+          inputTestID="players-search-input"
+          clearButtonTestID="players-search-clear"
+          containerStyle={(theme) => ({ width: "100%",})}
+        />
+      </View>
 
-        <View style={themed($container)}>
-
-          <CombinedTeamsGrid
-            teamA={teams.teamA}
-            teamB={teams.teamB}
-            onSwapAcrossTeams={swapAcrossTeams}
-            onMoveIntoTeam={moveIntoTeam}
-            placeholderAvatarSource={placeholderAvatar}
-            teamABorderColor={theme.colors.volleyColors.volleyblue} //not needed anymore...
-            teamBBorderColor={theme.colors.volleyColors.volleyred}  //TODO not needed anymore
-            themed={themed}
-            theme={theme}
-            containerWidth={containerWidth || undefined}
-            upperCenterNumber={teams.teamA.length}
-            lowerCenterNumber={teams.teamB.length}
+      <View style={themed($buttonRow)}>
+        <View style={themed($leftContainer)}>
+          <SearchField
+            value={inputName}
+            onChangeText={setInputName}
+            placeholder="Add temp player"
+            onSubmit={handleAddItem}
+            testID="players-add"
+            inputTestID="players-add-input"
+            clearButtonTestID="players-add-clear"
+            showSearchIcon={false}
           />
-          {/* Randomize Teams Button 
-          <View style={themed($simplebuttonContainer)}>
-            <Button
-              text="Randomize Teams"
-              onPress={randomizeItems}
-              style={[themed($randomizeButton), { backgroundColor: "red" }]}
-            />
-          </View>
-
-          <View style={themed($simplebuttonContainer)}>
-            <Button
-              text="Choose winner"
-              onPress={() => setShowAdditionalButtons(!showAdditionalButtons)}
-              style={{ backgroundColor: "red" }} // TODO this is hardcoded
-            />
-          </View>
-          */}
-
-          {/* Overlay with Additional Buttons */}
-          {showAdditionalButtons ? (
-            <View style={themed($overlay)}>
-              <TouchableOpacity
-                style={themed($overlayBackground)}
-                activeOpacity={1}
-                onPress={() => setShowAdditionalButtons(false)}
-              />
-
-              <TouchableOpacity
-                style={[themed($button), { backgroundColor: theme.colors.volleyColors.volleyredTransparent }]}
-                onPress={() => alert("Team Red will be saved as winner")}
-              >
-                <Text style={themed($buttonText)}>Winner</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={themed($button)} onPress={() => alert("Team Blue will be saved as winner")}>
-                <Text style={themed($buttonText)}>Winner</Text>
-              </TouchableOpacity>
-            </View>
-          ) : null}
+          <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
+            <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
+          </TouchableOpacity>
         </View>
-      </BackgroundPicture>
-    </SafeAreaView>
-  )
-}
 
-const $outerContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  flex: 1,
-  backgroundColor: theme.colors.palette.neutral100, //TODO make it an official color of theme, maybe theme.colors.backgroundLight
-})
+        <View style={themed($clearItemsButton)}>
+          <Button
+            text="Clear"
+            onPress={handleClearSelectedItems}
+            style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
+            textStyle={themed($clearSelectionButtonText)}
+            RightAccessory={({ style }) => (
+              <View style={style}>
+                <IconSymbol
+                  size={28}
+                  name="delete"
+                  color={theme.colors.iconColor}
+                  iconSet="material"
+                />
+              </View>
+            )}
+          />
+        </View>
+      </View>
+
+
+      <PlayerList
+        data={filteredData.length > 0 ? filteredData : data}
+        themed={themed}
+        isSelected={(item) => isItemSelected(item)}
+        favoriteDisabled={true}
+        onPressRow={(item) => handleItemPress(item)}
+        onPressFavorite={(item) => console.log("fav", item.id)}
+        onPressMore={(item) => console.log("more", item.id)}
+        placeholderAvatarSource={placeholderAvatar}
+      />
+
+      <View style={themed($fullWidthDivider)} />
+      <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
+      {!keyboardStatus ? (
+      <View style={{ maxHeight: selectedPlayersMaxHeight }}>
+        <ScrollView
+          //keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={true}
+        >
+          <SelectedPlayers 
+            selectedPlayers={selectedItems} 
+            onClickPlayer={handleRemoveItem}
+            selectedItemStyle={themed($selectedItem)}
+            textStyle={themed($selectedItemText)} 
+          />
+        </ScrollView>
+      </View>
+        ) : null
+      }
+      <Button
+        text="Create Teams" 
+        onPress={handleCreateTeams} 
+        style={themed($Button)}
+        textStyle={themed($saveButtonText)} 
+      />
+    </SafeAreaView>
+  );
+};
+
+
 
 const $container: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 1,
-  //padding: 16, //just makes it more difficult to have it with the same layout as TeamPlayerGrid
-  alignItems: "center",
-})
+  paddingTop: 8,
+  paddingLeft: 16,
+  paddingRight: 16,
+  backgroundColor: theme.colors.background,
+});
 
-const $teamTitle: ThemedStyle<TextStyle> = (theme) => ({
+const $header: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 24,
-  fontWeight: "bold",
-  marginBottom: 10,
-  textAlignVertical: "center",
-  textAlign: "center",
-  color: theme.colors.text,
-})
+  fontWeight: 'bold',
+  textAlign: 'center',
+  marginVertical: 5,
+  color: theme.colors.text, // TODO what does this do again?
+});
 
-const $simplebuttonContainer: ThemedStyle<ViewStyle> = () => ({
-  marginTop: 16,
-  marginBottom: 16,
-})
-
-const $overlay: ThemedStyle<ViewStyle> = () => ({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  justifyContent: "center",
-  alignItems: "center",
-})
-
-const $overlayBackground: ThemedStyle<ViewStyle> = (theme) => ({
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: theme.colors.palette.overlaymodal,
-})
-
-const $button: ThemedStyle<ViewStyle> = (theme) => ({
+const $searchBar: ThemedStyle<TextStyle> = (theme) => ({
   flex: 1,
-  width: "70%",
-  height: "40%",
-  padding: 15,
-  backgroundColor: theme.colors.volleyColors.volleyblueTransparent,
-  borderRadius: 5,
-  marginVertical: 60,
+  height: 40,
+  borderColor: theme.colors.border,
+  borderWidth: 1,
+  paddingLeft: 8,
+  color: theme.colors.text, // TODO what does it do?
+});
+
+const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: "row",
   alignItems: "center",
-  justifyContent: "center",
-})
+  alignSelf: "stretch",
+  //paddingHorizontal: 10,
+  marginBottom: 16,
+  marginTop: 16,
+});
 
-const $buttonText: ThemedStyle<TextStyle> = () => ({
-  color: "white",
-  fontSize: 20,
-})
+// TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
 
-const $randomizeButton: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.buttonBackground,
+const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
+  height: 4,
+  backgroundColor: theme.colors.border, //marginHorizontal: -16, // cancel container padding
+  marginBottom: 8,
+});
+
+const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginTop: 4, 
+  marginBottom: 12,
+  color: theme.colors.text, // TODO what does this do again, just color of text?
+});
+
+const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: 10,
+  backgroundColor: theme.colors.itemBackground, 
+  margin: 5,
+  borderWidth: 2,
+  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
+  borderRadius: 10, // Rounded corners
+});
+
+const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 16,
+});
+
+const $clearItemsButton: ThemedStyle<ViewStyle> = (theme) => ({
+  flex: 1, // Takes up available space on the right
+  marginLeft: 20,
+});
+
+const $leftContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  flex: 2, // Takes up more space on the left
+});
+
+const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  height: 44, //TODO it is the same as CONTROL_HEIGHT_MD, make a common token for this
+  width: 44,  //TODO just to make it quadratic, common token?
+  borderRadius: 10, //TODO Rounded corners, make token?
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  padding: 8,
+  backgroundColor: theme.colors.itemBackground,
+});
+
+const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text, 
+});
+
+const $Button: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.itemBackground, //itembackground for buttoncolor looks better, but not good designwise
   color: theme.colors.text,
 })
 
-export default SavedItemsScreen
+const $saveButtonText: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 20, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
+  color: theme.colors.text,
+});
+
+const $clearSelectionButtonText: ThemedStyle<TextStyle> = (theme) => ({
+  fontSize: 16, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
+  color: theme.colors.text,
+});
+export default MakeTeamsScreen;

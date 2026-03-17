@@ -224,12 +224,14 @@ type DraggablePlayerCellCombinedProps = {
   player: TeamGridPlayer
   team: TeamId
   index: number
+  isHighlighted: boolean
 
   cardWidth: number
   placeholderAvatarSource: any
   cardVisualPreset: CardVisualPreset
   themed: ThemeFn
 
+  onDragMove: (from: PlayerPointer, dx: number, dy: number) => void
   getDropTarget: (from: PlayerPointer, dx: number, dy: number) => DropTarget | null
   onDropOnTarget: (from: PlayerPointer, target: DropTarget) => void
 
@@ -242,10 +244,12 @@ const DraggablePlayerCellCombined = ({
   player,
   team,
   index,
+  isHighlighted,
   cardWidth,
   placeholderAvatarSource,
   cardVisualPreset,
   themed,
+  onDragMove,
   getDropTarget,
   onDropOnTarget,
   slotRect,
@@ -253,6 +257,25 @@ const DraggablePlayerCellCombined = ({
 }: DraggablePlayerCellCombinedProps) => {
   const [isActive, setIsActive] = useState(false)
   const pan = useMemo(() => new Animated.ValueXY({ x: 0, y: 0 }), [])
+  const callbacksRef = useRef({
+    team,
+    index,
+    onDragMove,
+    getDropTarget,
+    onDropOnTarget,
+    onDragStateChange,
+  })
+
+  useEffect(() => {
+    callbacksRef.current = {
+      team,
+      index,
+      onDragMove,
+      getDropTarget,
+      onDropOnTarget,
+      onDragStateChange,
+    }
+  }, [team, index, onDragMove, getDropTarget, onDropOnTarget, onDragStateChange])
 
   const panResponder = useMemo(
     () =>
@@ -260,14 +283,21 @@ const DraggablePlayerCellCombined = ({
         onMoveShouldSetPanResponder: (_evt, g) => Math.abs(g.dx) + Math.abs(g.dy) > 4,
         onPanResponderGrant: () => {
           setIsActive(true)
-          onDragStateChange(true)
+          callbacksRef.current.onDragStateChange(true)
           pan.setValue({ x: 0, y: 0 })
         },
-        onPanResponderMove: Animated.event([null, { dx: pan.x, dy: pan.y }], { useNativeDriver: false }),
+        onPanResponderMove: (_evt, g) => {
+          pan.setValue({ x: g.dx, y: g.dy })
+          callbacksRef.current.onDragMove(
+            { team: callbacksRef.current.team, index: callbacksRef.current.index },
+            g.dx,
+            g.dy,
+          )
+        },
         onPanResponderRelease: (_evt, g) => {
-          const from: PlayerPointer = { team, index }
-          const target = getDropTarget(from, g.dx, g.dy)
-          if (target) onDropOnTarget(from, target)
+          const from: PlayerPointer = { team: callbacksRef.current.team, index: callbacksRef.current.index }
+          const target = callbacksRef.current.getDropTarget(from, g.dx, g.dy)
+          if (target) callbacksRef.current.onDropOnTarget(from, target)
 
           Animated.spring(pan, {
             toValue: { x: 0, y: 0 },
@@ -276,7 +306,7 @@ const DraggablePlayerCellCombined = ({
             bounciness: 5,
           }).start(() => {
             setIsActive(false)
-            onDragStateChange(false)
+            callbacksRef.current.onDragStateChange(false)
           })
         },
         onPanResponderTerminate: () => {
@@ -287,11 +317,11 @@ const DraggablePlayerCellCombined = ({
             bounciness: 5,
           }).start(() => {
             setIsActive(false)
-            onDragStateChange(false)
+            callbacksRef.current.onDragStateChange(false)
           })
         },
       }),
-    [getDropTarget, index, onDragStateChange, onDropOnTarget, pan, team],
+    [pan],
   )
 
   return (
@@ -305,8 +335,10 @@ const DraggablePlayerCellCombined = ({
           width: slotRect.width,
           height: slotRect.height,
           zIndex: isActive ? 100 : 1,
-          transform: [{ translateX: pan.x }, { translateY: pan.y }, { scale: isActive ? 1.03 : 1 }],
+          transform: [{ translateX: pan.x }, { translateY: pan.y }], //, { scale: isActive ? 1.03 : 1 }], 
+          //TODO think about changing size of dragged card. But when standing still, it gets smaller again?
         },
+        isHighlighted ? themed($highlightGlow) : undefined,
       ]}
     >
       <PlayerCard
@@ -340,6 +372,7 @@ export const CombinedTeamsGrid = ({
   const [measuredContainerW, setMeasuredContainerW] = useState(0)
   const [containerH, setContainerH] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [activeDropTargetKey, setActiveDropTargetKey] = useState<string | null>(null)
   const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(true)
   const timerStartedAtRef = useRef<number | null>(Date.now())
@@ -393,6 +426,11 @@ export const CombinedTeamsGrid = ({
 
   type TargetRect = { target: DropTarget; rect: LayoutRectangle }
   const targetRectsRef = useRef<TargetRect[]>([])
+
+  const targetKey = useCallback((target: DropTarget) => {
+    if (target.kind === "player") return `player:${target.team}:${target.index}`
+    return `zone:${target.team}`
+  }, [])
 
   const effectiveLayoutA = layoutA?.length ? layoutA : layoutPreset(teamA.length)
   const effectiveLayoutB = layoutB?.length ? layoutB : layoutPreset(teamB.length)
@@ -515,6 +553,9 @@ export const CombinedTeamsGrid = ({
 
   const handleDragStateChange = useCallback((dragging: boolean) => {
     setIsDragging(dragging)
+    if (!dragging) {
+      setActiveDropTargetKey(null)
+    }
     if (dragging) {
       temporarilyStopTimer()
       return
@@ -534,6 +575,15 @@ export const CombinedTeamsGrid = ({
     alert("Winner")
   }
 
+  const handleDragMove = useCallback((from: PlayerPointer, dx: number, dy: number) => {
+    const target = getDropTarget(from, dx, dy)
+    const nextKey = target ? targetKey(target) : null
+    const fromKey = `player:${from.team}:${from.index}`
+    const resolvedKey = nextKey === fromKey ? null : nextKey
+
+    setActiveDropTargetKey((prev) => (prev === resolvedKey ? prev : resolvedKey))
+  }, [getDropTarget, targetKey])
+
   return (
     <View
       onLayout={(event) => {
@@ -552,10 +602,12 @@ export const CombinedTeamsGrid = ({
           player={player}
           team="teamA"
           index={index}
+          isHighlighted={activeDropTargetKey === `player:teamA:${index}`}
           cardWidth={cardWidth}
           placeholderAvatarSource={placeholderAvatarSource}
           cardVisualPreset={teamCardPresets.teamA}
           themed={themed}
+          onDragMove={handleDragMove}
           getDropTarget={getDropTarget}
           onDropOnTarget={onDropOnTarget}
           slotRect={slotRectsA[index]}
@@ -570,10 +622,12 @@ export const CombinedTeamsGrid = ({
           player={player}
           team="teamB"
           index={index}
+          isHighlighted={activeDropTargetKey === `player:teamB:${index}`}
           cardWidth={cardWidth}
           placeholderAvatarSource={placeholderAvatarSource}
           cardVisualPreset={teamCardPresets.teamB}
           themed={themed}
+          onDragMove={handleDragMove}
           getDropTarget={getDropTarget}
           onDropOnTarget={onDropOnTarget}
           slotRect={slotRectsB[index]}
@@ -600,9 +654,11 @@ export const CombinedTeamsGrid = ({
         {isDragging ? (
           <>
             <View pointerEvents="none" style={[themed($joinZone), rectToStyle({ x: 0, y: 0, width: railRect.width, height: zoneHeight })]}>
+              {activeDropTargetKey === "zone:teamA" ? <View style={themed($joinZoneGlow)} /> : null}
               <Text style={themed($joinZoneText)}>Drop to join Team A</Text>
             </View>
             <View pointerEvents="none" style={[themed($joinZone), rectToStyle({ x: 0, y: zoneHeight + ZONE_GAP, width: railRect.width, height: zoneHeight })]}>
+              {activeDropTargetKey === "zone:teamB" ? <View style={themed($joinZoneGlow)} /> : null}
               <Text style={themed($joinZoneText)}>Drop to join Team B</Text>
             </View>
           </>
@@ -720,6 +776,32 @@ const $joinZoneText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 12,
   textAlign: "center",
   paddingHorizontal: 10,
+})
+
+const $highlightGlow: ThemedStyle<ViewStyle> = () => ({
+  borderWidth: 2,
+  borderColor: "#FFD54A",
+  shadowColor: "#FFD54A",
+  shadowOpacity: 0.9,
+  shadowRadius: 10,
+  shadowOffset: { width: 0, height: 0 },
+  elevation: 12,
+})
+
+const $joinZoneGlow: ThemedStyle<ViewStyle> = () => ({
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  borderRadius: 10,
+  borderWidth: 2,
+  borderColor: "#FFD54A",
+  shadowColor: "#FFD54A",
+  shadowOpacity: 0.9,
+  shadowRadius: 10,
+  shadowOffset: { width: 0, height: 0 },
+  elevation: 12,
 })
 
 const $centerNumberBox: ThemedStyle<ViewStyle> = (theme) => ({

@@ -1,360 +1,194 @@
-import React, {useState, useEffect} from 'react';
-import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, ScrollView, useWindowDimensions, type TextStyle } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useListStore } from "../../../store/useListStore";
+import React from "react"
+import { useAppTheme } from "@/theme/context";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  ImageStyle,
+} from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import { $styles } from '@/theme/styles';
-import { Button } from '@/components/Button'
-import SelectedPlayers from '@/components/ui/SelectedPlayers';
-import { useAppTheme } from '@/theme/context';
-import { ThemedStyle } from '@/theme/types';
-import { SearchField } from '@/components/SearchField';
-import { PlayerList } from '@/components/ui/PlayerList';
-import { OptionTabs } from "@/components/ui/OptionTabs"
-import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/GameOptionsTabs';
+import { Ionicons } from "@expo/vector-icons"
+import { ThemedStyle } from "@/theme/types";
 
-type Item = {
-  id: string;
-  name: string;
-};
-
-const HomeScreen = () => {
-  const router = useRouter();
-  const setItems = useListStore((state) => state.setItems);
-  const [data, setData] = useState<Item[]>([
-    { id: '1', name: 'Nikolaus' },
-    { id: '2', name: 'Silvester' },
-    { id: '3', name: 'David' },
-    { id: '4', name: 'Lukas' },
-    { id: '5', name: 'Anton' },
-    { id: '6', name: 'Maria' },
-    { id: '7', name: 'Josef' },
-    { id: '8', name: 'Mario' },
-    { id: '9', name: 'Simon' },
-    { id: '10', name: 'Markus' },
-    { id: '11', name: 'Bernd' },
-    { id: '12', name: 'Maximilian' },
-    { id: '13', name: 'Markus Aurelius Dominikus' },
-    { id: '14', name: 'Maximilian Baximilian Raximus' },
-    { id: '15', name: 'Servus Versus Cersus' },
-  ]);
-
+export default function HomeScreen() {
 
   const {
-    themed, theme, themeContext,
-  } = useAppTheme()
-
-  const placeholderAvatar = theme.isDark
-    ? require("../../../../assets/avatar_placeholder_white.png")
-    : require("../../../../assets/avatar_placeholder.png")
-
-  require("../../../../assets/avatar_placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
-
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [filteredData, setFilteredData] = useState<Item[]>([]);
-  const [selectedItems, setSelectedItems] = useState<Item[]>(() => {
-    // Initialize with the item that has id=1 //TODO change this to their own user
-    const initialItem = data.find(item => item.id === '1'); 
-    return initialItem ? [initialItem] : [];
-  });
-  const [inputName, setInputName] = useState('');
-  const { height: windowHeight } = useWindowDimensions();
-  const selectedPlayersMaxHeight = windowHeight * 0.3;
-  const [keyboardStatus, setKeyboardStatus] = useState(false);
-  const [tab, setTab] = useState<GameOptionsTagKey>(GAME_OPTIONS_TAGS[0].key);
-
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
-      setKeyboardStatus(true);
-    });
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardStatus(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, []);
-
+      themed, theme, themeContext,
+    } = useAppTheme()
   
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    const filtered = data.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredData(filtered);
-  };
+  const placeholderAvatar = theme.isDark
+  ? require("../../../../assets/avatar_placeholder_white.png")
+  : require("../../../../assets/avatar_placeholder.png")
 
-  const clearSearch = () => {
-    setSearchQuery("");
-    setFilteredData(data);
-  };
+  const avatarSource = undefined
 
-  const handleItemPress = (item: Item) => {
-    if (!selectedItems.some((selected) => selected.id === item.id)) {
-      setSelectedItems([...selectedItems, item]); //add item if not already selected
-    }
-    else {
-      handleRemoveItem(item); //delete item if it was already selected
-    }
-  };
-
-  const handleRemoveItem = (item: Item) => {
-    const updatedItems = selectedItems.filter((selected) => selected.id !== item.id);
-    setSelectedItems(updatedItems);
-  };
-
-  const handleAddItem = () => {
-    if (inputName.trim()) {
-      const newItem: Item = {
-        id: String(data.length + 1),
-        name: inputName + " (temp)",
-      };
-      setData([...data, newItem]);
-      setInputName('');
-      if (!selectedItems.some((selected) => selected.id === newItem.id)) {
-        setSelectedItems([...selectedItems, newItem]); //add item if not already selected
-      } 
-    }
-  };
-
-  const handleClearSelectedItems = () => {
-    setSelectedItems([]);
-  };
-
-  const isItemSelected = (item: Item) => {
-    return selectedItems.some((selected) => selected.id === item.id);
-  };
-
-  const handleCreateTeams = () => {
-    setItems(selectedItems); // Store the list in Zustand
-    const actionByTab: Record<GameOptionsTagKey, () => void> = {
-      random: () =>router.push({pathname: '/MakeTeamsScreen',}),
-      custom: () => router.push({pathname: '/MakeTeamsScreen',}),
-      tournament: () => router.push({pathname: '/MakeTeamsScreen',}),
-      keepscore: () => router.push({pathname: '/MakeTeamsScreen',}),
-      // Dont forget to add cases here if new modes are implemented
-  }
-  actionByTab[tab]()
-  };
+  const size = 40 //TODO maybe make this dynamic?
 
   return (
-    <SafeAreaView style={themed($container)}>
-      <Text style={themed($header)}>Add Players</Text>
-      <View>
-        <OptionTabs
-          options={GAME_OPTIONS_TAGS}
-          value={tab}
-          onChange={setTab}
-          rightHint="fade"
-          showBottomDivider={false}
-        />
-      </View>
-      <View style={themed($searchContainer)}>
-        <SearchField
-          value={searchQuery}
-          onChangeText={handleSearch}
-          placeholder="Search Player…"
-          onClear={clearSearch}
-          onSubmit={(q) => handleSearch(q)}
-          testID="players-search"
-          inputTestID="players-search-input"
-          clearButtonTestID="players-search-clear"
-          containerStyle={(theme) => ({ width: "100%",})}
-        />
-      </View>
-
-      <View style={themed($buttonRow)}>
-        <View style={themed($leftContainer)}>
-          <SearchField
-            value={inputName}
-            onChangeText={setInputName}
-            placeholder="Add temp player"
-            onSubmit={handleAddItem}
-            testID="players-add"
-            inputTestID="players-add-input"
-            clearButtonTestID="players-add-clear"
-            showSearchIcon={false}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Top profile row */}
+        <View style={styles.profileRow}>
+          <Image
+            source={avatarSource ?? placeholderAvatar}
+            style={[themed($avatar), 
+              {
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                marginRight: 12,
+              },
+              (avatarSource && theme.isDark) && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },]} //when darkmode and no avatar, make grey background
           />
-          <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
-            <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
-          </TouchableOpacity>
+          <View>
+            <Text style={styles.name}>Max Mustermann</Text>
+            <Text style={styles.level}>Additional info</Text>
+          </View>
         </View>
 
-        <View style={themed($clearItemsButton)}>
-          <Button
-            text="Clear"
-            onPress={handleClearSelectedItems}
-            style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
-            textStyle={themed($clearSelectionButtonText)}
-            RightAccessory={({ style }) => (
-              <View style={style}>
-                <IconSymbol
-                  size={28}
-                  name="delete"
-                  color={theme.colors.iconColor}
-                  iconSet="material"
-                />
-              </View>
-            )}
-          />
+        {/* Main CTA card */}
+        <Pressable style={styles.mainCard}>
+          <View style={styles.playCircle}>
+            <Ionicons name="play" size={52} color="#fff" />
+          </View>
+          <Text style={styles.mainCardText}>Start Game</Text>
+        </Pressable>
+
+        {/* Bottom row */}
+        <View style={styles.bottomRow}>
+          <Pressable style={[styles.smallCard, styles.collectionCard]}>
+            <View style={styles.smallIconCircle}>
+              <Ionicons name="cube-outline" size={34} color="#fff" />
+            </View>
+            <Text style={styles.smallCardText}>Collection</Text>
+          </Pressable>
+
+          <Pressable style={[styles.smallCard, styles.settingsCard]}>
+            <View style={styles.smallIconCircle}>
+              <Ionicons name="settings-outline" size={34} color="#fff" />
+            </View>
+            <Text style={styles.smallCardText}>Settings</Text>
+          </Pressable>
         </View>
       </View>
-
-
-      <PlayerList
-        data={filteredData.length > 0 ? filteredData : data}
-        themed={themed}
-        isSelected={(item) => isItemSelected(item)}
-        favoriteDisabled={true}
-        onPressRow={(item) => handleItemPress(item)}
-        onPressFavorite={(item) => console.log("fav", item.id)}
-        onPressMore={(item) => console.log("more", item.id)}
-        placeholderAvatarSource={placeholderAvatar}
-      />
-
-      <View style={themed($fullWidthDivider)} />
-      <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
-      {!keyboardStatus ? (
-      <View style={{ maxHeight: selectedPlayersMaxHeight }}>
-        <ScrollView
-          //keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={true}
-        >
-          <SelectedPlayers 
-            selectedPlayers={selectedItems} 
-            onClickPlayer={handleRemoveItem}
-            selectedItemStyle={themed($selectedItem)}
-            textStyle={themed($selectedItemText)} 
-          />
-        </ScrollView>
-      </View>
-        ) : null
-      }
-      <Button
-        text="Create Teams" 
-        onPress={handleCreateTeams} 
-        style={themed($Button)}
-        textStyle={themed($saveButtonText)} 
-      />
     </SafeAreaView>
-  );
-};
+  )
+}
 
+const $avatar: ThemedStyle<ImageStyle> = (theme) => ({
+  //TODO do I even need this?
+  //backgroundColor: colors?.neutral200 ?? "#eee", //not needed
 
-
-const $container: ThemedStyle<ViewStyle> = (theme) => ({
-  flex: 1,
-  paddingTop: 8,
-  paddingLeft: 16,
-  paddingRight: 16,
-  backgroundColor: theme.colors.background,
-});
-
-const $header: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 24,
-  fontWeight: 'bold',
-  textAlign: 'center',
-  marginVertical: 5,
-  color: theme.colors.text, // TODO what does this do again?
-});
-
-const $searchBar: ThemedStyle<TextStyle> = (theme) => ({
-  flex: 1,
-  height: 40,
-  borderColor: theme.colors.border,
-  borderWidth: 1,
-  paddingLeft: 8,
-  color: theme.colors.text, // TODO what does it do?
-});
-
-const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: "row",
-  alignItems: "center",
-  alignSelf: "stretch",
-  //paddingHorizontal: 10,
-  marginBottom: 16,
-  marginTop: 16,
-});
-
-// TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
-
-const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 4,
-  backgroundColor: theme.colors.border, //marginHorizontal: -16, // cancel container padding
-  marginBottom: 8,
-});
-
-const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 16,
-  fontWeight: 'bold',
-  marginTop: 4, 
-  marginBottom: 12,
-  color: theme.colors.text, // TODO what does this do again, just color of text?
-});
-
-const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: 10,
-  backgroundColor: theme.colors.itemBackground, 
-  margin: 5,
-  borderWidth: 2,
-  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
-  borderRadius: 10, // Rounded corners
-});
-
-const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: 16,
-});
-
-const $clearItemsButton: ThemedStyle<ViewStyle> = (theme) => ({
-  flex: 1, // Takes up available space on the right
-  marginLeft: 20,
-});
-
-const $leftContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  flex: 2, // Takes up more space on the left
-});
-
-const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 44, //TODO it is the same as CONTROL_HEIGHT_MD, make a common token for this
-  width: 44,  //TODO just to make it quadratic, common token?
-  borderRadius: 10, //TODO Rounded corners, make token?
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderWidth: 1,
-  borderColor: theme.colors.border,
-  padding: 8,
-  backgroundColor: theme.colors.itemBackground,
-});
-
-const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
-  color: theme.colors.text, 
-});
-
-const $Button: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.itemBackground, //itembackground for buttoncolor looks better, but not good designwise
-  color: theme.colors.text,
 })
 
-const $saveButtonText: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 20, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
-  color: theme.colors.text,
-});
 
-const $clearSelectionButtonText: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 16, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
-  color: theme.colors.text,
-});
-export default HomeScreen;
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#dcd8df",
+  },
+
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 12,
+    paddingBottom: 24,
+  },
+
+  profileRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 28,
+  },
+
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    marginRight: 12,
+  },
+
+  name: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1f2937",
+  },
+
+  level: {
+    marginTop: 2,
+    fontSize: 16,
+    color: "#6b7280",
+  },
+
+  mainCard: {
+    flex: 1,
+    minHeight: 340,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 24,
+    backgroundColor: "#b300ff",
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
+  },
+
+  playCircle: {
+    width: 144,
+    height: 144,
+    borderRadius: 72,
+    backgroundColor: "rgba(255,255,255,0.18)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 22,
+  },
+
+  mainCardText: {
+    fontSize: 34,
+    fontWeight: "800",
+    color: "#fff",
+  },
+
+  bottomRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 16,
+  },
+
+  smallCard: {
+    flex: 1,
+    height: 150,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  collectionCard: {
+    backgroundColor: "#4d97f3",
+  },
+
+  settingsCard: {
+    backgroundColor: "#9ca3af",
+  },
+
+  smallIconCircle: {
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    backgroundColor: "rgba(255,255,255,0.16)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 14,
+  },
+
+  smallCardText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#fff",
+  },
+})

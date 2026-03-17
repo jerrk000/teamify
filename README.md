@@ -282,6 +282,16 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Make the volleyball_court_sand_overflow_(new).png fit better, so same amount of space outside of field on both sides. Maybe also change positions/sizes of cards to make it fit better
 - [ ] Make current HomeScreen (=PlayerSelectionScreen) a new Screen that appears when choosing a new game. Make it a correct sequence ("New Game" on Dashboard -> PlayerSelectionScreen -> MakeTeamsScreen (maybe rename this screen))
 - [ ] Make new HomeScreen with different buttons which route you to important parts. Small part for notifications about past games.
+- [ ] HomeScreen-Button: Big button. Normal rated game. Normal match
 - [ ] HomeScreen-Button: Local, unrated game: quickly add players to a match, does not count to official stats. (maybe make it easier to add local players?)
+- [ ] HomeScreen: Notifications-Button, to get news about matches that you have been a part of.
+- [ ] HomeScreen-Button on top: Profile picture, which lets you edit your profile.
+- [ ] Edit Profile: Maybe make it possible to swipe left, to see how others see your profile. Make it accessible from homescreen and modal.
+- [ ] 
 - [ ] In the place where a player can check their own profile and change their official name, card, stats etc., make an option where they can define additional positions like striker, left midfield for football or libero, middle for volleyball. This should then be used when creating teams, so that the teams can be split more evenly.
 - [x] Make parent give exact size to TeamPlayerGrid, so that it aligns with background picture.
+- [ ] Think about changing the background picture to a glowing one when dragging over a player, or just changing color of drag zones. Or just making the cell under the one even bigger. Use a dedicated highlighted card asset to put over the PlayerCard when dragged over it!!!
+- [ ] Hide time button in Teamplayergrid when dragging.
+- [ ] react-native-reanimated-dnd for drag-and-drop instead of current custom implementation (https://github.com/entropyconquers/react-native-reanimated-dnd). It has all i implemented with AI custom style: 2D grid reordering with insert & swap, Visual hover effects on drop zones, drop zones
+- [ ] If you do not want to upload a picture of yourself, make an option to create an avatar instead
+- [ ] PlayerList has some styles that are not in the normal format. Fix this.
