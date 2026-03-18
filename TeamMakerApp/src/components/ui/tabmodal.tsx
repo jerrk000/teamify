@@ -16,9 +16,10 @@ const TabModal = () => {
 
   const {
   themed,
-  theme,
+  themeFlavor,
   themeContext, // The current theme context ("light" | "darK")
   setThemeContextOverride, // Function to set the theme
+  setThemeFlavor,
   } = useAppTheme()
 
 
@@ -26,6 +27,10 @@ const TabModal = () => {
     // This will toggle between light and dark mode using the Ignite - ThemeProvider context.
   setThemeContextOverride(themeContext === "dark" ? "light" : "dark")
   };
+
+  const toggleThemeFlavor = () => {
+    setThemeFlavor(themeFlavor === "default" ? "volleyball" : "default")
+  }
 
   const handleLogout = () => {
     logout();
@@ -49,6 +54,9 @@ const TabModal = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleDarkLight} style={themed($optionButton)}>
             <Text style={themed($optionText)}>Toggle Light/Dark Mode</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleThemeFlavor} style={themed($optionButton)}>
+            <Text style={themed($optionText)}>Toggle Theme Flavor ({themeFlavor})</Text>
           </TouchableOpacity>
         </View>
       </BlurView>

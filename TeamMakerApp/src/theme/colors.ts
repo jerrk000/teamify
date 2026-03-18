@@ -1,5 +1,3 @@
-import { blue } from "react-native-reanimated/lib/typescript/Colors"
-
 const palette = {
   neutral100: "#FFFFFF",
   neutral200: "#F4F2F1",

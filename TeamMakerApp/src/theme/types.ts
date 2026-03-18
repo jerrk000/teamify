@@ -2,6 +2,8 @@ import type { StyleProp } from "react-native"
 
 import { colors as colorsLight } from "./colors"
 import { colors as colorsDark } from "./colorsDark"
+import { colors as colorsVolleyballLight } from "./colors.volleyball.light"
+import { colors as colorsVolleyballDark } from "./colors.volleyball.dark"
 import { spacing as spacingLight } from "./spacing"
 import { spacing as spacingDark } from "./spacingDark"
 import { timing } from "./timing"
@@ -11,9 +13,16 @@ import { typography } from "./typography"
 export type ImmutableThemeContextModeT = "light" | "dark"
 export type ThemeContextModeT = ImmutableThemeContextModeT | undefined
 
-// Because we have two themes, we need to define the types for each of them.
-// colorsLight and colorsDark should have the same keys, but different values.
-export type Colors = typeof colorsLight | typeof colorsDark
+// Add named theme flavors. Each flavor can have both a light and dark variant.
+export type ThemeFlavorT = "default" | "volleyball"
+
+// Because we have multiple themes, we need to define the types for each of them.
+export type Colors =
+  | typeof colorsLight
+  | typeof colorsDark
+  | typeof colorsVolleyballLight
+  | typeof colorsVolleyballDark
+
 // The spacing type needs to take into account the different spacing values for light and dark themes.
 export type Spacing = typeof spacingLight | typeof spacingDark
 

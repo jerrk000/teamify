@@ -18,11 +18,12 @@ import { useMMKVString } from "react-native-mmkv"
 import { storage } from "@/utils/storage"
 
 import { setImperativeTheming } from "./context.utils"
-import { darkTheme, lightTheme } from "./theme"
+import { getTheme, isThemeFlavor, themeFlavors } from "./theme"
 import type {
   AllowedStylesT,
   ImmutableThemeContextModeT,
   Theme,
+  ThemeFlavorT,
   ThemeContextModeT,
   ThemedFnT,
   ThemedStyle,
@@ -31,7 +32,10 @@ import type {
 export type ThemeContextType = {
   navigationTheme: NavTheme
   setThemeContextOverride: (newTheme: ThemeContextModeT) => void
+  setThemeFlavor: (newFlavor: ThemeFlavorT) => void
   theme: Theme
+  themeFlavor: ThemeFlavorT
+  themeFlavors: ThemeFlavorT[]
   themeContext: ImmutableThemeContextModeT
   themed: ThemedFnT
 }
@@ -40,6 +44,7 @@ export const ThemeContext = createContext<ThemeContextType | null>(null)
 
 export interface ThemeProviderProps {
   initialContext?: ThemeContextModeT
+  initialFlavor?: ThemeFlavorT
 }
 
 /**
@@ -54,11 +59,13 @@ export interface ThemeProviderProps {
 export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   children,
   initialContext,
+  initialFlavor,
 }) => {
   // The operating system theme:
   const systemColorScheme = useColorScheme()
   // Our saved theme context: can be "light", "dark", or undefined (system theme)
   const [themeScheme, setThemeScheme] = useMMKVString("ignite.themeScheme", storage)
+  const [savedThemeFlavor, setSavedThemeFlavor] = useMMKVString("ignite.themeFlavor", storage)
 
   /**
    * This function is used to set the theme context and is exported from the useAppTheme() hook.
@@ -73,6 +80,13 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
     [setThemeScheme],
   )
 
+  const setThemeFlavor = useCallback(
+    (newFlavor: ThemeFlavorT) => {
+      setSavedThemeFlavor(newFlavor)
+    },
+    [setSavedThemeFlavor],
+  )
+
   /**
    * initialContext is the theme context passed in from the app.tsx file and always takes precedence.
    * themeScheme is the value from MMKV. If undefined, we fall back to the system theme
@@ -82,6 +96,12 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
     const t = initialContext || themeScheme || (!!systemColorScheme ? systemColorScheme : "light")
     return t === "dark" ? "dark" : "light"
   }, [initialContext, themeScheme, systemColorScheme])
+
+  const themeFlavor: ThemeFlavorT = useMemo(() => {
+    if (initialFlavor) return initialFlavor
+    if (isThemeFlavor(savedThemeFlavor)) return savedThemeFlavor
+    return "default"
+  }, [initialFlavor, savedThemeFlavor])
 
   const navigationTheme: NavTheme = useMemo(() => { //TODO think about deleting this, as this uses react-navigation's theming, but we are using our own theming engine.
     switch (themeContext) {
@@ -93,13 +113,8 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
   }, [themeContext])
 
   const theme: Theme = useMemo(() => {
-    switch (themeContext) {
-      case "dark":
-        return darkTheme
-      default:
-        return lightTheme
-    }
-  }, [themeContext])
+    return getTheme(themeFlavor, themeContext)
+  }, [themeContext, themeFlavor])
 
   useEffect(() => {
     setImperativeTheming(theme)
@@ -123,7 +138,10 @@ export const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = ({
 
   const value = {
     navigationTheme,
+    setThemeFlavor,
     theme,
+    themeFlavor,
+    themeFlavors,
     themeContext,
     setThemeContextOverride,
     themed,
