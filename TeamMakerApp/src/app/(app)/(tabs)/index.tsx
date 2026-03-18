@@ -12,7 +12,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from "@expo/vector-icons"
 import { ThemedStyle } from "@/theme/types";
 
-export default function HomeScreen() {
+type Props = {
+  notificationCount?: number
+}
+
+export default function HomeScreen({ notificationCount = 3 }: Props) {
+  const badgeText = notificationCount > 9 ? "9+" : String(notificationCount)
 
   const {
       themed, theme, themeContext,
@@ -27,11 +32,12 @@ export default function HomeScreen() {
 
   const size = 40 //TODO maybe make this dynamic?
 
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {/* Top profile row */}
-        <View style={styles.profileRow}>
+    <View style={styles.outer}>
+      <SafeAreaView style={styles.screen}>
+        <View style={styles.headerRow}>
+          <View style={styles.profileRow}>
           <Image
             source={avatarSource ?? placeholderAvatar}
             style={[themed($avatar), 
@@ -49,107 +55,155 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Main CTA card */}
+          <Pressable style={styles.notificationButton}>
+            <Ionicons name="notifications-outline" size={20} color="#4b5563" />
+            {notificationCount > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{badgeText}</Text>
+              </View>
+            )}
+          </Pressable>
+        </View>
+
+        <View style={styles.spacer} />
+
         <Pressable style={styles.mainCard}>
           <View style={styles.playCircle}>
-            <Ionicons name="play" size={52} color="#fff" />
+            <Ionicons name="play" size={48} color="#fff" />
           </View>
-          <Text style={styles.mainCardText}>Start Game</Text>
+          <Text style={styles.mainText}>Start Game</Text>
         </Pressable>
 
-        {/* Bottom row */}
         <View style={styles.bottomRow}>
           <Pressable style={[styles.smallCard, styles.collectionCard]}>
             <View style={styles.smallIconCircle}>
-              <Ionicons name="cube-outline" size={34} color="#fff" />
+              <Ionicons name="cube-outline" size={30} color="#fff" />
             </View>
-            <Text style={styles.smallCardText}>Collection</Text>
+            <Text style={styles.smallText}>Collection</Text>
           </Pressable>
 
           <Pressable style={[styles.smallCard, styles.settingsCard]}>
             <View style={styles.smallIconCircle}>
-              <Ionicons name="settings-outline" size={34} color="#fff" />
+              <Ionicons name="settings-outline" size={30} color="#fff" />
             </View>
-            <Text style={styles.smallCardText}>Settings</Text>
+            <Text style={styles.smallText}>Settings</Text>
           </Pressable>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   )
 }
 
-const $avatar: ThemedStyle<ImageStyle> = (theme) => ({
-  //TODO do I even need this?
-  //backgroundColor: colors?.neutral200 ?? "#eee", //not needed
-
-})
-
-
 const styles = StyleSheet.create({
-  safeArea: {
+  outer: {
     flex: 1,
-    backgroundColor: "#dcd8df",
+    backgroundColor: "#373737",
+    padding: 12,
   },
 
-  container: {
+  screen: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 12,
-    paddingBottom: 24,
+    backgroundColor: "#e6e2e8",
+    borderRadius: 28,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 28,
+  },
+
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
 
   profileRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 28,
   },
 
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     marginRight: 12,
   },
 
   name: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
-    color: "#1f2937",
+    color: "#10213a",
   },
 
   level: {
     marginTop: 2,
-    fontSize: 16,
-    color: "#6b7280",
+    fontSize: 14,
+    color: "#6b7a99",
+  },
+
+  notificationButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#f0eef1",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+    position: "relative",
+  },
+
+  badge: {
+    position: "absolute",
+    top: -2,
+    right: -1,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    paddingHorizontal: 4,
+    backgroundColor: "#ff3b30",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  badgeText: {
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "700",
+  },
+
+  spacer: {
+    height: 110,
   },
 
   mainCard: {
-    flex: 1,
-    minHeight: 340,
-    borderRadius: 28,
+    height: 285,
+    borderRadius: 26,
+    backgroundColor: "#b000ff",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 24,
-    backgroundColor: "#b300ff",
+    marginBottom: 22,
     shadowColor: "#000",
     shadowOpacity: 0.12,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
-    elevation: 6,
+    elevation: 5,
   },
 
   playCircle: {
-    width: 144,
-    height: 144,
-    borderRadius: 72,
-    backgroundColor: "rgba(255,255,255,0.18)",
+    width: 122,
+    height: 122,
+    borderRadius: 61,
+    backgroundColor: "rgba(255,255,255,0.16)",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 22,
+    marginBottom: 18,
   },
 
-  mainCardText: {
-    fontSize: 34,
+  mainText: {
+    fontSize: 24,
     fontWeight: "800",
     color: "#fff",
   },
@@ -157,38 +211,50 @@ const styles = StyleSheet.create({
   bottomRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: 16,
   },
 
   smallCard: {
-    flex: 1,
-    height: 150,
-    borderRadius: 20,
+    width: "47.5%",
+    height: 101,
+    borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 5 },
+    elevation: 4,
   },
 
   collectionCard: {
-    backgroundColor: "#4d97f3",
+    backgroundColor: "#4291f3",
   },
 
   settingsCard: {
-    backgroundColor: "#9ca3af",
+    backgroundColor: "#9aa1b0",
   },
 
   smallIconCircle: {
-    width: 78,
-    height: 78,
-    borderRadius: 39,
-    backgroundColor: "rgba(255,255,255,0.16)",
+    width: 74,
+    height: 74,
+    borderRadius: 37,
+    backgroundColor: "rgba(255,255,255,0.14)",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 14,
+    position: "absolute",
+    top: -8,
   },
 
-  smallCardText: {
-    fontSize: 16,
+  smallText: {
+    marginTop: 42,
+    fontSize: 15,
     fontWeight: "700",
     color: "#fff",
   },
+})
+
+const $avatar: ThemedStyle<ImageStyle> = (theme) => ({
+  //TODO do I even need this?
+  //backgroundColor: colors?.neutral200 ?? "#eee", //not needed
+
 })
