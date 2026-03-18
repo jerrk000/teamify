@@ -295,3 +295,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] react-native-reanimated-dnd for drag-and-drop instead of current custom implementation (https://github.com/entropyconquers/react-native-reanimated-dnd). It has all i implemented with AI custom style: 2D grid reordering with insert & swap, Visual hover effects on drop zones, drop zones
 - [ ] If you do not want to upload a picture of yourself, make an option to create an avatar instead
 - [ ] PlayerList has some styles that are not in the normal format. Fix this.
+- [x] Dashboard buttons background of icon with slightly more light. Make other buttons also button.

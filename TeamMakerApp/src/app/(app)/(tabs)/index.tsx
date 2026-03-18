@@ -4,14 +4,15 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   ImageStyle,
   TextStyle,
   ViewStyle,
 } from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from "@expo/vector-icons"
 import { ThemedStyle } from "@/theme/types";
+import { Button } from "@/components/Button";
+import { router } from "expo-router";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 type Props = {
   notificationCount?: number
@@ -33,61 +34,108 @@ export default function HomeScreen({ notificationCount = 3 }: Props) {
 
   const size = 40 //TODO maybe make this dynamic?
 
+    const handlePlayerSelection = () => {
+      router.push({pathname: '/MakeTeamsScreen',})
+        // Dont forget to add cases here if new modes are implemented
+    }
 
   return (
     <SafeAreaView style={themed($container)}>
       <View style={themed($headerRow)}>
         <View style={themed($profileRow)}>
-        <Image
-          source={avatarSource ?? placeholderAvatar}
-          style={[themed($avatar), 
-            {
-              width: size,
-              height: size,
-              borderRadius: size / 2,
-              marginRight: 12,
-            },
-            (avatarSource && theme.isDark) && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },]} //when darkmode and no avatar, make grey background
-        />
-        <View>
-          <Text style={themed($name)}>Max Mustermann</Text>
-          <Text style={themed($level)}>Additional info</Text>
+          <Image
+            source={avatarSource ?? placeholderAvatar}
+            style={[themed($avatar), 
+              {
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                marginRight: 12,
+              },
+              (avatarSource && theme.isDark) && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },]} //when darkmode and no avatar, make grey background
+          />
+          <View>
+            <Text style={themed($name)}>Max Mustermann</Text>
+            <Text style={themed($level)}>Additional info</Text>
+          </View>
         </View>
-      </View>
 
-        <Pressable style={themed($notificationButton)}>
-          <Ionicons name="notifications-outline" size={20} color="#4b5563" />
+        <View style={themed($notificationButtonContainer)}>
+          <Button
+            style={themed($notificationButton)}
+            LeftAccessory={({ style }) => (
+              <View style={[style, themed($notificationIconWrapper)]}>
+                <IconSymbol
+                  size={20}
+                  name="bell"
+                  color={theme.colors.iconColor}
+                  iconSet="fontawesome6"
+                />
+              </View>
+            )}
+          />
           {notificationCount > 0 && (
-            <View style={themed($badge)}>
+            <View pointerEvents="none" style={themed($badge)}>
               <Text style={themed($badgeText)}>{badgeText}</Text>
             </View>
           )}
-        </Pressable>
+        </View>
       </View>
 
-      <View style={themed($spacer)} />
+      <View style={themed($content)}>
+        <Button
+          text="Start Game" 
+          onPress={handlePlayerSelection} 
+          style={themed($mainCard)}
+          textStyle={themed($mainText)} 
+          LeftAccessory={({ style }) => (
+            <View style={[style, themed($mainIconCircle)]}>
+              <IconSymbol
+                size={48}
+                name="play"
+                color={theme.colors.iconColor}
+                iconSet="fontawesome"
+              />
+            </View>
+          )}
+        />
+    
 
-      <Pressable style={themed($mainCard)}>
-        <View style={themed($playCircle)}>
-          <Ionicons name="play" size={48} color="#fff" />
+        <View style={themed($bottomRow)}>
+          <Button
+            text="Play for fun" 
+            onPress={handlePlayerSelection} 
+            style={[themed($smallCard), themed($smallCardLeft), themed($collectionCard)]}
+            textStyle={themed($smallText)} 
+            LeftAccessory={({ style }) => (
+              <View style={[style, themed($smallIconCircle)]}>
+                <IconSymbol
+                  size={30}
+                  name="rocket"
+                  color={theme.colors.iconColor}
+                  iconSet="fontawesome"
+                />
+              </View>
+            )}
+          />
+        
+          <Button
+            text="Settings" 
+            onPress={handlePlayerSelection} 
+            style={[themed($smallCard), themed($settingsCard)]}
+            textStyle={themed($smallText)} 
+            LeftAccessory={({ style }) => (
+              <View style={[style, themed($smallIconCircle)]}>
+                <IconSymbol
+                  size={30}
+                  name="gear"
+                  color={theme.colors.iconColor}
+                  iconSet="fontawesome"
+                />
+              </View>
+            )}
+          />
         </View>
-        <Text style={themed($mainText)}>Start Game</Text>
-      </Pressable>
-
-      <View style={themed($bottomRow)}>
-        <Pressable style={[themed($smallCard), themed($collectionCard)]}>
-          <View style={themed($smallIconCircle)}>
-            <Ionicons name="cube-outline" size={30} color="#fff" />
-          </View>
-          <Text style={themed($smallText)}>Collection</Text>
-        </Pressable>
-
-        <Pressable style={[themed($smallCard), themed($settingsCard)]}>
-          <View style={themed($smallIconCircle)}>
-            <Ionicons name="settings-outline" size={30} color="#fff" />
-          </View>
-          <Text style={themed($smallText)}>Settings</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   )
@@ -129,25 +177,37 @@ const $level: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.text,
 })
 
-const $notificationButton: ThemedStyle<ViewStyle> = () => ({
+const $notificationButtonContainer: ThemedStyle<ViewStyle> = () => ({
+  position: "relative",
+})
+
+const $notificationButton: ThemedStyle<ViewStyle> = (theme) => ({
   width: 42,
   height: 42,
+  minHeight: 42,
   borderRadius: 21,
-  backgroundColor: "#f0eef1",
+  backgroundColor: theme.colors.itemBackground,
   justifyContent: "center",
   alignItems: "center",
+  paddingHorizontal: 0,
+  paddingVertical: 0,
   shadowColor: "#000",
   shadowOpacity: 0.08,
   shadowRadius: 6,
   shadowOffset: { width: 0, height: 2 },
   elevation: 3,
+})
+
+const $notificationIconWrapper: ThemedStyle<ViewStyle> = () => ({
   position: "relative",
+  justifyContent: "center",
+  alignItems: "center",
 })
 
 const $badge: ThemedStyle<ViewStyle> = () => ({
   position: "absolute",
-  top: -2,
-  right: -1,
+  top: 2,
+  right: 2,
   minWidth: 18,
   height: 18,
   borderRadius: 9,
@@ -163,17 +223,19 @@ const $badgeText: ThemedStyle<TextStyle> = () => ({
   fontWeight: "700",
 })
 
-const $spacer: ThemedStyle<ViewStyle> = () => ({
-  height: 110,
+const $content: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+  marginTop: 24,
 })
 
 const $mainCard: ThemedStyle<ViewStyle> = () => ({
-  height: 285,
+  flex: 0.62,
   borderRadius: 26,
   backgroundColor: "#b000ff",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  marginBottom: 22,
+  marginBottom: 12,
   shadowColor: "#000",
   shadowOpacity: 0.12,
   shadowRadius: 12,
@@ -181,32 +243,37 @@ const $mainCard: ThemedStyle<ViewStyle> = () => ({
   elevation: 5,
 })
 
-const $playCircle: ThemedStyle<ViewStyle> = () => ({
+const $mainIconCircle: ThemedStyle<ViewStyle> = () => ({
   width: 122,
   height: 122,
   borderRadius: 61,
   backgroundColor: "rgba(255,255,255,0.16)",
   justifyContent: "center",
   alignItems: "center",
-  marginBottom: 18,
+  marginBottom: 14,
 })
 
-const $mainText: ThemedStyle<TextStyle> = () => ({
+const $mainText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 24,
   fontWeight: "800",
-  color: "#fff",
+  color: theme.colors.text,
+  marginTop: 6,
 })
 
 const $bottomRow: ThemedStyle<ViewStyle> = () => ({
-  flex: 1,
+  flex: 0.38,
   flexDirection: "row",
-  justifyContent: "space-between",
+})
+
+const $smallCardLeft: ThemedStyle<ViewStyle> = () => ({
+  marginRight: 10,
 })
 
 const $smallCard: ThemedStyle<ViewStyle> = () => ({
-  width: "47.5%",
+  flex: 1,
   height: "100%",
   borderRadius: 16,
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
   shadowColor: "#000",
@@ -231,14 +298,12 @@ const $smallIconCircle: ThemedStyle<ViewStyle> = () => ({
   backgroundColor: "rgba(255,255,255,0.14)",
   justifyContent: "center",
   alignItems: "center",
-  position: "absolute",
-  top: "40%",
-  transform: [{ translateY: -37 }],
+  marginBottom: 10,
 })
 
-const $smallText: ThemedStyle<TextStyle> = () => ({
-  marginTop: 42,
-  fontSize: 15,
+const $smallText: ThemedStyle<TextStyle> = (theme) => ({
+  marginTop: 2,
+  fontSize: 18,
   fontWeight: "700",
-  color: "#fff",
+  color: theme.colors.text,
 })

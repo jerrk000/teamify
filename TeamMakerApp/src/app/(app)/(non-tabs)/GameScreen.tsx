@@ -28,7 +28,7 @@ const splitIntoTeams = (allPlayers: PlayerWithAvatar[]): TeamSplit => {
   }
 }
 
-const SavedItemsScreen = () => {
+const GameScreen = () => {
   const { themed, theme } = useAppTheme()
 
   const items = useListStore((state) => state.items as PlayerWithAvatar[])
@@ -250,4 +250,4 @@ const $randomizeButton: ThemedStyle<ViewStyle> = (theme) => ({
   color: theme.colors.text,
 })
 
-export default SavedItemsScreen
+export default GameScreen

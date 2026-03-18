@@ -130,10 +130,10 @@ const MakeTeamsScreen = () => {
   const handleCreateTeams = () => {
     setItems(selectedItems); // Store the list in Zustand
     const actionByTab: Record<GameOptionsTagKey, () => void> = {
-      random: () =>router.push({pathname: '/MakeTeamsScreen',}),
-      custom: () => router.push({pathname: '/MakeTeamsScreen',}),
-      tournament: () => router.push({pathname: '/MakeTeamsScreen',}),
-      keepscore: () => router.push({pathname: '/MakeTeamsScreen',}),
+      random: () =>router.push({pathname: '/GameScreen',}),
+      custom: () => router.push({pathname: '/GameScreen',}),
+      tournament: () => router.push({pathname: '/GameScreen',}),
+      keepscore: () => router.push({pathname: '/GameScreen',}),
       // Dont forget to add cases here if new modes are implemented
   }
   actionByTab[tab]()

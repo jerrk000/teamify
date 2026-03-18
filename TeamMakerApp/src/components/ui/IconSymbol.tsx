@@ -39,6 +39,9 @@ const FONT_AWESOME_MAPPING = {
   'chevron.down': 'chevron-down',
   'check': 'check',
   'book': 'book',
+  'play': 'play',
+  'rocket': 'rocket',
+  'gear': 'gear',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
@@ -52,6 +55,7 @@ const FONT_AWESOME6_MAPPING = {
   'magnifying-glass': 'magnifying-glass',
   'xmark': 'xmark',
   'shuffle': 'shuffle',
+  'bell': 'bell',
 } as Partial<
   Record<
     import('expo-symbols').SymbolViewProps['name'],
