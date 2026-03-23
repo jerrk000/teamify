@@ -136,7 +136,18 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
   backgroundColor: theme.colors.background,
 })
 
-### Finished the layout of the first screen (HomeScreen/maybe rename to ChoosePlayersScreen)
+### Creating Sub-Themes in this architecture
+
+Everything happens in the `theme`-Folder:
+1.  Add two sub-theme files. One file for lightmode, one for darkmode. 
+2.  theme.ts: Import the files.
+3.  theme.ts: Add it to the themeRegistry.
+4.  types.ts: Import the files.
+5.  types.ts: Add a type for each file.
+
+
+
+### Finished the layout of the first screen (MakeTeamsScreen)
 
 The layout and themeing is done, and some design choices that were important to me. Icons are used when needed, components are made to be re-useble. Additional game-modes are not implemented yet, but the vertical bar exists. Important features like a Searchbars, addition of players and the visualization of current players (including hiding when typing and scrolling when too many players) are implemented.
 Animations are still missing though.
@@ -282,12 +293,11 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Make the volleyball_court_sand_overflow_(new).png fit better, so same amount of space outside of field on both sides. Maybe also change positions/sizes of cards to make it fit better
 - [ ] Make current HomeScreen (=PlayerSelectionScreen) a new Screen that appears when choosing a new game. Make it a correct sequence ("New Game" on Dashboard -> PlayerSelectionScreen -> MakeTeamsScreen (maybe rename this screen))
 - [ ] Make new HomeScreen with different buttons which route you to important parts. Small part for notifications about past games.
-- [ ] HomeScreen-Button: Big button. Normal rated game. Normal match
+- [x] HomeScreen-Button: Big button. Normal rated game. Normal match
 - [ ] HomeScreen-Button: Local, unrated game: quickly add players to a match, does not count to official stats. (maybe make it easier to add local players?)
 - [ ] HomeScreen: Notifications-Button, to get news about matches that you have been a part of.
 - [ ] HomeScreen-Button on top: Profile picture, which lets you edit your profile.
 - [ ] Edit Profile: Maybe make it possible to swipe left, to see how others see your profile. Make it accessible from homescreen and modal.
-- [ ] 
 - [ ] In the place where a player can check their own profile and change their official name, card, stats etc., make an option where they can define additional positions like striker, left midfield for football or libero, middle for volleyball. This should then be used when creating teams, so that the teams can be split more evenly.
 - [x] Make parent give exact size to TeamPlayerGrid, so that it aligns with background picture.
 - [ ] Think about changing the background picture to a glowing one when dragging over a player, or just changing color of drag zones. Or just making the cell under the one even bigger. Use a dedicated highlighted card asset to put over the PlayerCard when dragged over it!!!
@@ -296,3 +306,9 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] If you do not want to upload a picture of yourself, make an option to create an avatar instead
 - [ ] PlayerList has some styles that are not in the normal format. Fix this.
 - [x] Dashboard buttons background of icon with slightly more light. Make other buttons also button.
+- [ ] Create default primary, secondary and tertiary colors.
+- [ ] Make dashboard buttons primary, secondary and tertiary colors. Maybe also do a tint for all of those with color palette. Use onPrimary to write on it.
+- [ ] Rewrite the button of MakeTeamsScreen to also use primary and onPrimary.
+- [ ] Either change Name part of dashboard to put it into a nicer box, or change position as a whole.
+- [ ] maybe block drag and drop with waiting signal so that it does not get fucked up when you try to drag too often without waiting. Or just use the new library?!
+- [ ] Clear at MakeTeamsScreen: Are you sure?

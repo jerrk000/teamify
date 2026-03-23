@@ -15,20 +15,20 @@ const palette = {
   primary200: "#CCD8FF",
   primary300: "#AFBFFF",
   primary400: "#8AA0FF",
-  primary500: "#2E3C87",
+  primary500: "#2E3C87", //volleyball-blue
   primary600: "#1E2A63",
 
   secondary100: "#FFE8E9",
   secondary200: "#FFD0D5",
   secondary300: "#FFADB7",
   secondary400: "#F46A78",
-  secondary500: "#DE3D4B",
+  secondary500: "#DE3D4B", //volleyball-red
 
   accent100: "#FFF6DC",
   accent200: "#FFECC0",
   accent300: "#FFE19B",
   accent400: "#FDD468",
-  accent500: "#FCC340",
+  accent500: "#FCC340", //volleyball-yellow
 
   green100: "#DFF5E3",
   green500: "#CDEED3",
@@ -71,7 +71,9 @@ export const colors = {
   iconColor: palette.neutral900,
   buttonBackground: palette.accent200,
   itemBackground: palette.neutral225,
-  primary: volleyColors.volleyblue,
+  primary: palette.primary500,
+  secondary: palette.accent500,
+  tertiary: palette.secondary500,
   onPrimary: palette.neutral100,
   surface: palette.neutral225,
   surfacePressed: palette.neutral250,

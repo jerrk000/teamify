@@ -18,7 +18,7 @@ type Props = {
   notificationCount?: number
 }
 
-export default function HomeScreen({ notificationCount = 3 }: Props) {
+export default function HomeScreen({ notificationCount = 12 }: Props) {
   const badgeText = notificationCount > 9 ? "9+" : String(notificationCount)
 
   const {
@@ -93,7 +93,7 @@ export default function HomeScreen({ notificationCount = 3 }: Props) {
               <IconSymbol
                 size={48}
                 name="play"
-                color={theme.colors.iconColor}
+                color={theme.colors.onPrimary}
                 iconSet="fontawesome"
               />
             </View>
@@ -112,7 +112,7 @@ export default function HomeScreen({ notificationCount = 3 }: Props) {
                 <IconSymbol
                   size={30}
                   name="rocket"
-                  color={theme.colors.iconColor}
+                  color={theme.colors.onPrimary}
                   iconSet="fontawesome"
                 />
               </View>
@@ -129,7 +129,7 @@ export default function HomeScreen({ notificationCount = 3 }: Props) {
                 <IconSymbol
                   size={30}
                   name="gear"
-                  color={theme.colors.iconColor}
+                  color={theme.colors.onPrimary}
                   iconSet="fontawesome"
                 />
               </View>
@@ -182,11 +182,11 @@ const $notificationButtonContainer: ThemedStyle<ViewStyle> = () => ({
 })
 
 const $notificationButton: ThemedStyle<ViewStyle> = (theme) => ({
-  width: 42,
+  width: 42, //TODO hardcoded size currently
   height: 42,
   minHeight: 42,
   borderRadius: 21,
-  backgroundColor: theme.colors.itemBackground,
+  backgroundColor: theme.colors.itemBackground, //TODO itemBackground?
   justifyContent: "center",
   alignItems: "center",
   paddingHorizontal: 0,
@@ -228,10 +228,10 @@ const $content: ThemedStyle<ViewStyle> = () => ({
   marginTop: 24,
 })
 
-const $mainCard: ThemedStyle<ViewStyle> = () => ({
+const $mainCard: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 0.62,
   borderRadius: 26,
-  backgroundColor: "#b000ff",
+  backgroundColor: theme.colors.primary,
   flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
@@ -247,7 +247,7 @@ const $mainIconCircle: ThemedStyle<ViewStyle> = () => ({
   width: 122,
   height: 122,
   borderRadius: 61,
-  backgroundColor: "rgba(255,255,255,0.16)",
+  backgroundColor: "rgba(255,255,255,0.16)", //some tinted primary?
   justifyContent: "center",
   alignItems: "center",
   marginBottom: 14,
@@ -256,7 +256,7 @@ const $mainIconCircle: ThemedStyle<ViewStyle> = () => ({
 const $mainText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 24,
   fontWeight: "800",
-  color: theme.colors.text,
+  color: theme.colors.onPrimary,
   marginTop: 6,
 })
 
@@ -283,12 +283,12 @@ const $smallCard: ThemedStyle<ViewStyle> = () => ({
   elevation: 4,
 })
 
-const $collectionCard: ThemedStyle<ViewStyle> = () => ({
-  backgroundColor: "#4291f3",
+const $collectionCard: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.secondary,
 })
 
-const $settingsCard: ThemedStyle<ViewStyle> = () => ({
-  backgroundColor: "#9aa1b0",
+const $settingsCard: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.tertiary,
 })
 
 const $smallIconCircle: ThemedStyle<ViewStyle> = () => ({
@@ -305,5 +305,5 @@ const $smallText: ThemedStyle<TextStyle> = (theme) => ({
   marginTop: 2,
   fontSize: 18,
   fontWeight: "700",
-  color: theme.colors.text,
+  color: theme.colors.onPrimary,
 })

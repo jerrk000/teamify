@@ -11,12 +11,16 @@ const palette = {
   neutral800: "#191015",
   neutral900: "#000000",
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  primary50:  "#f5f5f4",
+  primary100: "#d0d0cf",
+  primary200: "#acacab", //did not use the normal scheme with primary, secondary and tertiary color palette
+  primary300: "#898988", //tertiary color for default
+  primary400: "#686867", //secondary color for default
+  primary500: "#48484a", //primary color for default
+  primary600: "#3d3c4d",
+  primary700: "#2f2d4a",
+  primary800: "#221b47",
+  primary900: "#180844",
 
   secondary100: "#DCDDE9",
   secondary200: "#BCC0D6",
@@ -46,26 +50,23 @@ const palette = {
   blueHard: "blue",
 } as const
 
-const volleyColors = { //TODO create a new file for this as this is probably a whole theme at some point. 
-//                    Is this a good idea or is it better to add a volleyball-flavour to light and dark theme?
+const volleyColors = {
   volleyblue: '#2e3c87', //dark blue
   volleyblueTransparent: 'rgba(0, 123, 255, 0.5)', //50% transparent blue, instead of //"#3498db". //TODO this is from first implementation, maybe change.
   volleyyellow: '#fcc340', //yellow
   volleyred: '#de3d4b', //red
   volleyredTransparent: 'rgba(220, 20, 60, 0.5)', //50$ transparent red //TODO this is from first implementation, maybe change.
+
 } as const
 
 export const colors = {
+  volleyColors, //TODO delete this later?
   /**
    * The palette is available to use, but prefer using the name.
    * This is only included for rare, one-off cases. Try to use
    * semantic names as much as possible.
    */
   palette,
-  /**
-   * These are the colors we use for our volleyball theme.
-   */
-  volleyColors,
   /**
    * A helper for making something see-thru.
    */
@@ -126,6 +127,14 @@ export const colors = {
   * Strong primary color, used for key components like the active tab and active buttons. Try to use sparingly, as it can be overpowering.
   */
   primary: palette.primary500,
+  /*
+  * Strong secondary color, used for key components like second important buttons. Try to use sparingly, as it can be overpowering.
+  */
+  secondary: palette.primary400,
+  /*
+  * Strong tertiary color, used for key components like third important buttons. Try to use sparingly, as it can be overpowering.
+  */
+  tertiary: palette.primary300,
   /**
   * On primary color, used for text and icons on top of the primary color. Should have good contrast with primary.
   */

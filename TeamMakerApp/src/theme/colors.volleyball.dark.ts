@@ -71,7 +71,9 @@ export const colors = {
   iconColor: palette.whiteHard,
   buttonBackground: palette.neutral300,
   itemBackground: palette.neutral225,
-  primary: volleyColors.volleyyellow,
+  primary: volleyColors.volleyyellow, //TODO change this to some color more fitting to darktheme
+  secondary: palette.accent500, //TODO change this to some color more fitting to darktheme
+  tertiary: palette.secondary500, //TODO change this to some color more fitting to darktheme
   onPrimary: palette.neutral100,
   surface: palette.neutral225,
   surfacePressed: palette.neutral250,
