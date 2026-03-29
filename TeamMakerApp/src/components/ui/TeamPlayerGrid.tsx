@@ -16,6 +16,8 @@ import { IconSymbol } from "@/components/ui/IconSymbol"
 import { PlayerCard } from "@/components/ui/PlayerCard"
 import { router } from "expo-router"
 import { waitFor } from "@testing-library/react-native"
+import { GlassIconButton } from "@/components/GlassIconButton"
+import { Tile } from "@/components/Tile"
 
 export type TeamGridPlayer = Player & { avatarUri?: string }
 type ThemeFn = <T>(styleFn: (theme: any) => T) => T
@@ -398,6 +400,7 @@ export const CombinedTeamsGrid = ({
 
   const leftW = effectiveContainerW * 0.8 //LEFT CONTAINER
   const railW = effectiveContainerW * 0.2 //RIGHT CONTAINER
+  const tileRailW = railW * 0.85
 
   const cardWidth = useMemo(() => {
     if (leftW <= 0) return 75
@@ -636,20 +639,32 @@ export const CombinedTeamsGrid = ({
       ))}
 
       {/* RIGHT RAIL */}
-      <View
-        style={[themed($rightRail), rectToStyle(railRect)]}
-      >
-        <View style={[themed($centerNumbersStack), { top: centerNumbersTop }]}>
+      <View style={[themed($rightRail), rectToStyle(railRect)]}>
+        <Tile 
+          value={upperCenterNumber} 
+          label="Team A" 
+          accentColor="blue" //TODO change this color to palette
+          style={themed($tileBasic)}
+          width={tileRailW}
+        />
+        <View pointerEvents="none" style={themed($centerNumberBox)}>
+            <Text style={themed($centerTimerText)}>{formatElapsedTime(elapsedSeconds)}</Text>
+        </View>
+        <Tile 
+          value={lowerCenterNumber} 
+          label="Team B" 
+          accentColor="red"  //TODO change this color to palette
+          style={themed($tileBasic)}
+          width={tileRailW}
+        />
+        
           <View pointerEvents="none" style={themed($centerNumberBox)}>
             <Text style={themed($centerNumberText)}>{upperCenterNumber}</Text>
           </View>
           <View pointerEvents="none" style={themed($centerNumberBox)}>
-            <Text style={themed($centerTimerText)}>{formatElapsedTime(elapsedSeconds)}</Text>
-          </View>
-          <View pointerEvents="none" style={themed($centerNumberBox)}>
             <Text style={themed($centerNumberText)}>{lowerCenterNumber}</Text>
           </View>
-        </View>
+        
 
         {isDragging ? (
           <>
@@ -664,36 +679,26 @@ export const CombinedTeamsGrid = ({
           </>
         ) : (
           <View style={themed($railButtons)}>
-            <Button // TODO maybe paremetrize this button
+            <GlassIconButton
+              label="Shuffle"
               onPress={handleShufflePress}
-              style={[themed($railButton),]} 
-              RightAccessory={({ style }) => (
-                <View style={style}>
-                  <IconSymbol size={28} name="shuffle" color={theme.colors.iconColor} iconSet="fontawesome6" />
-                </View>
-              )}
+              icon={<IconSymbol size={28} name="shuffle" color={theme.colors.iconColor} iconSet="fontawesome6" />}
             />
+            
             <View style={{ height: 12 }} />
 
-            <Button // TODO maybe paremetrize this button
+            <GlassIconButton // TODO maybe paremetrize this button
+              label="Info"
               onPress={() => router.push('/PreviewScreen')} //TODO this is just temporary, change this later.
-              style={[themed($railButton),]} 
-              RightAccessory={({ style }) => (
-                <View style={style}>
-                  <IconSymbol size={28} name="info-outline" color={theme.colors.iconColor} iconSet="material" />
-                </View>
-              )}
+              icon={<IconSymbol size={28} name="info-outline" color={theme.colors.iconColor} iconSet="material" />}
             />
+
             <View style={{ height: 12 }} />
 
-            <Button // TODO maybe paremetrize this button
+            <GlassIconButton // TODO maybe paremetrize this button
+              label="History"
               onPress={() => alert('Show past matches')} //TODO this is just temporary, change this later.
-              style={[themed($railButton),]} 
-              RightAccessory={({ style }) => (
-                <View style={style}>
-                  <IconSymbol size={28} name="book" color={theme.colors.iconColor} iconSet="fontawesome" />
-                </View>
-              )}
+              icon={<IconSymbol size={28} name="book" color={theme.colors.iconColor} iconSet="fontawesome" />}
             />
 
             <View style={{ height: 12 }} />
@@ -727,8 +732,8 @@ const $rightRail: ThemedStyle<ViewStyle> = (theme) => ({
   position: "absolute",
   justifyContent: "flex-end",
   alignItems: "center",
-  borderLeftWidth: 1,
-  borderLeftColor: theme.colors.border,
+  borderLeftWidth: 2, //TODO delete this when layout is final
+  borderLeftColor: theme.colors.border, //TOOD delete this when layout is final
   overflow: "visible",
   paddingBottom: 14,
   //paddingLeft: 30, //TODO check if you feel this somewhere
@@ -834,4 +839,9 @@ const $centerNumbersStack: ThemedStyle<ViewStyle> = () => ({
   right: 0,                 // let it span rail
   gap: 8,
   alignItems: "center",      // but center its children
+})
+
+const $tileBasic: ThemedStyle<ViewStyle> = (theme) => ({
+  alignSelf: "center",
+  borderColor: theme.colors.palette.green500,
 })

@@ -193,6 +193,7 @@ Animations are still missing though.
 - [ ] Mark friends in friendlist as favourits, so they show up at the top in the searchbar for everything.
 - [ ] Make simplified version of app where you can just add local players for splitting up teams FAST.
 - [ ] Make a tab for friends to swipe over, to get to the personalised part about yourself. Make it possible to change the name and add a picture, so that the lineup in initial screen and partitioned screen are nicer to look at
+- [ ] FriendsList order button to order by Name, Winrate, Games played
 
 
 
@@ -220,6 +221,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Short list of last played matches. How long did the game last, which team won.
 - [ ] Make a timer which shows how long the current game is running, so that you are always sure if you typed in who won. Reset the timer every time the team changes, obviously. Dont use this time for any stats, it should just help players determine if they already entered the result.
 - [ ] Add cutout-pictures of face/upper-body over name, to make it similar like lineup in football. Info button somewhere that spins the icons around to reveal some stats.
+- [ ] Use FlipCard from reanimated to flip all the PlayerCards for additional info.
 
 
 
@@ -302,7 +304,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] Make parent give exact size to TeamPlayerGrid, so that it aligns with background picture.
 - [ ] Think about changing the background picture to a glowing one when dragging over a player, or just changing color of drag zones. Or just making the cell under the one even bigger. Use a dedicated highlighted card asset to put over the PlayerCard when dragged over it!!!
 - [ ] Hide time button in Teamplayergrid when dragging.
-- [ ] react-native-reanimated-dnd for drag-and-drop instead of current custom implementation (https://github.com/entropyconquers/react-native-reanimated-dnd). It has all i implemented with AI custom style: 2D grid reordering with insert & swap, Visual hover effects on drop zones, drop zones
+- [ ] react-native-reanimated-dnd for drag-and-drop instead of current custom implementation (https://github.com/entropyconquers/react-native-reanimated-dnd). It has all i implemented with AI custom style: 2D grid reordering with insert & swap, Visual hover effects on drop zones, drop zones. Tried it, and current implementation does not really support my use-case. If not used at end of project, deinstall dependency.
 - [ ] If you do not want to upload a picture of yourself, make an option to create an avatar instead
 - [ ] PlayerList has some styles that are not in the normal format. Fix this.
 - [x] Dashboard buttons background of icon with slightly more light. Make other buttons also button.
@@ -312,3 +314,6 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Either change Name part of dashboard to put it into a nicer box, or change position as a whole.
 - [ ] maybe block drag and drop with waiting signal so that it does not get fucked up when you try to drag too often without waiting. Or just use the new library?!
 - [ ] Clear at MakeTeamsScreen: Are you sure?
+- [ ] Try Google Stitch to better organise my screens and transitions. 
+- [ ] Drag and Drop additional features: maybe do lift animation (scale + shadow), hover preview, snap feedback, haptic-like visual cues, ..., Reanimated animations for dragging and dropping, switching places, changing size when teamsize changes, jumping back, going to position when dropping into dropzone, moving each position when there is a new formation.
+- [ ] Add a png of a field for left side of GameScreen, and add a png of pure sand for background.

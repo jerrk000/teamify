@@ -120,7 +120,7 @@ export default function HomeScreen({ notificationCount = 12 }: Props) {
           />
         
           <Button
-            text="Settings" 
+            text="Special Modes" 
             onPress={handlePlayerSelection} 
             style={[themed($smallCard), themed($settingsCard)]}
             textStyle={themed($smallText)} 

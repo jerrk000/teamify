@@ -110,7 +110,7 @@ const GameScreen = () => {
     setContainerWidth(event.nativeEvent.layout.width)
   }
 
-  const backgroundWidth = containerWidth > 0 ? containerWidth * 0.8 : "80%"
+  const backgroundWidth = "100%" //containerWidth > 0 ? containerWidth * 0.8 : "80%"
 
   return (
     <SafeAreaView style={themed($outerContainer)} onLayout={handleContainerLayout}>
