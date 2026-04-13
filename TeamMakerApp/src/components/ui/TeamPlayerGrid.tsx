@@ -400,7 +400,7 @@ export const CombinedTeamsGrid = ({
 
   const leftW = effectiveContainerW * 0.8 //LEFT CONTAINER
   const railW = effectiveContainerW * 0.2 //RIGHT CONTAINER
-  const tileRailW = railW * 0.85
+  const tileRailW = Math.max(72, railW * 0.85)
 
   const cardWidth = useMemo(() => {
     if (leftW <= 0) return 75
