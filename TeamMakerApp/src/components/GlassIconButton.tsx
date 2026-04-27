@@ -22,6 +22,7 @@ export interface GlassIconButtonProps extends PressableProps {
   icon: ReactNode
   size?: number
   style?: StyleProp<ViewStyle>
+  circleStyle?: StyleProp<ViewStyle>
   pressedStyle?: StyleProp<ViewStyle>
   labelStyle?: StyleProp<TextStyle>
   disabled?: boolean
@@ -36,6 +37,7 @@ export function GlassIconButton(props: GlassIconButtonProps) {
     icon,
     size = 96,
     style: $styleOverride,
+    circleStyle: $circleStyleOverride,
     pressedStyle: $pressedStyleOverride,
     labelStyle: $labelStyleOverride,
     disabled,
@@ -76,6 +78,7 @@ export function GlassIconButton(props: GlassIconButtonProps) {
             height: iconCircleSize,
             borderRadius: iconCircleSize / 2,
           },
+          $circleStyleOverride,
         ]}
       >
         <LinearGradient

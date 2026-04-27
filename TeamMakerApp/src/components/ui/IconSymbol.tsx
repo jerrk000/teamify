@@ -5,6 +5,10 @@ import { SymbolWeight } from 'expo-symbols';
 import React from 'react';
 import { OpaqueColorValue, StyleProp, TextStyle } from 'react-native';
 
+type MaterialIconName = React.ComponentProps<typeof MaterialIcons>['name'];
+type FontAwesomeIconName = React.ComponentProps<typeof FontAwesome>['name'];
+type FontAwesome6IconName = React.ComponentProps<typeof FontAwesome6>['name'];
+
 // Add your SF Symbol to MaterialIcons mappings here.
 const MATERIAL_ICONS_MAPPING = {
   // See MaterialIcons here: https://icons.expo.fyi
@@ -19,12 +23,7 @@ const MATERIAL_ICONS_MAPPING = {
   'gear': 'settings',
   'delete': 'delete',
   'info-outline': 'info-outline',
-} as Partial<
-  Record<
-    import('expo-symbols').SymbolViewProps['name'],
-    React.ComponentProps<typeof MaterialIcons>['name']
-  >
->;
+} as const satisfies Record<string, MaterialIconName>;
 
 // Add your SF Symbol to FontAwesome mappings here.
 const FONT_AWESOME_MAPPING = {
@@ -42,12 +41,7 @@ const FONT_AWESOME_MAPPING = {
   'play': 'play',
   'rocket': 'rocket',
   'gear': 'gear',
-} as Partial<
-  Record<
-    import('expo-symbols').SymbolViewProps['name'],
-    React.ComponentProps<typeof FontAwesome>['name']
-  >
->;
+} as const satisfies Record<string, FontAwesomeIconName>;
 
 // Add your SF Symbol to FontAwesome mappings here.
 const FONT_AWESOME6_MAPPING = {
@@ -56,44 +50,49 @@ const FONT_AWESOME6_MAPPING = {
   'xmark': 'xmark',
   'shuffle': 'shuffle',
   'bell': 'bell',
-} as Partial<
-  Record<
-    import('expo-symbols').SymbolViewProps['name'],
-    React.ComponentProps<typeof FontAwesome6>['name']
-  >
->;
+} as const satisfies Record<string, FontAwesome6IconName>;
 
 export type IconSymbolName =
   | keyof typeof MATERIAL_ICONS_MAPPING
   | keyof typeof FONT_AWESOME_MAPPING
   | keyof typeof FONT_AWESOME6_MAPPING;
 
+type CommonIconSymbolProps = {
+  size?: number;
+  color: string | OpaqueColorValue;
+  style?: StyleProp<TextStyle>;
+  weight?: SymbolWeight;
+};
+
+type IconSymbolProps =
+  | (CommonIconSymbolProps & {
+      name: keyof typeof MATERIAL_ICONS_MAPPING;
+      iconSet?: 'material';
+    })
+  | (CommonIconSymbolProps & {
+      name: keyof typeof FONT_AWESOME_MAPPING;
+      iconSet: 'fontawesome';
+    })
+  | (CommonIconSymbolProps & {
+      name: keyof typeof FONT_AWESOME6_MAPPING;
+      iconSet: 'fontawesome6';
+    });
+
 /**
  * An icon component that uses native SFSymbols on iOS, and MaterialIcons or FontAwesome on Android and web. This ensures a consistent look across platforms, and optimal resource usage.
  *
  * Icon `name`s are based on SFSymbols and require manual mapping to MaterialIcons or FontAwesome.
  */
-export function IconSymbol({
-  name,
-  size = 24,
-  color,
-  style,
-  iconSet = 'material', // Default to MaterialIcons
-}: {
-  name: IconSymbolName;
-  size?: number;
-  color: string | OpaqueColorValue;
-  style?: StyleProp<TextStyle>;
-  weight?: SymbolWeight;
-  iconSet?: 'material' | 'fontawesome' | 'fontawesome6'; // Specify which icon set to use
-}) {
-  if (iconSet === 'fontawesome') {
-    return <FontAwesome color={color} size={size} name={FONT_AWESOME_MAPPING[name]} style={style} />;
+export function IconSymbol(props: IconSymbolProps) {
+  const { size = 24, color, style } = props;
+
+  if (props.iconSet === 'fontawesome') {
+    return <FontAwesome color={color} size={size} name={FONT_AWESOME_MAPPING[props.name]} style={style} />;
   }
-  else if (iconSet === 'fontawesome6') {
-    return <FontAwesome6 color={color} size={size} name={FONT_AWESOME6_MAPPING[name]} style={style} />;
+  else if (props.iconSet === 'fontawesome6') {
+    return <FontAwesome6 color={color} size={size} name={FONT_AWESOME6_MAPPING[props.name]} style={style} />;
   }
 
   // Default to MaterialIcons
-  return <MaterialIcons color={color} size={size} name={MATERIAL_ICONS_MAPPING[name]} style={style} />;
+  return <MaterialIcons color={color} size={size} name={MATERIAL_ICONS_MAPPING[props.name]} style={style} />;
 }

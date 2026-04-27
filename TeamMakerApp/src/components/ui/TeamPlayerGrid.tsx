@@ -658,13 +658,6 @@ export const CombinedTeamsGrid = ({
           width={tileRailW}
         />
         
-          <View pointerEvents="none" style={themed($centerNumberBox)}>
-            <Text style={themed($centerNumberText)}>{upperCenterNumber}</Text>
-          </View>
-          <View pointerEvents="none" style={themed($centerNumberBox)}>
-            <Text style={themed($centerNumberText)}>{lowerCenterNumber}</Text>
-          </View>
-        
 
         {isDragging ? (
           <>
@@ -703,12 +696,19 @@ export const CombinedTeamsGrid = ({
 
             <View style={{ height: 12 }} />
 
+            <GlassIconButton // TODO maybe paremetrize this button
+              //label="Choose Winner"
+              onPress={handleWinnerPress}
+              circleStyle={themed($winnerCircle)}
+              icon={<IconSymbol size={28} name="check" color={theme.colors.iconColor} iconSet="fontawesome" />}
+            />
+
             <Button // TODO maybe paremetrize this button
               onPress={handleWinnerPress}
               style={[themed($winnerButton),]}
               RightAccessory={({ style }) => (
                 <View style={style}>
-                  <IconSymbol size={28} name="check" color={theme.colors.iconColor} iconSet="fontawesome" />
+                  <IconSymbol size={36} name="check" color={theme.colors.iconColor} iconSet="fontawesome" />
                 </View>
               )}
             />
@@ -764,6 +764,11 @@ const $winnerButton: ThemedStyle<ViewStyle> = (theme) => ({
   alignItems: "center",
   justifyContent: "center",
   backgroundColor: theme.colors.palette.green500,
+})
+
+const $winnerCircle: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.palette.green500,
+  borderColor: theme.colors.palette.green500,
 })
 
 const $joinZone: ThemedStyle<ViewStyle> = (theme) => ({
