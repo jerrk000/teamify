@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import { View, type ViewStyle, TextInput, FlatList, Text, TouchableOpacity, Keyboard, ScrollView, useWindowDimensions, type TextStyle } from 'react-native';
+import { View, type ViewStyle, Text, TouchableOpacity, Keyboard, useWindowDimensions, type TextStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { $styles } from '@/theme/styles';
 import { Button } from '@/components/Button'
-import SelectedPlayers from '@/components/ui/SelectedPlayers';
+import CurrentPlayerSelection from '@/components/ui/CurrentPlayerSelection';
 import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
 import { SearchField } from '@/components/SearchField';
@@ -217,21 +217,15 @@ const MakeTeamsScreen = () => {
       <View style={themed($fullWidthDivider)} />
       <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
       {!keyboardStatus ? (
-      <View style={{ maxHeight: selectedPlayersMaxHeight }}>
-        <ScrollView
-          //keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={true}
-        >
-          <SelectedPlayers 
+        <View style={{ maxHeight: selectedPlayersMaxHeight }}>
+          <CurrentPlayerSelection
             selectedPlayers={selectedItems} 
-            onClickPlayer={handleRemoveItem}
-            selectedItemStyle={themed($selectedItem)}
+            onRemovePlayer={handleRemoveItem}
             textStyle={themed($selectedItemText)} 
+            placeholderAvatarSource={placeholderAvatar}
           />
-        </ScrollView>
-      </View>
-        ) : null
-      }
+        </View>
+      ) : null}
       <Button
         text="Create Teams" 
         onPress={handleCreateTeams} 
@@ -292,18 +286,6 @@ const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
   marginTop: 4, 
   marginBottom: 12,
   color: theme.colors.text, // TODO what does this do again, just color of text?
-});
-
-const $selectedItem: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: 10,
-  backgroundColor: theme.colors.itemBackground, 
-  margin: 5,
-  borderWidth: 2,
-  borderColor: theme.colors.palette.primary500, // TODO change this and add this to the theme
-  borderRadius: 10, // Rounded corners
 });
 
 const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
