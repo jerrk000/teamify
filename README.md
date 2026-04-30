@@ -317,3 +317,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Try Google Stitch to better organise my screens and transitions. 
 - [ ] Drag and Drop additional features: maybe do lift animation (scale + shadow), hover preview, snap feedback, haptic-like visual cues, ..., Reanimated animations for dragging and dropping, switching places, changing size when teamsize changes, jumping back, going to position when dropping into dropzone, moving each position when there is a new formation.
 - [ ] Add a png of a field for left side of GameScreen, and add a png of pure sand for background.
+- [x] Change the view when new players are added in MakeTeamsScreen. Scrolll to the right every time somebody gets added.
+- [ ] For the task above, add even better animations?

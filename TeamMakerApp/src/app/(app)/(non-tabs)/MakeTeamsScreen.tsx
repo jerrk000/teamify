@@ -140,98 +140,101 @@ const MakeTeamsScreen = () => {
   };
 
   return (
-    <SafeAreaView style={themed($container)}>
-      <Text style={themed($header)}>Add Players</Text>
-      <View>
-        <OptionTabs
-          options={GAME_OPTIONS_TAGS}
-          value={tab}
-          onChange={setTab}
-          rightHint="fade"
-          showBottomDivider={false}
-        />
-      </View>
-      <View style={themed($searchContainer)}>
-        <SearchField
-          value={searchQuery}
-          onChangeText={handleSearch}
-          placeholder="Search Player…"
-          onClear={clearSearch}
-          onSubmit={(q) => handleSearch(q)}
-          testID="players-search"
-          inputTestID="players-search-input"
-          clearButtonTestID="players-search-clear"
-          containerStyle={(theme) => ({ width: "100%",})}
-        />
-      </View>
-
-      <View style={themed($buttonRow)}>
-        <View style={themed($leftContainer)}>
+    <SafeAreaView style={{backgroundColor: theme.colors.background, flex: 1}}>
+      <View style={themed($container)}>
+        <Text style={themed($header)}>Add Players</Text>
+        <View>
+          <OptionTabs
+            options={GAME_OPTIONS_TAGS}
+            value={tab}
+            onChange={setTab}
+            rightHint="fade"
+            showBottomDivider={false}
+          />
+        </View>
+        <View style={themed($searchContainer)}>
           <SearchField
-            value={inputName}
-            onChangeText={setInputName}
-            placeholder="Add temp player"
-            onSubmit={handleAddItem}
-            testID="players-add"
-            inputTestID="players-add-input"
-            clearButtonTestID="players-add-clear"
-            showSearchIcon={false}
+            value={searchQuery}
+            onChangeText={handleSearch}
+            placeholder="Search Player…"
+            onClear={clearSearch}
+            onSubmit={(q) => handleSearch(q)}
+            testID="players-search"
+            inputTestID="players-search-input"
+            clearButtonTestID="players-search-clear"
+            containerStyle={(theme) => ({ width: "100%",})}
           />
-          <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
-            <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
-          </TouchableOpacity>
         </View>
 
-        <View style={themed($clearItemsButton)}>
-          <Button
-            text="Clear"
-            onPress={handleClearSelectedItems}
-            style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
-            textStyle={themed($clearSelectionButtonText)}
-            RightAccessory={({ style }) => (
-              <View style={style}>
-                <IconSymbol
-                  size={28}
-                  name="delete"
-                  color={theme.colors.iconColor}
-                  iconSet="material"
-                />
-              </View>
-            )}
-          />
+        <View style={themed($buttonRow)}>
+          <View style={themed($leftContainer)}>
+            <SearchField
+              value={inputName}
+              onChangeText={setInputName}
+              placeholder="Add temp player"
+              onSubmit={handleAddItem}
+              testID="players-add"
+              inputTestID="players-add-input"
+              clearButtonTestID="players-add-clear"
+              showSearchIcon={false}
+            />
+            <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
+              <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={themed($clearItemsButton)}>
+            <Button
+              text="Clear"
+              onPress={handleClearSelectedItems}
+              style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
+              textStyle={themed($clearSelectionButtonText)}
+              RightAccessory={({ style }) => (
+                <View style={style}>
+                  <IconSymbol
+                    size={28}
+                    name="delete"
+                    color={theme.colors.iconColor}
+                    iconSet="material"
+                  />
+                </View>
+              )}
+            />
+          </View>
         </View>
+
+
+        <PlayerList
+          data={filteredData.length > 0 ? filteredData : data}
+          themed={themed}
+          isSelected={(item) => isItemSelected(item)}
+          favoriteDisabled={true}
+          onPressRow={(item) => handleItemPress(item)}
+          onPressFavorite={(item) => console.log("fav", item.id)}
+          onPressMore={(item) => console.log("more", item.id)}
+          placeholderAvatarSource={placeholderAvatar}
+        />
       </View>
-
-
-      <PlayerList
-        data={filteredData.length > 0 ? filteredData : data}
-        themed={themed}
-        isSelected={(item) => isItemSelected(item)}
-        favoriteDisabled={true}
-        onPressRow={(item) => handleItemPress(item)}
-        onPressFavorite={(item) => console.log("fav", item.id)}
-        onPressMore={(item) => console.log("more", item.id)}
-        placeholderAvatarSource={placeholderAvatar}
-      />
-
       <View style={themed($fullWidthDivider)} />
-      <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
-      {!keyboardStatus ? (
-        <View style={{ maxHeight: selectedPlayersMaxHeight }}>
-          <CurrentPlayerSelection
-            selectedPlayers={selectedItems} 
-            onRemovePlayer={handleRemoveItem}
-            textStyle={themed($selectedItemText)} 
-            placeholderAvatarSource={placeholderAvatar}
-          />
-        </View>
-      ) : null}
-      <Button
-        text="Create Teams" 
-        onPress={handleCreateTeams} 
-        style={themed($Button)}
-        textStyle={themed($saveButtonText)} 
-      />
+      <View style={themed($lowerContainer)}>
+        <Text style={themed($selectedTitle)}>Selected Players: {selectedItems.length}</Text>
+        {!keyboardStatus ? ( //TODO Maybe not needed anymore, check usability with the keyboard
+          <View style={{ maxHeight: selectedPlayersMaxHeight }}>
+            <CurrentPlayerSelection
+              selectedPlayers={selectedItems} 
+              onRemovePlayer={handleRemoveItem}
+              textStyle={themed($selectedItemText)} 
+              placeholderAvatarSource={placeholderAvatar}
+            />
+          </View>
+        ) : null}
+        <Button
+          text="Create Teams" 
+          onPress={handleCreateTeams} 
+          style={themed($Button)}
+          textStyle={themed($saveButtonText)} 
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -275,9 +278,22 @@ const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
 // TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
 
 const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 4,
-  backgroundColor: theme.colors.border, //marginHorizontal: -16, // cancel container padding
-  marginBottom: 8,
+  height: 8,
+  backgroundColor: theme.colors.background, //marginHorizontal: -16, // cancel container padding
+  //marginBottom: 8,
+});
+
+const $lowerContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  //flex: 1,
+  width: "100%",
+  //alignItems: "center",
+  //gap: 12,
+  paddingTop: 12,
+  paddingBottom: 10,
+  paddingLeft: 20,
+  borderTopLeftRadius: 38,
+  borderTopRightRadius: 38,
+  backgroundColor: theme.colors.itemBackground, //TODO maybe make a specific color for this container?
 });
 
 const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
@@ -324,7 +340,8 @@ const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
 });
 
 const $Button: ThemedStyle<ViewStyle> = (theme) => ({
-  backgroundColor: theme.colors.itemBackground, //itembackground for buttoncolor looks better, but not good designwise
+  backgroundColor: theme.colors.buttonBackground,
+  //backgroundColor: theme.colors.itemBackground, //itembackground for buttoncolor looks better, but not good designwise
   color: theme.colors.text,
 })
 

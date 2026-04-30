@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useEffect, useRef } from "react"
 import {
   Image,
   ImageSourcePropType,
@@ -45,9 +45,15 @@ const CurrentPlayerSelection: FC<CurrentPlayerSelectionProps> = ({
 }) => {
   const { themed, theme } = useAppTheme()
   const handleRemove = onRemovePlayer ?? onClickPlayer ?? (() => {})
+  const scrollViewRef = useRef<ScrollView>(null)
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true })
+  }, [selectedPlayers.length])
 
   return (
     <ScrollView
+      ref={scrollViewRef}
       horizontal
       style={[themed($container), containerStyle]}
       contentContainerStyle={[themed($content), isCentered ? themed($centeredContent) : null]}
