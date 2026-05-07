@@ -210,6 +210,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 
 - [ ] Theming of buttons. Do clicked items for first primary color, other buttons secondary color. Do this for volleyball theme and darkmode too. Choose very basic primary and secondary colors for 
 - [ ] Add functionality for gamemode "Keep Score" to keep score, also having functionality in backend to write final score in database. Also dont forget that it is already mentioned in another task that different sports themes need different point counts.
+- [ ] Add a gamemode "Everyone against everyone/Round Robin", which should be another mode where you define teams and have a simple overview who played and won against whom.
 
 
 ### Partitioned Teams Screen
@@ -322,3 +323,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] In MakeTeamsScreen, make one Tab for Players, and one Tab with Groups, similar to the screeninspo
 - [ ] Make feature to create Custom groups and add people to that group. They should show up in the group tab on MakeTeamsScreen too. The connection between group and player-ID is party there as a demo, so should not be too hard to implement
 - [ ] Add a field where you can quickly choose the skill level of a temporary player
+- [ ] At MakeTeamsScreen, I am not 100% happy with the placing of Add Players text. I am not sure if it is better to put it in tab (and maybe make custom tab), or just put it as text at the top of the screen
+- [ ] Create a modal to quickly gauge the skill of a temporary player. Or make it a little extra window that pops up under the name that gets typed in, with a line with 5/10 as a standard value. Would be better instead of a modal if people type in many names there. Maybe do the quick onefor normal game and a bigger modal with more values in other game mode (Local game). Make a quick average score, but if you change something uunder it, the average changes with it. Always show the average score at the top, even when you scroll down and chnage stuff

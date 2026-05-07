@@ -242,8 +242,7 @@ const MakeTeamsScreen = () => {
   return (
     <SafeAreaView style={{backgroundColor: theme.colors.background, flex: 1}}>
       <View style={themed($container)}>
-        <Text style={themed($header)}>Add Players</Text>
-        <View>
+        {/*<View>
           <OptionTabs
             options={GAME_OPTIONS_TAGS}
             value={tab}
@@ -252,6 +251,7 @@ const MakeTeamsScreen = () => {
             showBottomDivider={false}
           />
         </View>
+        */}
         <View style={themed($searchContainer)}>
           <SearchField
             value={searchQuery}

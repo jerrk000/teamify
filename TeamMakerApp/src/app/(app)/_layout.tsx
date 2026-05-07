@@ -26,7 +26,15 @@ export default function AppLayout() {
       <Stack.Screen
         name="(non-tabs)/MakeTeamsScreen"
         options={{
-          title: "Teams",
+          title: "Add Players",
+          headerStyle: {
+            backgroundColor: theme.colors.palette.neutral200,
+          },
+          headerTitleStyle: {
+            color: theme.colors.tint,
+            fontSize: 24,
+            fontWeight: "700",
+          },
         }}
       />
       <Stack.Screen
