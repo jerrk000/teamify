@@ -13,11 +13,14 @@ import { SearchField } from '@/components/SearchField';
 import { PlayerList } from '@/components/ui/PlayerList';
 import { OptionTabs } from "@/components/ui/OptionTabs"
 import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/GameOptionsTabs';
+import { SegmentedContentTabs } from '@/components/ui/SegmentedContentTabs';
 
 type Item = {
   id: string;
   name: string;
 };
+
+type RosterTabKey = "players" | "groups";
 
 const MakeTeamsScreen = () => {
   const router = useRouter();
@@ -61,6 +64,7 @@ const MakeTeamsScreen = () => {
   const selectedPlayersMaxHeight = windowHeight * 0.3;
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [tab, setTab] = useState<GameOptionsTagKey>(GAME_OPTIONS_TAGS[0].key);
+  const [rosterTab, setRosterTab] = useState<RosterTabKey>("players");
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -123,6 +127,18 @@ const MakeTeamsScreen = () => {
     setSelectedItems([]);
   };
 
+  const handleGroupPress = (playerIds: string[]) => {
+    const groupPlayers = data.filter((item) => playerIds.includes(item.id));
+    const nextItems = [
+      ...selectedItems,
+      ...groupPlayers.filter(
+        (item) => !selectedItems.some((selected) => selected.id === item.id),
+      ),
+    ];
+
+    setSelectedItems(nextItems);
+  };
+
   const isItemSelected = (item: Item) => {
     return selectedItems.some((selected) => selected.id === item.id);
   };
@@ -138,6 +154,93 @@ const MakeTeamsScreen = () => {
   }
   actionByTab[tab]()
   };
+
+  const playersTabContent = (
+    <>
+      <View style={themed($buttonRow)}>
+        <View style={themed($leftContainer)}>
+          <SearchField
+            value={inputName}
+            onChangeText={setInputName}
+            placeholder="Add temp player"
+            onSubmit={handleAddItem}
+            testID="players-add"
+            inputTestID="players-add-input"
+            clearButtonTestID="players-add-clear"
+            showSearchIcon={false}
+          />
+          <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
+            <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={themed($clearItemsButton)}>
+          <Button
+            text="Clear"
+            onPress={handleClearSelectedItems}
+            style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
+            textStyle={themed($clearSelectionButtonText)}
+            RightAccessory={({ style }) => (
+              <View style={style}>
+                <IconSymbol
+                  size={28}
+                  name="delete"
+                  color={theme.colors.iconColor}
+                  iconSet="material"
+                />
+              </View>
+            )}
+          />
+        </View>
+      </View>
+
+      <PlayerList
+        data={filteredData.length > 0 ? filteredData : data}
+        themed={themed}
+        isSelected={(item) => isItemSelected(item)}
+        favoriteDisabled={true}
+        onPressRow={(item) => handleItemPress(item)}
+        onPressFavorite={(item) => console.log("fav", item.id)}
+        onPressMore={(item) => console.log("more", item.id)}
+        placeholderAvatarSource={placeholderAvatar}
+      />
+    </>
+  );
+
+  const groupsTabContent = (
+    <View style={themed($groupsContainer)}>
+      {[
+        { id: "classic-boys", name: "Classic Boys", playerIds: ["1", "2", "3", "4"] },
+        { id: "after-work", name: "After Work", playerIds: ["5", "6", "7", "8"] },
+        { id: "weekend-mix", name: "Weekend Mix", playerIds: ["9", "10", "11", "12"] },
+      ].map((group) => {
+        const selectedCount = group.playerIds.filter((id) =>
+          selectedItems.some((item) => item.id === id),
+        ).length;
+
+        return (
+          <TouchableOpacity
+            key={group.id}
+            activeOpacity={0.8}
+            onPress={() => handleGroupPress(group.playerIds)}
+            style={themed($groupCard)}
+            accessibilityRole="button"
+            accessibilityLabel={`Add ${group.name}`}
+          >
+            <View>
+              <Text style={themed($groupName)} numberOfLines={1}>
+                {group.name}
+              </Text>
+              <Text style={themed($groupMeta)}>
+                {selectedCount}/{group.playerIds.length} selected
+              </Text>
+            </View>
+            <IconSymbol size={24} name="person.badge.plus" color={theme.colors.iconColor} iconSet="material" />
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
 
   return (
     <SafeAreaView style={{backgroundColor: theme.colors.background, flex: 1}}>
@@ -166,53 +269,15 @@ const MakeTeamsScreen = () => {
           />
         </View>
 
-        <View style={themed($buttonRow)}>
-          <View style={themed($leftContainer)}>
-            <SearchField
-              value={inputName}
-              onChangeText={setInputName}
-              placeholder="Add temp player"
-              onSubmit={handleAddItem}
-              testID="players-add"
-              inputTestID="players-add-input"
-              clearButtonTestID="players-add-clear"
-              showSearchIcon={false}
-            />
-            <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
-              <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={themed($clearItemsButton)}>
-            <Button
-              text="Clear"
-              onPress={handleClearSelectedItems}
-              style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
-              textStyle={themed($clearSelectionButtonText)}
-              RightAccessory={({ style }) => (
-                <View style={style}>
-                  <IconSymbol
-                    size={28}
-                    name="delete"
-                    color={theme.colors.iconColor}
-                    iconSet="material"
-                  />
-                </View>
-              )}
-            />
-          </View>
-        </View>
-
-
-        <PlayerList
-          data={filteredData.length > 0 ? filteredData : data}
-          themed={themed}
-          isSelected={(item) => isItemSelected(item)}
-          favoriteDisabled={true}
-          onPressRow={(item) => handleItemPress(item)}
-          onPressFavorite={(item) => console.log("fav", item.id)}
-          onPressMore={(item) => console.log("more", item.id)}
-          placeholderAvatarSource={placeholderAvatar}
+        <SegmentedContentTabs
+          tabs={[
+            { key: "players", label: "Players", content: playersTabContent, testID: "roster-tab-players" },
+            { key: "groups", label: "Groups", content: groupsTabContent, testID: "roster-tab-groups" },
+          ]}
+          value={rosterTab}
+          onChange={setRosterTab}
+          style={themed($rosterTabs)}
+          a11yLabelPrefix="Roster"
         />
       </View>
       <View style={themed($fullWidthDivider)} />
@@ -228,12 +293,16 @@ const MakeTeamsScreen = () => {
             />
           </View>
         ) : null}
-        <Button
-          text="Create Teams" 
-          onPress={handleCreateTeams} 
-          style={themed($Button)}
-          textStyle={themed($saveButtonText)} 
-        />
+        <View 
+        style={{ paddingRight: 20 }} //if you change this padding, also change padding of lowerContainer
+        > 
+          <Button
+            text="Create Teams" 
+            onPress={handleCreateTeams} 
+            style={themed($Button) }
+            textStyle={themed($saveButtonText)} 
+          />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -275,6 +344,10 @@ const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
   marginTop: 16,
 });
 
+const $rosterTabs: ThemedStyle<ViewStyle> = () => ({
+  marginBottom: 8,
+});
+
 // TODO placeholder can also be styled i think, check if that is possible with theming and if so add it to the theme and use it here. Multiple placeholders in here
 
 const $fullWidthDivider: ThemedStyle<ViewStyle> = (theme) => ({
@@ -290,7 +363,7 @@ const $lowerContainer: ThemedStyle<ViewStyle> = (theme) => ({
   //gap: 12,
   paddingTop: 12,
   paddingBottom: 10,
-  paddingLeft: 20,
+  paddingLeft: 20, // to align with the padding of the button, if you change this also change padding of the button
   borderTopLeftRadius: 38,
   borderTopRightRadius: 38,
   backgroundColor: theme.colors.itemBackground, //TODO maybe make a specific color for this container?
@@ -309,6 +382,35 @@ const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: 16,
+});
+
+const $groupsContainer: ThemedStyle<ViewStyle> = () => ({
+  gap: 10,
+});
+
+const $groupCard: ThemedStyle<ViewStyle> = (theme) => ({
+  minHeight: 72,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  backgroundColor: theme.colors.itemBackground,
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  paddingHorizontal: 16,
+  paddingVertical: 12,
+});
+
+const $groupName: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontSize: 16,
+  fontWeight: "800",
+});
+
+const $groupMeta: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.textDim,
+  fontSize: 14,
+  marginTop: 4,
 });
 
 const $clearItemsButton: ThemedStyle<ViewStyle> = (theme) => ({
@@ -354,4 +456,5 @@ const $clearSelectionButtonText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 16, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
   color: theme.colors.text,
 });
+
 export default MakeTeamsScreen;

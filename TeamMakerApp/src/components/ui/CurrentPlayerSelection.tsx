@@ -30,6 +30,7 @@ interface CurrentPlayerSelectionProps {
 }
 
 const AVATAR_SIZE = 72
+const AVATAR_BORDER_WIDTH = 2
 
 const CurrentPlayerSelection: FC<CurrentPlayerSelectionProps> = ({
   selectedPlayers,
@@ -66,19 +67,20 @@ const CurrentPlayerSelection: FC<CurrentPlayerSelectionProps> = ({
         return (
           <View key={player.id} style={[themed($playerTile), selectedItemStyle]}>
             <View style={themed($avatarWrap)}>
-              {avatarSource ? (
-                <Image
-                  source={avatarSource}
-                  style={themed((t) => $avatar(t, AVATAR_SIZE))}
-                  accessibilityLabel={`${player.name} avatar`}
-                />
-              ) : (
-                <View style={themed((t) => $avatarFallback(t, AVATAR_SIZE))}>
+              <View style={themed((t) => $avatarFrame(t, AVATAR_SIZE))}>
+                {avatarSource ? (
+                  <Image
+                    source={avatarSource}
+                    style={$avatarImage(AVATAR_SIZE - AVATAR_BORDER_WIDTH * 2)}
+                    resizeMode="contain"
+                    accessibilityLabel={`${player.name} avatar`}
+                  />
+                ) : (
                   <Text style={themed($avatarInitial)} numberOfLines={1}>
                     {player.name.trim().charAt(0).toUpperCase()}
                   </Text>
-                </View>
-              )}
+                )}
+              </View>
 
               {!disableTouch ? (
                 <Pressable
@@ -136,24 +138,22 @@ const $avatarWrap: ThemedStyle<ViewStyle> = () => ({
   marginBottom: 6,
 })
 
-const $avatar = (theme: any, size: number): ImageStyle => ({
+const $avatarFrame = (theme: any, size: number): ViewStyle => ({
   width: size,
   height: size,
   borderRadius: size / 2,
-  borderWidth: 2,
-  borderColor: theme.colors.palette.primary500,
-  backgroundColor: theme.colors.itemBackground,
-})
-
-const $avatarFallback = (theme: any, size: number): ViewStyle => ({
-  width: size,
-  height: size,
-  borderRadius: size / 2,
-  borderWidth: 2,
+  borderWidth: AVATAR_BORDER_WIDTH,
   borderColor: theme.colors.palette.primary500,
   backgroundColor: theme.colors.itemBackground,
   alignItems: "center",
   justifyContent: "center",
+  overflow: "hidden",
+})
+
+const $avatarImage = (size: number): ImageStyle => ({
+  width: size,
+  height: size,
+  borderRadius: size / 2,
 })
 
 const $avatarInitial: ThemedStyle<TextStyle> = (theme) => ({
