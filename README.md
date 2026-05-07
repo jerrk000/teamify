@@ -319,3 +319,6 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Add a png of a field for left side of GameScreen, and add a png of pure sand for background.
 - [x] Change the view when new players are added in MakeTeamsScreen. Scrolll to the right every time somebody gets added.
 - [ ] For the task above, add even better animations?
+- [ ] In MakeTeamsScreen, make one Tab for Players, and one Tab with Groups, similar to the screeninspo
+- [ ] Make feature to create Custom groups and add people to that group. They should show up in the group tab on MakeTeamsScreen too. The connection between group and player-ID is party there as a demo, so should not be too hard to implement
+- [ ] Add a field where you can quickly choose the skill level of a temporary player

@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import { View, type ViewStyle, Text, TouchableOpacity, Keyboard, useWindowDimensions, type TextStyle } from 'react-native';
+import { Image, View, type ViewStyle, Text, TouchableOpacity, Keyboard, useWindowDimensions, type TextStyle, type ImageStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { $styles } from '@/theme/styles';
 import { Button } from '@/components/Button'
+import { TextField } from '@/components/TextField';
 import CurrentPlayerSelection from '@/components/ui/CurrentPlayerSelection';
 import { useAppTheme } from '@/theme/context';
 import { ThemedStyle } from '@/theme/types';
@@ -110,10 +111,12 @@ const MakeTeamsScreen = () => {
   };
 
   const handleAddItem = () => {
-    if (inputName.trim()) {
+    const guestName = inputName.trim();
+
+    if (guestName) {
       const newItem: Item = {
         id: String(data.length + 1),
-        name: inputName + " (temp)",
+        name: guestName + " (temp)",
       };
       setData([...data, newItem]);
       setInputName('');
@@ -121,10 +124,6 @@ const MakeTeamsScreen = () => {
         setSelectedItems([...selectedItems, newItem]); //add item if not already selected
       } 
     }
-  };
-
-  const handleClearSelectedItems = () => {
-    setSelectedItems([]);
   };
 
   const handleGroupPress = (playerIds: string[]) => {
@@ -157,41 +156,39 @@ const MakeTeamsScreen = () => {
 
   const playersTabContent = (
     <>
-      <View style={themed($buttonRow)}>
-        <View style={themed($leftContainer)}>
-          <SearchField
-            value={inputName}
-            onChangeText={setInputName}
-            placeholder="Add temp player"
-            onSubmit={handleAddItem}
-            testID="players-add"
-            inputTestID="players-add-input"
-            clearButtonTestID="players-add-clear"
-            showSearchIcon={false}
-          />
-          <TouchableOpacity onPress={handleAddItem} style={themed($iconContainer)}>
-            <IconSymbol size={28} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
-          </TouchableOpacity>
-        </View>
+      <View style={themed($guestPlayerRow)}>
+        <Image
+          source={placeholderAvatar}
+          style={themed($guestAvatar)}
+          accessibilityLabel="Temporary guest avatar"
+        />
 
-        <View style={themed($clearItemsButton)}>
-          <Button
-            text="Clear"
-            onPress={handleClearSelectedItems}
-            style={[themed($Button), { minHeight: 44, height:44, borderRadius: 10 }]}
-            textStyle={themed($clearSelectionButtonText)}
-            RightAccessory={({ style }) => (
-              <View style={style}>
-                <IconSymbol
-                  size={28}
-                  name="delete"
-                  color={theme.colors.iconColor}
-                  iconSet="material"
-                />
-              </View>
-            )}
-          />
-        </View>
+        <TextField
+          value={inputName}
+          onChangeText={setInputName}
+          placeholder="Guest name"
+          onSubmitEditing={handleAddItem}
+          returnKeyType="done"
+          autoCorrect={false}
+          textAlignVertical="center"
+          containerStyle={themed($guestInputContainer)}
+          inputWrapperStyle={themed($guestInputFrame)}
+          style={themed($guestInput)}
+          accessibilityLabel="Guest name"
+          testID="players-add-input"
+        />
+
+        <TouchableOpacity
+          onPress={handleAddItem}
+          disabled={!inputName.trim()}
+          activeOpacity={0.8}
+          style={[themed($guestAddButton), !inputName.trim() ? themed($guestAddButtonDisabled) : null]}
+          accessibilityRole="button"
+          accessibilityLabel="Add temporary guest"
+          testID="players-add"
+        >
+          <IconSymbol size={26} name='person.badge.plus' color={theme.colors.iconColor} iconSet="material" />
+        </TouchableOpacity>
       </View>
 
       <PlayerList
@@ -312,7 +309,7 @@ const MakeTeamsScreen = () => {
 
 const $container: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 1,
-  paddingTop: 8,
+  //paddingTop: 8,
   paddingLeft: 16,
   paddingRight: 16,
   backgroundColor: theme.colors.background,
@@ -324,15 +321,6 @@ const $header: ThemedStyle<TextStyle> = (theme) => ({
   textAlign: 'center',
   marginVertical: 5,
   color: theme.colors.text, // TODO what does this do again?
-});
-
-const $searchBar: ThemedStyle<TextStyle> = (theme) => ({
-  flex: 1,
-  height: 40,
-  borderColor: theme.colors.border,
-  borderWidth: 1,
-  paddingLeft: 8,
-  color: theme.colors.text, // TODO what does it do?
 });
 
 const $searchContainer: ThemedStyle<ViewStyle> = (theme) => ({
@@ -377,11 +365,67 @@ const $selectedTitle: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.text, // TODO what does this do again, just color of text?
 });
 
-const $buttonRow: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: 16,
+const $guestPlayerRow: ThemedStyle<ViewStyle> = (theme) => ({
+  minHeight: 62,
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 12,
+  paddingVertical: 10,
+  paddingHorizontal: 16,
+  backgroundColor: theme.colors.itemBackground,
+  margin: 5,
+  marginBottom: 12,
+  borderRadius: 10,
+});
+
+const $guestAvatar: ThemedStyle<ImageStyle> = (_theme) => ({
+  width: 30,
+  height: 30,
+  borderRadius: 15,
+});
+
+const $guestInputContainer: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+  minWidth: 0,
+});
+
+const $guestInputFrame: ThemedStyle<ViewStyle> = (theme) => ({
+  height: 44,
+  borderRadius: 10,
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  backgroundColor: theme.colors.itemBackground,
+  justifyContent: "center",
+  alignItems: "center",
+  paddingHorizontal: 12,
+});
+
+const $guestInput: ThemedStyle<TextStyle> = (theme) => ({
+  flex: 1,
+  alignSelf: "stretch",
+  color: theme.colors.text,
+  fontSize: 16,
+  height: 44,
+  marginHorizontal: 0,
+  marginVertical: 0,
+  paddingHorizontal: 0,
+  paddingVertical: 0,
+  textAlignVertical: "center",
+});
+
+const $guestAddButton: ThemedStyle<ViewStyle> = (theme) => ({
+  width: 44,
+  height: 44,
+  borderRadius: 10,
+  alignItems: "center",
+  justifyContent: "center",
+  borderWidth: 1,
+  borderColor: theme.colors.border,
+  backgroundColor: theme.colors.background,
+});
+
+const $guestAddButtonDisabled: ThemedStyle<ViewStyle> = () => ({
+  opacity: 0.45,
 });
 
 const $groupsContainer: ThemedStyle<ViewStyle> = () => ({
@@ -413,30 +457,6 @@ const $groupMeta: ThemedStyle<TextStyle> = (theme) => ({
   marginTop: 4,
 });
 
-const $clearItemsButton: ThemedStyle<ViewStyle> = (theme) => ({
-  flex: 1, // Takes up available space on the right
-  marginLeft: 20,
-});
-
-const $leftContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  flex: 2, // Takes up more space on the left
-});
-
-const $iconContainer: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 44, //TODO it is the same as CONTROL_HEIGHT_MD, make a common token for this
-  width: 44,  //TODO just to make it quadratic, common token?
-  borderRadius: 10, //TODO Rounded corners, make token?
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderWidth: 1,
-  borderColor: theme.colors.border,
-  padding: 8,
-  backgroundColor: theme.colors.itemBackground,
-});
-
 const $selectedItemText: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.text, 
 });
@@ -449,11 +469,6 @@ const $Button: ThemedStyle<ViewStyle> = (theme) => ({
 
 const $saveButtonText: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 20, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
-  color: theme.colors.text,
-});
-
-const $clearSelectionButtonText: ThemedStyle<TextStyle> = (theme) => ({
-  fontSize: 16, //TODO maybe do not hardcode this and add it to the theme or make it responsive, maybe also add font weight and stuff like that to the theme
   color: theme.colors.text,
 });
 
