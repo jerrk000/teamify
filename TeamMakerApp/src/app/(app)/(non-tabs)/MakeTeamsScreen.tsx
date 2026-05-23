@@ -15,6 +15,7 @@ import { PlayerList } from '@/components/ui/PlayerList';
 import { OptionTabs } from "@/components/ui/OptionTabs"
 import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/GameOptionsTabs';
 import { SegmentedContentTabs } from '@/components/ui/SegmentedContentTabs';
+import PlayerRatingModal from '@/components/ui/PlayerRatingModal';
 
 type Item = {
   id: string;
@@ -66,6 +67,8 @@ const MakeTeamsScreen = () => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   const [tab, setTab] = useState<GameOptionsTagKey>(GAME_OPTIONS_TAGS[0].key);
   const [rosterTab, setRosterTab] = useState<RosterTabKey>("players");
+  const [playerRatings, setPlayerRatings] = useState<Record<string, number>>({});
+  const [ratingModalPlayer, setRatingModalPlayer] = useState<Item | undefined>();
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -114,6 +117,7 @@ const MakeTeamsScreen = () => {
     const guestName = inputName.trim();
 
     if (guestName) {
+      Keyboard.dismiss();
       const newItem: Item = {
         id: String(data.length + 1),
         name: guestName + " (temp)",
@@ -122,7 +126,9 @@ const MakeTeamsScreen = () => {
       setInputName('');
       if (!selectedItems.some((selected) => selected.id === newItem.id)) {
         setSelectedItems([...selectedItems, newItem]); //add item if not already selected
-      } 
+      }
+      setPlayerRatings((ratings) => ({ ...ratings, [newItem.id]: 5 }));
+      setRatingModalPlayer(newItem);
     }
   };
 
@@ -301,6 +307,16 @@ const MakeTeamsScreen = () => {
           />
         </View>
       </View>
+      <PlayerRatingModal
+        visible={!!ratingModalPlayer}
+        player={ratingModalPlayer}
+        rating={ratingModalPlayer ? playerRatings[ratingModalPlayer.id] ?? 5 : 5}
+        onChangeRating={(rating) => {
+          if (!ratingModalPlayer) return
+          setPlayerRatings((ratings) => ({ ...ratings, [ratingModalPlayer.id]: rating }))
+        }}
+        onDone={() => setRatingModalPlayer(undefined)}
+      />
     </SafeAreaView>
   );
 };
