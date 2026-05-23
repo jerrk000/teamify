@@ -322,6 +322,9 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] For the task above, add even better animations?
 - [ ] In MakeTeamsScreen, make one Tab for Players, and one Tab with Groups, similar to the screeninspo
 - [ ] Make feature to create Custom groups and add people to that group. They should show up in the group tab on MakeTeamsScreen too. The connection between group and player-ID is party there as a demo, so should not be too hard to implement
-- [ ] Add a field where you can quickly choose the skill level of a temporary player
+- [x] Add a field where you can quickly choose the skill level of a temporary player
 - [ ] At MakeTeamsScreen, I am not 100% happy with the placing of Add Players text. I am not sure if it is better to put it in tab (and maybe make custom tab), or just put it as text at the top of the screen
-- [ ] Create a modal to quickly gauge the skill of a temporary player. Or make it a little extra window that pops up under the name that gets typed in, with a line with 5/10 as a standard value. Would be better instead of a modal if people type in many names there. Maybe do the quick onefor normal game and a bigger modal with more values in other game mode (Local game). Make a quick average score, but if you change something uunder it, the average changes with it. Always show the average score at the top, even when you scroll down and chnage stuff
+- [ ] Create a modal to quickly gauge the skill of a temporary player. Or make it a little extra window that pops up under the name that gets typed in, with a line with 5/10 as a standard value. Would be better instead of a modal if people type in many names there. Maybe do the quick one for normal game and a bigger modal with more values in other game mode (Local game). Make a quick average score, but if you change something uunder it, the average changes with it. Always show the average score at the top, even when you scroll down and chnage stuff
+- [ ] When clicking the ^-Button in MakeTeamsScreen, show a little score-rating under the name in a small additional space. Also check that this works for temporary players.
+- [ ] Check that the Rating of the temporary players is saved when going to the GameScreen (needed for team computation).
+- [ ] In MakeTeamsScreen, make the empty star disappear, so that the space is less crowded.
