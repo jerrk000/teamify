@@ -330,3 +330,12 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] In MakeTeamsScreen, make the empty star disappear, so that the space is less crowded.
 - [x] Change the text of PlayerRatingModal
 - [ ] In Profile, to show Radar chart with stats and add an Edit button. If pressed on edit, open a modal (see reference) to correctly rate the players skill.
+- [ ] Not important, but maybe if there is too much time. Make a "Beyond" screen which explains more about the app, like how the winrate is calculated, how the matchmaking works,etc.
+- [ ] Connect Modal with advanced rating to radar chart.
+- [ ] Choose Stats and rating-description:
+  Serve
+  Receive
+  Set
+  Hit
+  Effort/Laziness/Fitness
+  Mentality / Fun
