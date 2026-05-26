@@ -9,7 +9,6 @@
   "updates": {
     "fallbackToCacheTimeout": 0
   },
-  "jsEngine": "hermes",
   "assetBundlePatterns": [
     "**/*"
   ],
@@ -41,15 +40,6 @@
         "imageWidth": 300,
         "resizeMode": "contain",
         "backgroundColor": "#191015"
-      }
-    ],
-    [
-      "react-native-edge-to-edge",
-      {
-        "android": {
-          "parentTheme": "Light",
-          "enforceNavigationBarContrast": false
-        }
       }
     ],
     "expo-build-properties",
