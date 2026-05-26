@@ -7,18 +7,26 @@ import {
   ScrollView,
   ScrollViewProps,
   StyleProp,
+  StatusBar,
+  StatusBarProps,
+  StatusBarStyle as NativeStatusBarStyle,
   View,
   ViewStyle,
 } from "react-native"
-import { useScrollToTop } from "@react-navigation/native"
-import { SystemBars, SystemBarsProps, SystemBarStyle } from "react-native-edge-to-edge"
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller"
+import { useScrollToTop } from "expo-router"
+import {
+  KeyboardAwareScrollView,
+  KeyboardAwareScrollViewRef,
+} from "react-native-keyboard-controller"
 
 import { useAppTheme } from "@/theme/context"
 import { $styles } from "@/theme/styles"
 import { ExtendedEdge, useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle"
 
 export const DEFAULT_BOTTOM_OFFSET = 50
+
+type SystemBarStyle = "light" | "dark" | NativeStatusBarStyle
+type SystemBarsProps = Omit<StatusBarProps, "barStyle">
 
 interface BaseScreenProps {
   /**
@@ -54,7 +62,7 @@ interface BaseScreenProps {
    */
   keyboardBottomOffset?: number
   /**
-   * Pass any additional props directly to the SystemBars component.
+   * Pass any additional props directly to the StatusBar component.
    */
   SystemBarsProps?: SystemBarsProps
   /**
@@ -100,6 +108,15 @@ type ScreenPreset = "fixed" | "scroll" | "auto"
  */
 function isNonScrolling(preset?: ScreenPreset) {
   return !preset || preset === "fixed"
+}
+
+function getStatusBarStyle(style: SystemBarStyle | undefined, themeContext: "light" | "dark") {
+  const resolvedStyle = style || (themeContext === "dark" ? "light" : "dark")
+
+  if (resolvedStyle === "light") return "light-content"
+  if (resolvedStyle === "dark") return "dark-content"
+
+  return resolvedStyle
 }
 
 /**
@@ -197,7 +214,7 @@ function ScreenWithScrolling(props: ScreenProps) {
     style,
   } = props as ScrollScreenProps
 
-  const ref = useRef<ScrollView>(null)
+  const ref = useRef<KeyboardAwareScrollViewRef>(null)
 
   const { scrollEnabled, onContentSizeChange, onLayout } = useAutoPreset(props as AutoScreenProps)
 
@@ -262,8 +279,8 @@ export function Screen(props: ScreenProps) {
         $containerInsets,
       ]}
     >
-      <SystemBars
-        style={systemBarStyle || (themeContext === "dark" ? "light" : "dark")}
+      <StatusBar
+        barStyle={getStatusBarStyle(systemBarStyle, themeContext)}
         {...SystemBarsProps}
       />
 

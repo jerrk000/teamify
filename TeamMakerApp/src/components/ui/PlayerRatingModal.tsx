@@ -6,6 +6,7 @@ import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 import { Player } from "@/types/PlayerType"
+import { Host, Column, Slider } from '@expo/ui';
 
 interface PlayerRatingModalProps {
   visible: boolean
@@ -28,6 +29,7 @@ const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
 }) => {
   const { themed, theme } = useAppTheme()
   const [trackWidth, setTrackWidth] = useState(DEFAULT_TRACK_WIDTH)
+  const [score, setScore] = useState(5);
 
   useEffect(() => {
     if (visible && rating < MIN_RATING) {
@@ -68,6 +70,13 @@ const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
             <Text style={themed($ratingText)} numberOfLines={2}>
               Rating of {player?.name ?? "Player"} is - {clampedRating}
             </Text>
+
+             <Host style={{ flex: 1 }}>
+                <Column spacing={8}>
+                  <Text>Score: {score}</Text>
+                  <Slider value={score} onValueChange={setScore} min={0} max={10} step={1} />
+                </Column>
+              </Host>
 
             <View
               style={themed($sliderHitArea)}

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect } from "react"
 import { Platform } from "react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "expo-router"
 
 import { Header, HeaderProps } from "@/components/Header"
 

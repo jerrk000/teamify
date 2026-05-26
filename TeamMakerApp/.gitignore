@@ -91,3 +91,7 @@ web-build/
 # Dependency Graph Visualizations
 app-dependency-graph.svg
 app-dependency-graph.png
+# Expo
+.expo
+dist/
+web-build/

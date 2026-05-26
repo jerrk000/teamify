@@ -328,3 +328,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] When clicking the ^-Button in MakeTeamsScreen, show a little score-rating under the name in a small additional space. Also check that this works for temporary players.
 - [ ] Check that the Rating of the temporary players is saved when going to the GameScreen (needed for team computation).
 - [ ] In MakeTeamsScreen, make the empty star disappear, so that the space is less crowded.
+- [ ] Change the text of PlayerRatingModal
+- [ ] In Profile, to show Radar chart with stats and add an Edit button. If pressed on edit, open a modal (see reference) to correctly rate the players skill.
