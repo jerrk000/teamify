@@ -1,12 +1,12 @@
-import { FC, useEffect, useState } from "react"
+import { FC, useEffect } from "react"
 import { Modal, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native"
+import { Slider } from "@expo/ui/community/slider"
 
 import { Button } from "@/components/Button"
 import { Text } from "@/components/Text"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 import { Player } from "@/types/PlayerType"
-import { Host, Column, Slider } from '@expo/ui';
 
 interface PlayerRatingModalProps {
   visible: boolean
@@ -16,9 +16,8 @@ interface PlayerRatingModalProps {
   onDone: () => void
 }
 
-const MIN_RATING = 1
+const MIN_RATING = 0
 const MAX_RATING = 10
-const DEFAULT_TRACK_WIDTH = 1
 
 const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
   visible,
@@ -28,8 +27,6 @@ const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
   onDone,
 }) => {
   const { themed, theme } = useAppTheme()
-  const [trackWidth, setTrackWidth] = useState(DEFAULT_TRACK_WIDTH)
-  const [score, setScore] = useState(5);
 
   useEffect(() => {
     if (visible && rating < MIN_RATING) {
@@ -38,13 +35,6 @@ const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
   }, [onChangeRating, rating, visible])
 
   const clampedRating = Math.min(MAX_RATING, Math.max(MIN_RATING, Math.round(rating)))
-  const progress = (clampedRating - MIN_RATING) / (MAX_RATING - MIN_RATING)
-
-  const updateRatingFromX = (x: number) => {
-    const nextProgress = Math.min(1, Math.max(0, x / trackWidth))
-    const nextRating = Math.round(MIN_RATING + nextProgress * (MAX_RATING - MIN_RATING))
-    onChangeRating(nextRating)
-  }
 
   return (
     <Modal
@@ -64,49 +54,31 @@ const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
         />
 
         <View style={themed($sheet)}>
-          <Text style={themed($title)}>Rate between 1 to 10</Text>
+          <Text style={themed($title)}>Quick Rating</Text>
 
           <View style={themed($ratingPanel)}>
             <Text style={themed($ratingText)} numberOfLines={2}>
-              Rating of {player?.name ?? "Player"} is - {clampedRating}
+              Rating of {player?.name ?? "Player"}: {clampedRating}
             </Text>
 
-             <Host style={{ flex: 1 }}>
-                <Column spacing={8}>
-                  <Text>Score: {score}</Text>
-                  <Slider value={score} onValueChange={setScore} min={0} max={10} step={1} />
-                </Column>
-              </Host>
-
-            <View
-              style={themed($sliderHitArea)}
-              onLayout={(event) => setTrackWidth(event.nativeEvent.layout.width)}
-              onStartShouldSetResponder={() => true}
-              onMoveShouldSetResponder={() => true}
-              onResponderGrant={(event) => updateRatingFromX(event.nativeEvent.locationX)}
-              onResponderMove={(event) => updateRatingFromX(event.nativeEvent.locationX)}
-            >
-              <View style={themed($track)}>
-                <View style={[themed($activeTrack), { width: `${progress * 100}%` }]} />
-                {Array.from({ length: MAX_RATING - MIN_RATING + 1 }).map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      themed($tick),
-                      { left: `${(index / (MAX_RATING - MIN_RATING)) * 100}%` },
-                    ]}
-                  />
-                ))}
-                <View
-                  style={[
-                    themed($thumb),
-                    {
-                      left: `${progress * 100}%`,
-                      backgroundColor: theme.colors.primary,
-                    },
-                  ]}
-                />
+            <View style={themed($sliderWrap)}>
+               <View style={themed($sliderLabels)}>
+                <Text style={themed($sliderLabel)}>Beginner</Text>
+                <Text style={themed($sliderLabel)}>Professional</Text>
               </View>
+              <Slider
+                value={clampedRating}
+                minimumValue={MIN_RATING}
+                maximumValue={MAX_RATING}
+                lowerLimit={MIN_RATING}
+                upperLimit={MAX_RATING}
+                step={1}
+                minimumTrackTintColor={theme.colors.palette.neutral100}
+                maximumTrackTintColor={theme.colors.palette.neutral500}
+                thumbTintColor={theme.colors.primary}
+                onValueChange={(nextRating) => onChangeRating(Math.round(nextRating))}
+                style={themed($slider)}
+              />
             </View>
           </View>
 
@@ -125,7 +97,7 @@ const PlayerRatingModal: FC<PlayerRatingModalProps> = ({
 }
 
 const $overlay: ThemedStyle<ViewStyle> = (theme) => ({
-  ...StyleSheet.absoluteFillObject,
+  ...StyleSheet.absoluteFill,
   justifyContent: "flex-end",
   backgroundColor: theme.colors.palette.overlaymodal,
 })
@@ -143,10 +115,13 @@ const $sheet: ThemedStyle<ViewStyle> = (theme) => ({
 
 const $title: ThemedStyle<TextStyle> = (theme) => ({
   color: theme.colors.primary,
-  fontSize: 30,
+  fontSize: 28,
+  lineHeight: 36,
   fontWeight: "700",
   textAlign: "center",
-  marginBottom: 22,
+  marginBottom: 18,
+  paddingBottom: 4,
+  
 })
 
 const $ratingPanel: ThemedStyle<ViewStyle> = (theme) => ({
@@ -167,42 +142,28 @@ const $ratingText: ThemedStyle<TextStyle> = (theme) => ({
   marginBottom: 24,
 })
 
-const $sliderHitArea: ThemedStyle<ViewStyle> = () => ({
+const $sliderWrap: ThemedStyle<ViewStyle> = () => ({
   width: "100%",
-  height: 48,
   justifyContent: "center",
 })
 
-const $track: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 6,
-  borderRadius: 3,
-  backgroundColor: theme.colors.palette.neutral500,
-  position: "relative",
+const $sliderLabels: ThemedStyle<ViewStyle> = () => ({
+  width: "100%",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  //marginBottom: 6,
 })
 
-const $activeTrack: ThemedStyle<ViewStyle> = (theme) => ({
-  height: 6,
-  borderRadius: 3,
-  backgroundColor: theme.colors.palette.neutral100,
+const $sliderLabel: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontSize: 14,
+  fontWeight: "700",
 })
 
-const $tick: ThemedStyle<ViewStyle> = (theme) => ({
-  position: "absolute",
-  top: 1,
-  width: 4,
-  height: 4,
-  marginLeft: -2,
-  borderRadius: 2,
-  backgroundColor: theme.colors.palette.neutral600,
-})
 
-const $thumb: ThemedStyle<ViewStyle> = () => ({
-  position: "absolute",
-  top: -18,
-  width: 42,
-  height: 42,
-  marginLeft: -21,
-  borderRadius: 21,
+const $slider: ThemedStyle<ViewStyle> = () => ({
+  width: "100%",
+  height: 48,
 })
 
 const $buttonWrap: ThemedStyle<ViewStyle> = () => ({
