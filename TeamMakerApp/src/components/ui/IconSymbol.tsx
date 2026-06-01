@@ -21,6 +21,8 @@ const MATERIAL_ICONS_MAPPING = {
   'gear': 'settings',
   'delete': 'delete',
   'info-outline': 'info-outline',
+  'qr-code-2': 'qr-code-2',
+  'qr-code-scanner': 'qr-code-scanner',
 } as const satisfies Record<string, MaterialIconName>;
 
 // Add your SF Symbol to FontAwesome mappings here.
@@ -48,6 +50,7 @@ const FONT_AWESOME6_MAPPING = {
   'xmark': 'xmark',
   'shuffle': 'shuffle',
   'bell': 'bell',
+  'copy': 'copy',
 } as const satisfies Record<string, FontAwesome6IconName>;
 
 export type IconSymbolName =

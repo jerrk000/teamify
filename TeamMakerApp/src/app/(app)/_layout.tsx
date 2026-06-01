@@ -59,6 +59,12 @@ export default function AppLayout() {
           title: "Friend Link",
         }}
       />
+      <Stack.Screen
+        name="(non-tabs)/AddFriendScreen"
+        options={{
+          title: "Add Friends",
+        }}
+      />
     </Stack>
   )
 }

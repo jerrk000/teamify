@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 import { Button } from "@/components/Button"
 import { Text } from "@/components/Text"
+import { IconSymbol } from "@/components/ui/IconSymbol"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 
@@ -13,11 +14,11 @@ const FRIEND_LINK = "https://yourapp.com/join/123456789"
 
 export default function FriendLinkScreen() {
   const { themed, theme } = useAppTheme()
-  const [copyButtonText, setCopyButtonText] = useState("Copy link")
+  const [hasCopied, setHasCopied] = useState(false)
 
   const copyFriendLink = async () => {
     await Clipboard.setStringAsync(FRIEND_LINK)
-    setCopyButtonText("Copied")
+    setHasCopied(true)
   }
 
   return (
@@ -35,10 +36,19 @@ export default function FriendLinkScreen() {
         <View style={themed($linkContainer)}>
           <Text text={FRIEND_LINK} style={themed($linkText)} selectable />
           <Button
-            text={copyButtonText}
+            text={hasCopied ? "Copied " : "Copy link "}
             preset="filled"
             onPress={copyFriendLink}
             style={themed($copyButton)}
+            RightAccessory={({ style }) => (
+              <IconSymbol
+                name={hasCopied ? "check" : "copy"}
+                iconSet={hasCopied ? "fontawesome" : "fontawesome6"}
+                size={18}
+                color={theme.colors.text}
+                style={style}
+              />
+            )}
           />
         </View>
 

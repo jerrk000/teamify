@@ -341,3 +341,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
   Effort/Laziness/Fitness
   Mentality / Fun
 - [ ] In GameScreen, do a tiny clock Icon next to the displayed time
+- [ ] In AddFriendScreen, change text with "Paste code here" with an example code, so that people know how the input should look like.
