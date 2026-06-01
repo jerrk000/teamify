@@ -54,6 +54,11 @@ const TabModal = () => {
     router.push("/QRCodeScannerScreen" as never)
   }
 
+  const handleOpenFriendLink = () => {
+    closeModal()
+    router.push("/FriendLinkScreen" as never)
+  }
+
   return (
     <Modal transparent visible={isModalVisible} animationType="fade" onRequestClose={closeModal}>
       <View style={themed($modalRoot)}>
@@ -68,6 +73,9 @@ const TabModal = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={handleOpenScanner} style={themed($optionButton)}>
             <Text style={themed($optionText)}>Scan QR Code</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleOpenFriendLink} style={themed($optionButton)}>
+            <Text style={themed($optionText)}>Share Friend Link</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={themed($optionButton)}>
             <Text style={themed($optionText)}>Logout</Text>
