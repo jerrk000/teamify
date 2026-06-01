@@ -49,6 +49,11 @@ const TabModal = () => {
     router.replace("/LoginScreen")
   }
 
+  const handleOpenScanner = () => {
+    closeModal()
+    router.push("/QRCodeScannerScreen" as never)
+  }
+
   return (
     <Modal transparent visible={isModalVisible} animationType="fade" onRequestClose={closeModal}>
       <View style={themed($modalRoot)}>
@@ -60,6 +65,9 @@ const TabModal = () => {
         >
           <TouchableOpacity onPress={() => alert("Settings")} style={themed($optionButton)}>
             <Text style={themed($optionText)}>Settings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleOpenScanner} style={themed($optionButton)}>
+            <Text style={themed($optionText)}>Scan QR Code</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={handleLogout} style={themed($optionButton)}>
             <Text style={themed($optionText)}>Logout</Text>

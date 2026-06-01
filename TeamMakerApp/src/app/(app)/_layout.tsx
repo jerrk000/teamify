@@ -1,17 +1,15 @@
 import { Redirect, Stack } from "expo-router"
-import { useAppTheme } from '@/theme/context';
+
 import { useAuthStore } from "@/store/useAuthStore"
+import { useAppTheme } from "@/theme/context"
 
 export default function AppLayout() {
   const isAuthenticated = useAuthStore((state) => Boolean(state.authToken))
+  const { theme } = useAppTheme()
 
   if (!isAuthenticated) {
     return <Redirect href="/LoginScreen" />
   }
-
-  const {
-    themed, theme, themeContext,
-  } = useAppTheme()
 
   return (
     <Stack
@@ -47,6 +45,12 @@ export default function AppLayout() {
         name="(non-tabs)/PreviewScreen"
         options={{
           title: "Player Card Preview",
+        }}
+      />
+      <Stack.Screen
+        name="(non-tabs)/QRCodeScannerScreen"
+        options={{
+          headerShown: false,
         }}
       />
     </Stack>

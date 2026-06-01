@@ -9,9 +9,7 @@
   "updates": {
     "fallbackToCacheTimeout": 0
   },
-  "assetBundlePatterns": [
-    "**/*"
-  ],
+  "assetBundlePatterns": ["**/*"],
   "android": {
     "icon": "./assets/images/app-icon-android-legacy.png",
     "package": "com.teammakerapp",
@@ -43,6 +41,14 @@
       }
     ],
     "expo-build-properties",
+    [
+      "expo-camera",
+      {
+        "cameraPermission": "Allow TeamMakerApp to access your camera to scan QR codes.",
+        "barcodeScannerEnabled": true,
+        "recordAudioAndroid": false
+      }
+    ],
     "expo-router"
   ],
   "experiments": {
