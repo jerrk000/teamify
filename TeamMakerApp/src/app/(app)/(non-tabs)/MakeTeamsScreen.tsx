@@ -202,6 +202,7 @@ const MakeTeamsScreen = () => {
         themed={themed}
         isSelected={(item) => isItemSelected(item)}
         favoriteDisabled={true}
+        hideEmptyFavoriteIcon={true}
         onPressRow={(item) => handleItemPress(item)}
         onPressFavorite={(item) => console.log("fav", item.id)}
         onPressMore={(item) => console.log("more", item.id)}

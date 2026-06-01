@@ -1,8 +1,19 @@
-import React, { memo } from "react"
-import { FlatList, Image, Pressable, Text, TouchableOpacity, View, ViewStyle, TextStyle, ImageStyle } from "react-native"
-import { useAppTheme } from '@/theme/context';
-import { ThemedStyle } from '@/theme/types';
+import { memo } from "react"
+import {
+  FlatList,
+  Image,
+  ImageStyle,
+  Pressable,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native"
+
+import { Text } from "@/components/Text"
 import { IconSymbol } from "@/components/ui/IconSymbol"
+import { useAppTheme } from "@/theme/context"
+import { ThemedStyle } from "@/theme/types"
 
 type Id = string
 
@@ -19,7 +30,8 @@ type PlayerRowProps = {
   themed: ThemeFn
   isSelected?: boolean
   favoriteDisabled?: boolean
-  
+  hideEmptyFavoriteIcon?: boolean
+
   onPressRow: (item: PlayerListItem) => void
   onPressFavorite?: (item: PlayerListItem) => void
   onPressMore?: (item: PlayerListItem) => void
@@ -38,6 +50,7 @@ export const PlayerRow = memo(function PlayerRow({
   themed,
   isSelected = false,
   favoriteDisabled = false,
+  hideEmptyFavoriteIcon = false,
   onPressRow,
   onPressFavorite,
   onPressMore,
@@ -49,7 +62,7 @@ export const PlayerRow = memo(function PlayerRow({
   const isFavorite = !!item.isFavorite
 
   const {
-    theme, themeContext, // no themed or it would be used twice
+    theme // no themed or it would be used twice
   } = useAppTheme()
 
   return (
@@ -57,8 +70,11 @@ export const PlayerRow = memo(function PlayerRow({
       <View style={[themed($itemRow), isSelected ? themed($clickedItem) : undefined]}>
         <Image
           source={avatarSource ?? placeholderAvatarSource}
-          style={[themed((t) => $avatar(t, avatarSize)), 
-                  (avatarSource && theme.isDark) && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },]} //when darkmode and no avatar, make grey background
+          style={[
+            themed((t) => $avatar(t, avatarSize)),
+            avatarSource &&
+              theme.isDark && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },
+          ]} //when darkmode and no avatar, make grey background
           accessibilityLabel={`${item.name} avatar`}
         />
 
@@ -72,18 +88,20 @@ export const PlayerRow = memo(function PlayerRow({
             onPress={() => onPressFavorite?.(item)}
             hitSlop={10}
             style={[
-                themed((t) => $iconButton(t, rightIconHitSize)),
-                favoriteDisabled && themed($iconDisabled),
+              themed((t) => $iconButton(t, rightIconHitSize)),
+              favoriteDisabled && themed($iconDisabled),
             ]}
             accessibilityRole="button"
             accessibilityState={{ disabled: favoriteDisabled }}
-            >
-            <IconSymbol
-              name={isFavorite ? "star" : "star-o"}
-              iconSet="fontawesome"
-              size={18} //TODO make this a token if you have one for icon sizes
-              color={theme.colors.text} //TODO maybe use a different color (like yellow)
-            />
+          >
+            {isFavorite || !hideEmptyFavoriteIcon ? (
+              <IconSymbol
+                name={isFavorite ? "star" : "star-o"}
+                iconSet="fontawesome"
+                size={18} //TODO make this a token if you have one for icon sizes
+                color={theme.colors.text} //TODO maybe use a different color (like yellow)
+              />
+            ) : null}
           </Pressable>
 
           <Pressable
@@ -104,13 +122,14 @@ export const PlayerRow = memo(function PlayerRow({
       </View>
     </TouchableOpacity>
   )
-})            
+})
 
 type PlayerListProps = {
   data: PlayerListItem[]
   themed: ThemeFn
   isSelected?: (item: PlayerListItem) => boolean
-  favoriteDisabled?: boolean,
+  favoriteDisabled?: boolean
+  hideEmptyFavoriteIcon?: boolean
 
   onPressRow: (item: PlayerListItem) => void
   onPressFavorite?: (item: PlayerListItem) => void
@@ -130,6 +149,7 @@ export function PlayerList({
   themed,
   isSelected,
   favoriteDisabled,
+  hideEmptyFavoriteIcon,
   onPressRow,
   onPressFavorite,
   onPressMore,
@@ -150,6 +170,7 @@ export function PlayerList({
           themed={themed}
           isSelected={isSelected?.(item) ?? false}
           favoriteDisabled={favoriteDisabled}
+          hideEmptyFavoriteIcon={hideEmptyFavoriteIcon}
           onPressRow={onPressRow}
           onPressFavorite={onPressFavorite}
           onPressMore={onPressMore}
@@ -168,7 +189,7 @@ export function PlayerList({
 const $itemRow: ThemedStyle<ViewStyle> = (theme) => ({
   flexDirection: "row",
   alignItems: "center",
-  paddingVertical: 10,//spacing?.xs ?? 10, //TODO add spacing to theme and use it here
+  paddingVertical: 10, //spacing?.xs ?? 10, //TODO add spacing to theme and use it here
   paddingHorizontal: 16, // spacing?.md ?? 16, //TODO add spacing to theme and use it here
   backgroundColor: theme.colors.itemBackground,
   margin: 5,
@@ -179,9 +200,9 @@ const $clickedItem: ThemedStyle<ViewStyle> = (theme) => ({
   backgroundColor: theme.colors.palette.neutral300,
   borderWidth: 3, // Border thickness
   borderColor: theme.colors.palette.neutral500, // TODO change this and add this to the theme
-});
+})
 
-const $avatar = ({ colors }: any, size: number): ImageStyle => ({
+const $avatar = (_theme: any, size: number): ImageStyle => ({
   width: size,
   height: size,
   borderRadius: size / 2,
@@ -209,11 +230,6 @@ const $iconButton = (_t: any, hitSize: number): ViewStyle => ({
   justifyContent: "center",
 })
 
-const $icon = ({ colors }: any): TextStyle => ({
-  fontSize: 18,
-  color: colors?.text ?? "#111",
-})
-
-const $iconDisabled = ({ colors }: any): ViewStyle => ({
+const $iconDisabled = (): ViewStyle => ({
   opacity: 0.4,
 })
