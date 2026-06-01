@@ -314,22 +314,23 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Rewrite the button of MakeTeamsScreen to also use primary and onPrimary.
 - [ ] Either change Name part of dashboard to put it into a nicer box, or change position as a whole.
 - [ ] maybe block drag and drop with waiting signal so that it does not get fucked up when you try to drag too often without waiting. Or just use the new library?!
-- [ ] Clear at MakeTeamsScreen: Are you sure?
+- [x] Clear at MakeTeamsScreen: Are you sure? (Deleted it)
 - [ ] Try Google Stitch to better organise my screens and transitions. 
 - [ ] Drag and Drop additional features: maybe do lift animation (scale + shadow), hover preview, snap feedback, haptic-like visual cues, ..., Reanimated animations for dragging and dropping, switching places, changing size when teamsize changes, jumping back, going to position when dropping into dropzone, moving each position when there is a new formation.
 - [ ] Add a png of a field for left side of GameScreen, and add a png of pure sand for background.
 - [x] Change the view when new players are added in MakeTeamsScreen. Scrolll to the right every time somebody gets added.
 - [ ] For the task above, add even better animations?
-- [ ] In MakeTeamsScreen, make one Tab for Players, and one Tab with Groups, similar to the screeninspo
+- [x] In MakeTeamsScreen, make one Tab for Players, and one Tab with Groups, similar to the screeninspo
 - [ ] Make feature to create Custom groups and add people to that group. They should show up in the group tab on MakeTeamsScreen too. The connection between group and player-ID is party there as a demo, so should not be too hard to implement
 - [x] Add a field where you can quickly choose the skill level of a temporary player
 - [ ] At MakeTeamsScreen, I am not 100% happy with the placing of Add Players text. I am not sure if it is better to put it in tab (and maybe make custom tab), or just put it as text at the top of the screen
 - [ ] Create a modal to quickly gauge the skill of a temporary player. Or make it a little extra window that pops up under the name that gets typed in, with a line with 5/10 as a standard value. Would be better instead of a modal if people type in many names there. Maybe do the quick one for normal game and a bigger modal with more values in other game mode (Local game). Make a quick average score, but if you change something uunder it, the average changes with it. Always show the average score at the top, even when you scroll down and chnage stuff
-- [ ] When clicking the ^-Button in MakeTeamsScreen, show a little score-rating under the name in a small additional space. Also check that this works for temporary players.
+- [x] When clicking the ^-Button in MakeTeamsScreen, show a little score-rating under the name in a small additional space. 
+- [ ] For above task, check that this works for temporary players too correctly when backend is connected.
 - [ ] Check that the Rating of the temporary players is saved when going to the GameScreen (needed for team computation).
-- [ ] In MakeTeamsScreen, make the empty star disappear, so that the space is less crowded.
+- [x] In MakeTeamsScreen, make the empty star disappear, so that the space is less crowded.
 - [x] Change the text of PlayerRatingModal
-- [ ] In Profile, to show Radar chart with stats and add an Edit button. If pressed on edit, open a modal (see reference) to correctly rate the players skill.
+- [x] In Profile, to show Radar chart with stats and add an Edit button. If pressed on edit, open a modal (see reference) to correctly rate the players skill.
 - [ ] Not important, but maybe if there is too much time. Make a "Beyond" screen which explains more about the app, like how the winrate is calculated, how the matchmaking works,etc.
 - [x] Connect Modal with advanced rating to radar chart. Make it so that it is synchronised from the beginning, and does not change only after the first change (the names)
 - [ ] Choose Stats and rating-description:
