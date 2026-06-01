@@ -340,3 +340,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
   Hit
   Effort/Laziness/Fitness
   Mentality / Fun
+- [ ] In GameScreen, do a tiny clock Icon next to the displayed time
