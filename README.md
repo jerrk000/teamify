@@ -340,5 +340,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
   Hit
   Effort/Laziness/Fitness
   Mentality / Fun
-- [ ] In GameScreen, do a tiny clock Icon next to the displayed time
+- [ ] Find a solution to show different ratings/modals/questions depending on the sport-theme that was chosen, or just let them fill it in for different kinds of sport. But just do the first implementation with volleyball i guess
+- [ ] Maybe do a global button/slider(between dfferent sports) somewhere on the main page so that you can quickly switch between different kinds of sports Slider
+- [x] In GameScreen, do a tiny clock Icon next to the displayed time
 - [ ] In AddFriendScreen, change text with "Paste code here" with an example code, so that people know how the input should look like.

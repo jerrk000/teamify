@@ -51,6 +51,7 @@ const FONT_AWESOME6_MAPPING = {
   'shuffle': 'shuffle',
   'bell': 'bell',
   'copy': 'copy',
+  'clock': 'clock',
 } as const satisfies Record<string, FontAwesome6IconName>;
 
 export type IconSymbolName =

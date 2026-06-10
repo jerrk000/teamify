@@ -648,7 +648,10 @@ export const CombinedTeamsGrid = ({
           width={tileRailW}
         />
         <View pointerEvents="none" style={themed($centerNumberBox)}>
+          <View style={themed($centerTimerContent)}>
+            <IconSymbol size={14} name="clock" color={theme.colors.text} iconSet="fontawesome6" />
             <Text style={themed($centerTimerText)}>{formatElapsedTime(elapsedSeconds)}</Text>
+          </View>
         </View>
         <Tile 
           value={lowerCenterNumber} 
@@ -823,6 +826,12 @@ const $centerNumberBox: ThemedStyle<ViewStyle> = (theme) => ({
   backgroundColor: theme.colors.surface,
   alignItems: "center",
   justifyContent: "center",
+})
+
+const $centerTimerContent: ThemedStyle<ViewStyle> = () => ({
+  flexDirection: "row",
+  alignItems: "center",
+  gap: 6,
 })
 
 const $centerNumberText: ThemedStyle<TextStyle> = (theme) => ({
