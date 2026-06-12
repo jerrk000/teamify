@@ -1,7 +1,16 @@
 import React, { useEffect, useRef, useState } from "react"
-import { Text, TouchableOpacity, View, type LayoutChangeEvent, type TextStyle, type ViewStyle } from "react-native"
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  type ImageStyle,
+  type ImageSourcePropType,
+  type LayoutChangeEvent,
+  type TextStyle,
+  type ViewStyle,
+} from "react-native"
 import { useListStore } from "../../../store/useListStore"
-import BackgroundPicture from "@/components/ImageBackground"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 import {
@@ -43,7 +52,8 @@ const GameScreen = () => {
   const internalStoreUpdateRef = useRef(false)
 
   const placeholderAvatar = require("../../../../assets/avatar_placeholder.png")
-  const courtBackgroundSource = require("../../../../assets/images/volleyball_court_sand_overflowing_new_new.png")
+  const backgroundImageSource: ImageSourcePropType = require("../../../../assets/images/volleyball_court_sand_only.png")
+  const foregroundImageSource: ImageSourcePropType = require("../../../../assets/images/volleyball_court_lines_net.png")
   //theme.isDark // TODO comment this back in and write better logic to change background picture
   //  ? require("../../../../assets/images/volleyball_court_black.png")
   //  : require("../../../../assets/images/volleyball_court.png")
@@ -110,21 +120,21 @@ const GameScreen = () => {
     setContainerWidth(event.nativeEvent.layout.width)
   }
 
-  const backgroundWidth = "100%" //containerWidth > 0 ? containerWidth * 0.8 : "80%"
-
   return (
     <SafeAreaView style={themed($outerContainer)} onLayout={handleContainerLayout}>
-      <BackgroundPicture
-        source={courtBackgroundSource}
-        width={backgroundWidth}
-        height="100%"
-        horizontalPosition="left"
-        resizeMode="stretch"
-        contentFullWidth
-      >
+      <View style={themed($backgroundStack)}>
+        <Image
+          source={backgroundImageSource}
+          resizeMode="stretch"
+          style={themed($backgroundImage)}
+        />
+        <Image
+          source={foregroundImageSource}
+          resizeMode="stretch"
+          style={themed($foregroundImage)}
+        />
 
         <View style={themed($container)}>
-
           <CombinedTeamsGrid
             teamA={teams.teamA}
             teamB={teams.teamB}
@@ -179,7 +189,7 @@ const GameScreen = () => {
             </View>
           ) : null}
         </View>
-      </BackgroundPicture>
+      </View>
     </SafeAreaView>
   )
 }
@@ -193,6 +203,30 @@ const $container: ThemedStyle<ViewStyle> = (theme) => ({
   flex: 1,
   //padding: 16, //just makes it more difficult to have it with the same layout as TeamPlayerGrid
   alignItems: "center",
+})
+
+const $backgroundStack: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+  width: "100%",
+})
+
+const $backgroundImage: ThemedStyle<ImageStyle> = () => ({
+  position: "absolute",
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+})
+
+const $foregroundImage: ThemedStyle<ImageStyle> = () => ({
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  left: 0,
+  width: "80%",
+  height: "100%",
 })
 
 const $teamTitle: ThemedStyle<TextStyle> = (theme) => ({
