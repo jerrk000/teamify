@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useAppTheme } from "@/theme/context";
 import {
   View,
@@ -13,6 +13,7 @@ import { ThemedStyle } from "@/theme/types";
 import { Button } from "@/components/Button";
 import { router } from "expo-router";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { api } from "@/services/api";
 
 type Props = {
   notificationCount?: number
@@ -20,10 +21,33 @@ type Props = {
 
 export default function HomeScreen({ notificationCount = 12 }: Props) {
   const badgeText = notificationCount > 9 ? "9+" : String(notificationCount)
+  const [testRouteValue, setTestRouteValue] = useState("Loading...")
 
   const {
       themed, theme,
     } = useAppTheme()
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadTestRouteValue() {
+      const result = await api.getTestOutput()
+
+      if (!isMounted) return
+
+      if (result.kind === "ok") {
+        setTestRouteValue(result.name)
+      } else {
+        setTestRouteValue("Unable to load backend value")
+      }
+    }
+
+    loadTestRouteValue()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
   
 
   const placeholderAvatar = theme.isDark
@@ -56,7 +80,7 @@ export default function HomeScreen({ notificationCount = 12 }: Props) {
           />
           <View>
             <Text style={themed($name)}>Max Mustermann</Text>
-            <Text style={themed($level)}>Additional info</Text>
+            <Text style={themed($level)}>{testRouteValue}</Text>
           </View>
         </View>
 

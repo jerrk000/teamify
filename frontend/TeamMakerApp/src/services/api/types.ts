@@ -34,6 +34,10 @@ export interface ApiFeedResponse {
   items: EpisodeItem[]
 }
 
+export interface ApiTestOutputResponse {
+  name: string
+}
+
 /**
  * The options used to configure apisauce.
  */

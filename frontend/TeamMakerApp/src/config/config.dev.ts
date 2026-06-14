@@ -6,6 +6,6 @@
  * https://reactnative.dev/docs/security#storing-sensitive-info
  */
 export default {
-  API_URL: "http://10.0.2.2:5000",
+  API_URL: process.env.EXPO_PUBLIC_API_URL ?? "http://10.0.2.2:5000",
   //API_URL: "https://api.rss2json.com/v1/", //default by boilerplate
 }

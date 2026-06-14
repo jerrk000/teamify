@@ -9,7 +9,9 @@ import { ApisauceInstance, create } from "apisauce"
 
 import Config from "@/config"
 
-import type { ApiConfig } from "./types"
+import { getGeneralApiProblem } from "./apiProblem"
+import type { GeneralApiProblem } from "./apiProblem"
+import type { ApiConfig, ApiTestOutputResponse } from "./types"
 
 /**
  * Configuring the apisauce instance.
@@ -39,6 +41,21 @@ export class Api {
         Accept: "application/json",
       },
     })
+  }
+
+  async getTestOutput(): Promise<{ kind: "ok"; name: string } | GeneralApiProblem> {
+    const response = await this.apisauce.get<ApiTestOutputResponse>("/")
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    if (typeof response.data?.name !== "string") {
+      return { kind: "bad-data" }
+    }
+
+    return { kind: "ok", name: response.data.name }
   }
 }
 
