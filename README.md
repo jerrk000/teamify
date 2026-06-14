@@ -91,6 +91,23 @@ npx expo run:android
 ```
 to run the app. If everything is running properly, the Android Studio Emulator should open up automatically with your app running.
 
+### Starting backend (new)
+Building only backend
+```bash
+docker compose up --build backend
+```
+
+Testing if backend is actually running
+```bash
+curl http://localhost:5000/ 
+```
+
+### Starting frontend AND backend at the same time
+In project root, run 
+```bash
+./dev.sh emulator
+```
+
 ### Prerequisites
 Why didnt it work immediately? 
 Had to
