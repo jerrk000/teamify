@@ -108,6 +108,13 @@ In project root, run
 ./dev.sh emulator
 ```
 
+### Populate the database with data
+While backend is running!!!
+Use this if freshly cloned the project, if you deleted backend/instance/database.db
+```bash
+docker compose exec backend python seed_dev.py
+```
+
 ### Prerequisites
 Why didnt it work immediately? 
 Had to
