@@ -8,6 +8,7 @@ import { PressableIcon } from "@/components/Icon"
 import { Screen } from "@/components/Screen"
 import { Text } from "@/components/Text"
 import { TextField, type TextFieldAccessoryProps } from "@/components/TextField"
+import { api } from "@/services/api"
 import { getAuthValidationError, useAuthStore } from "@/store/useAuthStore"
 import { useAppTheme } from "@/theme/context"
 import type { ThemedStyle } from "@/theme/types"
@@ -19,10 +20,13 @@ const LoginScreen = () => {
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
+  const [loginError, setLoginError] = useState("")
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
   const authEmail = useAuthStore((state) => state.authEmail)
   const authToken = useAuthStore((state) => state.authToken)
   const setAuthEmail = useAuthStore((state) => state.setAuthEmail)
   const setAuthToken = useAuthStore((state) => state.setAuthToken)
+  const setAuthPlayer = useAuthStore((state) => state.setAuthPlayer)
 
   const {
     themed,
@@ -32,27 +36,33 @@ const LoginScreen = () => {
   useEffect(() => {
     // Here is where you could fetch credentials from keychain or storage
     // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
+    setAuthEmail("jerry@test.dev")
+    setAuthPassword("testtesttest123")
   }, [setAuthEmail])
 
   const validationError = getAuthValidationError(authEmail)
   const error = isSubmitted ? validationError : ""
 
-  function login() {
+  async function login() {
     setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
+    setLoginError("")
 
     if (validationError) return
 
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
+    setIsLoggingIn(true)
+    const result = await api.login(authEmail, authPassword)
+    setIsLoggingIn(false)
+
+    if (result.kind !== "ok") {
+      setLoginError("Login failed. Check your email, password, and backend connection.")
+      return
+    }
+
     setIsSubmitted(false)
     setAuthPassword("")
-    setAuthEmail("")
-
-    // We'll mock this with a fake token.
-    setAuthToken(String(Date.now()))
+    setAuthToken(result.token)
+    setAuthPlayer({ id: result.player.id, name: result.player.name })
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -114,16 +124,19 @@ const LoginScreen = () => {
         secureTextEntry={isAuthPasswordHidden}
         labelTx="loginScreen:passwordFieldLabel"
         placeholderTx="loginScreen:passwordFieldPlaceholder"
-        onSubmitEditing={login}
+        onSubmitEditing={() => void login()}
         RightAccessory={PasswordRightAccessory}
       />
+
+      {loginError ? <Text text={loginError} size="sm" style={themed($error)} /> : null}
 
       <Button
         testID="login-button"
         tx="loginScreen:tapToLogIn"
         style={themed($tapButton)}
         preset="reversed"
-        onPress={login}
+        disabled={isLoggingIn}
+        onPress={() => void login()}
       />
     </Screen>
   )
@@ -146,6 +159,11 @@ const $enterDetails: ThemedStyle<TextStyle> = ({ spacing }) => ({
 
 const $hint: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   color: colors.tint,
+  marginBottom: spacing.md,
+})
+
+const $error: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color: colors.error,
   marginBottom: spacing.md,
 })
 

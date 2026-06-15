@@ -38,6 +38,23 @@ export interface ApiTestOutputResponse {
   name: string
 }
 
+export interface ApiPlayer {
+  id: number
+  name: string
+  email?: string
+  friendcode?: string
+}
+
+export interface ApiLoginResponse {
+  token: string
+  player: ApiPlayer
+}
+
+export interface ApiFriendsResponse {
+  player_id: number
+  friends: ApiPlayer[]
+}
+
 /**
  * The options used to configure apisauce.
  */

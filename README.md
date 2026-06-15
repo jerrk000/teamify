@@ -371,3 +371,4 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Think about using RIVE for good animations instead of ReAnimated. Only if i want to do something more complex
 - [ ] Create more relational database schema. Create one table with ID->GameMode, and connect it correctly with games-table
 - [ ] Create a rule for local/anonymous player, so that they can be addressed somehow in the database.
+- [ ] Check if rules for each API call are good enough (e.g. can only get your own friends, have to add your token or some hash for security reasons)

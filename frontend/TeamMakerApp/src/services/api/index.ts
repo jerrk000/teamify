@@ -11,7 +11,7 @@ import Config from "@/config"
 
 import { getGeneralApiProblem } from "./apiProblem"
 import type { GeneralApiProblem } from "./apiProblem"
-import type { ApiConfig, ApiTestOutputResponse } from "./types"
+import type { ApiConfig, ApiFriendsResponse, ApiLoginResponse, ApiPlayer, ApiTestOutputResponse } from "./types"
 
 /**
  * Configuring the apisauce instance.
@@ -56,6 +56,45 @@ export class Api {
     }
 
     return { kind: "ok", name: response.data.name }
+  }
+
+  async login(
+    email: string,
+    password: string,
+  ): Promise<{ kind: "ok"; token: string; player: ApiPlayer } | GeneralApiProblem> {
+    const response = await this.apisauce.post<ApiLoginResponse>("/login", { email, password })
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    if (
+      typeof response.data?.token !== "string" ||
+      typeof response.data.player?.id !== "number" ||
+      typeof response.data.player.name !== "string"
+    ) {
+      return { kind: "bad-data" }
+    }
+
+    return { kind: "ok", token: response.data.token, player: response.data.player }
+  }
+
+  async getFriends(
+    playerId: number,
+  ): Promise<{ kind: "ok"; friends: ApiPlayer[] } | GeneralApiProblem> {
+    const response = await this.apisauce.get<ApiFriendsResponse>(`/get_friends/${playerId}`)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    if (!Array.isArray(response.data?.friends)) {
+      return { kind: "bad-data" }
+    }
+
+    return { kind: "ok", friends: response.data.friends }
   }
 }
 

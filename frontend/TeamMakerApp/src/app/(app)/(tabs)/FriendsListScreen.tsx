@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { View, type TextStyle, type ViewStyle } from "react-native"
 import { useRouter } from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -8,6 +8,8 @@ import { SearchField } from "@/components/SearchField"
 import { Text } from "@/components/Text"
 import { IconSymbol } from "@/components/ui/IconSymbol"
 import { PlayerList } from "@/components/ui/PlayerList"
+import { api } from "@/services/api"
+import { useAuthStore } from "@/store/useAuthStore"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
 
@@ -16,32 +18,58 @@ type Item = {
   name: string
 }
 
-const friends = [
-  { id: "1", name: "John Doe" },
-  { id: "2", name: "Jane Smith" },
-  { id: "3", name: "Alice Johnson" },
-  { id: "4", name: "Bob Brown" },
-  { id: "5", name: "Charlie Davis" },
-]
-
 const FriendsListScreen = () => {
   const router = useRouter()
   const { themed, theme } = useAppTheme()
+  const authPlayerId = useAuthStore((state) => state.authPlayerId)
 
   const placeholderAvatar = require("../../../../assets/avatar_placeholder.png") //TODO change this to an actual placeholder avatar, this one is just quickly from the internet.
 
   const [searchQuery, setSearchQuery] = useState<string>("")
-  const [filteredData, setFilteredData] = useState<Item[]>([])
+  const [friends, setFriends] = useState<Item[]>([])
+  const [isLoadingFriends, setIsLoadingFriends] = useState(false)
+  const [friendsError, setFriendsError] = useState("")
+
+  const filteredData = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase()
+
+    if (!normalizedQuery) return friends
+
+    return friends.filter((item) => item.name.toLowerCase().includes(normalizedQuery))
+  }, [friends, searchQuery])
+
+  const loadFriends = useCallback(async () => {
+    if (!authPlayerId) {
+      setFriends([])
+      setFriendsError("Log in again so the app knows which player to load.")
+      return
+    }
+
+    setIsLoadingFriends(true)
+    setFriendsError("")
+
+    const result = await api.getFriends(authPlayerId)
+    setIsLoadingFriends(false)
+
+    if (result.kind !== "ok") {
+      setFriends([])
+      setFriendsError("Could not load your friends. Check your backend connection.")
+      return
+    }
+
+    setFriends(result.friends.map((friend) => ({ id: String(friend.id), name: friend.name })))
+  }, [authPlayerId])
+
+  useEffect(() => {
+    void loadFriends()
+  }, [loadFriends])
 
   const handleSearch = (query: string) => {
     setSearchQuery(query)
-    const filtered = friends.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()))
-    setFilteredData(filtered)
   }
 
   const clearSearch = () => {
     setSearchQuery("")
-    setFilteredData(friends)
   }
 
   const openFriendLink = () => {
@@ -88,16 +116,34 @@ const FriendsListScreen = () => {
         />
       </View>
 
-      <PlayerList
-        data={filteredData.length > 0 ? filteredData : friends}
-        themed={themed}
-        isSelected={() => false} //TODO implement selected state if we want to allow selecting friends from this screen. But currently not planned
-        favoriteDisabled={false} //TODO maybe only allow favoriting from a details screen?
-        onPressRow={(item) => console.log("pressed row", item.id)}
-        onPressFavorite={(item) => console.log("fav", item.id)}
-        onPressMore={(item) => console.log("more", item.id)}
-        placeholderAvatarSource={placeholderAvatar}
-      />
+      {isLoadingFriends ? <Text text="Loading friends..." style={themed($stateText)} /> : null}
+
+      {friendsError ? (
+        <View style={themed($stateContainer)}>
+          <Text text={friendsError} style={themed($stateText)} />
+          <Button text="Try again" preset="filled" onPress={() => void loadFriends()} />
+        </View>
+      ) : null}
+
+      {!isLoadingFriends && !friendsError && filteredData.length === 0 ? (
+        <Text
+          text={searchQuery ? "No friends match your search." : "No friends yet."}
+          style={themed($stateText)}
+        />
+      ) : null}
+
+      {!friendsError && filteredData.length > 0 ? (
+        <PlayerList
+          data={filteredData}
+          themed={themed}
+          isSelected={() => false} //TODO implement selected state if we want to allow selecting friends from this screen. But currently not planned
+          favoriteDisabled={false} //TODO maybe only allow favoriting from a details screen?
+          onPressRow={(item) => console.log("pressed row", item.id)}
+          onPressFavorite={(item) => console.log("fav", item.id)}
+          onPressMore={(item) => console.log("more", item.id)}
+          placeholderAvatarSource={placeholderAvatar}
+        />
+      ) : null}
     </SafeAreaView>
   )
 }
@@ -121,9 +167,9 @@ const $searchContainer: ThemedStyle<ViewStyle> = () => ({
   marginTop: 16,
 })
 
-const $searchField: ViewStyle = {
+const $searchField: ThemedStyle<ViewStyle> = () => ({
   width: "100%",
-}
+})
 
 const $header: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 24,
@@ -131,6 +177,16 @@ const $header: ThemedStyle<TextStyle> = (theme) => ({
   textAlign: "center",
   marginVertical: 5,
   color: theme.colors.text,
+})
+
+const $stateContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  gap: theme.spacing.sm,
+})
+
+const $stateText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.textDim,
+  marginTop: theme.spacing.md,
+  textAlign: "center",
 })
 
 export default FriendsListScreen

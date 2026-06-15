@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import uuid
-from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from ..database.models import Player
 from ..database.models import friendships
 from .. import db
@@ -70,6 +70,32 @@ def register_player():
 
     return player_schema.jsonify(player2)
 
+@test_routes.route("/login", methods=["POST"])
+def login():
+    data = request.json or {}
+    email = data.get("email")
+    password = data.get("password")
+
+    if not email or not password:
+        return jsonify({"error": "email and password are required"}), 400
+
+    player = Player.query.filter_by(email=email).first()
+
+    if player is None or not player.password_hash or not check_password_hash(player.password_hash, password):
+        return jsonify({"error": "Invalid email or password"}), 401
+
+    return jsonify(
+        {
+            "token": str(uuid.uuid4()),
+            "player": {
+                "id": player.id,
+                "name": player.name,
+                "email": player.email,
+                "friendcode": player.friendcode,
+            },
+        }
+    )
+
 
 
 
@@ -125,15 +151,23 @@ def accept_friend_request():
 
 @test_routes.route("/get_friends/<int:player_id>", methods=["GET"])
 def get_friends(player_id):
-    friends = db.session.query(Player).join(
-        friendships, Player.id == friendships.c.friend_id
-    ).filter(
-        friendships.c.player_id == player_id,
-        friendships.c.status == "accepted"
-    ).all()
+    accepted_friendships = db.session.execute(
+        friendships.select().where(
+            (
+                (friendships.c.player_id == player_id)
+                | (friendships.c.friend_id == player_id)
+            )
+            & (friendships.c.status == "accepted")
+        )
+    ).fetchall()
+
+    friend_ids = [
+        row.friend_id if row.player_id == player_id else row.player_id
+        for row in accepted_friendships
+    ]
+
+    friends = Player.query.filter(Player.id.in_(friend_ids)).all() if friend_ids else []
 
     friend_list = [{"id": friend.id, "name": friend.name, "email": friend.email} for friend in friends]
 
     return jsonify({"player_id": player_id, "friends": friend_list})
-
-

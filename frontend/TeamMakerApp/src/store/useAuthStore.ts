@@ -5,8 +5,11 @@ import { storage } from "@/utils/storage"
 
 type AuthStore = {
   authToken?: string
+  authPlayerId?: number
+  authPlayerName?: string
   authEmail: string
   setAuthToken: (token?: string) => void
+  setAuthPlayer: (player?: { id: number; name: string }) => void
   setAuthEmail: (email: string) => void
   logout: () => void
 }
@@ -24,10 +27,20 @@ export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
       authToken: undefined,
+      authPlayerId: undefined,
+      authPlayerName: undefined,
       authEmail: "",
       setAuthToken: (token) => set({ authToken: token }),
+      setAuthPlayer: (player) =>
+        set({ authPlayerId: player?.id, authPlayerName: player?.name }),
       setAuthEmail: (email) => set({ authEmail: email }),
-      logout: () => set({ authToken: undefined, authEmail: "" }),
+      logout: () =>
+        set({
+          authToken: undefined,
+          authPlayerId: undefined,
+          authPlayerName: undefined,
+          authEmail: "",
+        }),
     }),
     {
       name: AUTH_STORAGE_KEY,
@@ -38,9 +51,10 @@ export const useAuthStore = create<AuthStore>()(
       })),
       partialize: (state) => ({
         authToken: state.authToken,
+        authPlayerId: state.authPlayerId,
+        authPlayerName: state.authPlayerName,
         authEmail: state.authEmail,
       }),
     },
   ),
 )
-
