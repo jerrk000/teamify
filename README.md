@@ -369,3 +369,5 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [x] In GameScreen, do a tiny clock Icon next to the displayed time
 - [ ] In AddFriendScreen, change text with "Paste code here" with an example code, so that people know how the input should look like.
 - [ ] Think about using RIVE for good animations instead of ReAnimated. Only if i want to do something more complex
+- [ ] Create more relational database schema. Create one table with ID->GameMode, and connect it correctly with games-table
+- [ ] Create a rule for local/anonymous player, so that they can be addressed somehow in the database.

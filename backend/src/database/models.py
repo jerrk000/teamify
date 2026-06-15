@@ -18,6 +18,14 @@ friendships = Table(
     Column("created_at", DateTime, default=func.now()),
 )
 
+game_participants = Table(
+    "game_participants",
+    db.Model.metadata,
+    Column("game_id", Integer, ForeignKey("games.id"), primary_key=True),
+    Column("player_id", Integer, ForeignKey("players.id"), primary_key=True),
+    Column("team", Enum("team_a", "team_b", name="game_participant_team"), nullable=False),
+)
+
 class Player(db.Model):
     __tablename__ = "players"
 
@@ -39,3 +47,29 @@ class Player(db.Model):
         secondaryjoin=id == friendships.c.friend_id,
         backref="friend_of",
     )
+
+class GameType(db.Model):
+    __tablename__ = "game_types"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), unique=True, nullable=False)
+
+class Game(db.Model):
+    __tablename__ = "games"
+
+    id = db.Column(db.Integer, primary_key=True)
+    game_id = db.Column(db.String(150), unique=True, nullable=False)
+    game_type_id = db.Column(db.Integer, db.ForeignKey("game_types.id"))
+    ended_at = db.Column(db.DateTime)
+    duration_seconds = db.Column(db.Integer)
+    winning_team = db.Column(db.Enum("team_a", "team_b", name="winning_team"))
+    team_a_score = db.Column(db.Integer)
+    team_b_score = db.Column(db.Integer)
+    is_valid = db.Column(db.Boolean, default=True)
+
+    players = db.relationship(
+        "Player",
+        secondary=game_participants,
+        backref="games",
+    )
+    game_type = db.relationship("GameType", backref="games")
