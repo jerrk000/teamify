@@ -1,15 +1,27 @@
 from flask import Blueprint, request, jsonify
 import uuid
+from datetime import date
 from werkzeug.security import check_password_hash, generate_password_hash
-from ..database.models import Player
+from ..database.models import Player, PlayerStats
 from ..database.models import friendships
 from .. import db
-from ..database.schema import PlayerSchema
+from ..database.schema import PlayerSchema, PlayerStatsSchema
 
 test_routes = Blueprint('test_routes', __name__)
 
 player_schema = PlayerSchema()
 players_schema = PlayerSchema(many=True)
+player_stats_schema = PlayerStatsSchema()
+
+PLAYER_STATS_FIELDS = (
+    "beachvolleyball_serve",
+    "beachvolleyball_receive",
+    "beachvolleyball_set",
+    "beachvolleyball_hit",
+    "beachvolleyball_block",
+    "beachvolleyball_effort",
+    "beachvolleyball_mentality",
+)
 
 @test_routes.route('/', methods = ['GET'])
 def test_output():
@@ -171,3 +183,47 @@ def get_friends(player_id):
     friend_list = [{"id": friend.id, "name": friend.name, "email": friend.email} for friend in friends]
 
     return jsonify({"player_id": player_id, "friends": friend_list})
+
+@test_routes.route("/playerstats/<int:player_id>", methods=["GET"])
+def get_player_stats(player_id):
+    player = db.session.get(Player, player_id)
+
+    if player is None:
+        return jsonify({"error": "Player not found"}), 404
+
+    stats = PlayerStats.query.filter_by(player_id=player_id).first()
+
+    if stats is None:
+        return jsonify({"player_id": player_id, "stats": None})
+
+    return jsonify({"player_id": player_id, "stats": player_stats_schema.dump(stats)})
+
+@test_routes.route("/playerstats/<int:player_id>", methods=["PUT"])
+def update_player_stats(player_id):
+    player = db.session.get(Player, player_id)
+
+    if player is None:
+        return jsonify({"error": "Player not found"}), 404
+
+    data = request.json or {}
+    stats = PlayerStats.query.filter_by(player_id=player_id).first()
+
+    if stats is None:
+        stats = PlayerStats(player_id=player_id)
+        db.session.add(stats)
+
+    for field in PLAYER_STATS_FIELDS:
+        if field not in data:
+            continue
+
+        value = data.get(field)
+
+        if not isinstance(value, int) or value < 0 or value > 10:
+            return jsonify({"error": f"{field} must be an integer from 0 to 10"}), 400
+
+        setattr(stats, field, value)
+
+    stats.last_updated = date.today()
+    db.session.commit()
+
+    return jsonify({"player_id": player_id, "stats": player_stats_schema.dump(stats)})

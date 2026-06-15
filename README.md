@@ -373,3 +373,7 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] Create a rule for local/anonymous player, so that they can be addressed somehow in the database.
 - [ ] Check if rules for each API call are good enough (e.g. can only get your own friends, have to add your token or some hash for security reasons)
 - [ ] Check how to setup everything so that i do not have to do API calls every time i enter a screen, but just do it once at app-startup and sometimes when accepting a new player-frienship-request. Think about what should happen when another person accepts your own friend request when logged in, how and when should you get updates for that. Maybe sometimes you need to consult the database, because you also need regular updates for other things, like Information of matches that you played in while you were logged in (the notification that everything went correctly)
+- [ ] Add a list with stats to the database that can be displayed. Different sports, different scores. Just start with volleyball and do a general stat(?, or maybe average stat?), and individual stat for different parts of the sport. Make it part of the database.
+- [ ] In LoginScreen.tsx, check out why the page returns errors
+- [ ] There was an error once in FriendsListScreen while no being logged in, check that out again.
+In Player-Screen, not only do an extended modal, but also do a quick gauge modal for implemented sports. (beachvolleyball on top). Maybe also do a "General" stat?

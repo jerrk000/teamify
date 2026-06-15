@@ -1,10 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from werkzeug.security import generate_password_hash
 from sqlalchemy import text
 
 from src import create_app, db
-from src.database.models import Game, GameType, Player, friendships, game_participants
+from src.database.models import Game, GameType, Player, PlayerStats, friendships, game_participants
 
 
 DEV_PASSWORD = "testtesttest123"
@@ -275,6 +275,89 @@ GAMES = [
     },
 ]
 
+PLAYER_STATS = [
+    {
+        "email": "max@test.dev",
+        "beachvolleyball_serve": 8,
+        "beachvolleyball_receive": 7,
+        "beachvolleyball_set": 6,
+        "beachvolleyball_hit": 8,
+        "beachvolleyball_block": 7,
+        "beachvolleyball_effort": 7,
+        "beachvolleyball_mentality": 8,
+    },
+    {
+        "email": "jerry@test.dev",
+        "beachvolleyball_serve": 7,
+        "beachvolleyball_receive": 8,
+        "beachvolleyball_set": 7,
+        "beachvolleyball_hit": 6,
+        "beachvolleyball_block": 6,
+        "beachvolleyball_effort": 9,
+        "beachvolleyball_mentality": 8,
+    },
+    {
+        "email": "alice@test.dev",
+        "beachvolleyball_serve": 9,
+        "beachvolleyball_receive": 8,
+        "beachvolleyball_set": 9,
+        "beachvolleyball_hit": 7,
+        "beachvolleyball_block": 7,
+        "beachvolleyball_effort": 8,
+        "beachvolleyball_mentality": 9,
+    },
+    {
+        "email": "bob@test.dev",
+        "beachvolleyball_serve": 5,
+        "beachvolleyball_receive": 6,
+        "beachvolleyball_set": 5,
+        "beachvolleyball_hit": 7,
+        "beachvolleyball_block": 6,
+        "beachvolleyball_effort": 6,
+        "beachvolleyball_mentality": 5,
+    },
+    {
+        "email": "clara@test.dev",
+        "beachvolleyball_serve": 7,
+        "beachvolleyball_receive": 9,
+        "beachvolleyball_set": 8,
+        "beachvolleyball_hit": 6,
+        "beachvolleyball_block": 8,
+        "beachvolleyball_effort": 8,
+        "beachvolleyball_mentality": 7,
+    },
+    {
+        "email": "david@test.dev",
+        "beachvolleyball_serve": 8,
+        "beachvolleyball_receive": 6,
+        "beachvolleyball_set": 6,
+        "beachvolleyball_hit": 9,
+        "beachvolleyball_block": 9,
+        "beachvolleyball_effort": 8,
+        "beachvolleyball_mentality": 7,
+    },
+    {
+        "email": "emma@test.dev",
+        "beachvolleyball_serve": 6,
+        "beachvolleyball_receive": 7,
+        "beachvolleyball_set": 8,
+        "beachvolleyball_hit": 6,
+        "beachvolleyball_block": 6,
+        "beachvolleyball_effort": 7,
+        "beachvolleyball_mentality": 8,
+    },
+    {
+        "email": "hannah@test.dev",
+        "beachvolleyball_serve": 9,
+        "beachvolleyball_receive": 9,
+        "beachvolleyball_set": 7,
+        "beachvolleyball_hit": 9,
+        "beachvolleyball_block": 8,
+        "beachvolleyball_effort": 9,
+        "beachvolleyball_mentality": 8,
+    },
+]
+
 
 def table_columns(table_name):
     rows = db.session.execute(text(f"PRAGMA table_info({table_name})")).mappings()
@@ -291,6 +374,7 @@ def add_column_if_missing(table_name, column_name, column_definition):
 
 
 def ensure_dev_schema():
+    add_column_if_missing("playerstats", "beachvolleyball_block", "INTEGER")
     add_column_if_missing("games", "game_type_id", "INTEGER")
     add_column_if_missing("games", "team_a_score", "INTEGER")
     add_column_if_missing("games", "team_b_score", "INTEGER")
@@ -326,6 +410,22 @@ def upsert_game_type(game_type_data):
 
     game_type.name = game_type_data["name"]
     return game_type
+
+
+def upsert_player_stats(players_by_email, stats_data):
+    player = players_by_email[stats_data["email"]]
+    stats = db.session.get(PlayerStats, player.id)
+
+    if stats is None:
+        stats = PlayerStats(player_id=player.id)
+        db.session.add(stats)
+
+    for key, value in stats_data.items():
+        if key != "email":
+            setattr(stats, key, value)
+
+    stats.last_updated = date.today()
+    return stats
 
 
 def friendship_exists(player_id, friend_id):
@@ -455,6 +555,9 @@ def seed_dev_data():
         for player_email, friend_email, status in FRIENDSHIPS:
             add_friendship(players_by_email, player_email, friend_email, status)
 
+        for stats_data in PLAYER_STATS:
+            upsert_player_stats(players_by_email, stats_data)
+
         seed_games(players_by_email, game_types_by_name)
 
         db.session.commit()
@@ -462,6 +565,7 @@ def seed_dev_data():
         print("Seeded dev database.")
         print(f"Players: {len(PLAYERS)}")
         print(f"Friendships: {len(FRIENDSHIPS)}")
+        print(f"Player stats: {len(PLAYER_STATS)}")
         print(f"Game types: {len(GAME_TYPES)}")
         print(f"Games: {len(GAMES)}")
         print(f"Dev password for all seeded users: {DEV_PASSWORD}")

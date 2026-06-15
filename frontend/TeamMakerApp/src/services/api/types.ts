@@ -55,6 +55,25 @@ export interface ApiFriendsResponse {
   friends: ApiPlayer[]
 }
 
+export interface ApiPlayerStats {
+  player_id: number
+  beachvolleyball_serve: number
+  beachvolleyball_receive: number
+  beachvolleyball_set: number
+  beachvolleyball_hit: number
+  beachvolleyball_block: number
+  beachvolleyball_effort: number
+  beachvolleyball_mentality: number
+  last_updated?: string
+}
+
+export type ApiPlayerStatsUpdate = Omit<ApiPlayerStats, "player_id" | "last_updated">
+
+export interface ApiPlayerStatsResponse {
+  player_id: number
+  stats: ApiPlayerStats | null
+}
+
 /**
  * The options used to configure apisauce.
  */

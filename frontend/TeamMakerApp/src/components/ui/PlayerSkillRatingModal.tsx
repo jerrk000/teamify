@@ -14,12 +14,13 @@ const MAX_RATING = 10
 const DEFAULT_RATING = 5
 
 export type PlayerSkillRatingKey =
-  | "technique"
-  | "fitness"
-  | "tactics"
+  | "serve"
+  | "receive"
+  | "set"
+  | "hit"
+  | "block"
+  | "effort"
   | "mentality"
-  | "passing"
-  | "shooting"
 
 export type PlayerSkillRatings = Record<PlayerSkillRatingKey, number>
 
@@ -43,28 +44,52 @@ interface PlayerSkillRatingModalProps {
 
 const DEFAULT_SKILLS: PlayerSkillRatingItem[] = [
   {
-    key: "technique",
-    title: "Technique",
+    key: "receive",
+    title: "Receive",
     lowEmoji: "😅",
-    lowLabel: "New to football",
-    highEmoji: "⚽",
+    lowLabel: "New to volleyball",
+    highEmoji: "🏐",
     highLabel: "Outstanding technique",
   },
   {
-    key: "fitness",
-    title: "Fitness",
-    lowEmoji: "🫁",
-    lowLabel: "Done after one sprint",
-    highEmoji: "🏃",
-    highLabel: "Runs the whole game",
+    key: "serve",
+    title: "Serve",
+    lowEmoji: "🫣",
+    lowLabel: "Often serves into the net",
+    highEmoji: "🎯",
+    highLabel: "Places pressure serves",
   },
   {
-    key: "tactics",
-    title: "Tactics",
+    key: "set",
+    title: "Setting",
+    lowEmoji: "🎯",
+    lowLabel: "Sets rarely arrive",
+    highEmoji: "🪄",
+    highLabel: "Should have gone pro",
+  },
+  {
+    key: "hit",
+    title: "Hitting",
+    lowEmoji: "🥅",
+    lowLabel: "Avoids taking shots",
+    highEmoji: "🚀",
+    highLabel: "Consistent finisher",
+  },
+  {
+    key: "block",
+    title: "Blocking",
     lowEmoji: "🤷",
     lowLabel: "No idea where to stand",
     highEmoji: "🧠",
     highLabel: "Strong tactical understanding",
+  },
+  {
+    key: "effort",
+    title: "Effort",
+    lowEmoji: "🫁",
+    lowLabel: "Done after one sprint",
+    highEmoji: "🏃",
+    highLabel: "Runs the whole game",
   },
   {
     key: "mentality",
@@ -73,22 +98,6 @@ const DEFAULT_SKILLS: PlayerSkillRatingItem[] = [
     lowLabel: "Struggles under pressure",
     highEmoji: "💪",
     highLabel: "Calm in big moments",
-  },
-  {
-    key: "passing",
-    title: "Passing",
-    lowEmoji: "🎯",
-    lowLabel: "Passes rarely arrive",
-    highEmoji: "🪄",
-    highLabel: "Finds every teammate",
-  },
-  {
-    key: "shooting",
-    title: "Shooting",
-    lowEmoji: "🥅",
-    lowLabel: "Avoids taking shots",
-    highEmoji: "🚀",
-    highLabel: "Clinical finisher",
   },
 ]
 

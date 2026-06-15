@@ -11,3 +11,7 @@ class GameSchema(ma.Schema):
 class GameTypeSchema(ma.Schema):
     class Meta:
         fields = ('id', 'name')
+
+class PlayerStatsSchema(ma.Schema):
+    class Meta:
+        fields = ('player_id', 'beachvolleyball_serve', 'beachvolleyball_receive', 'beachvolleyball_set', 'beachvolleyball_hit', 'beachvolleyball_block', 'beachvolleyball_effort', 'beachvolleyball_mentality', 'last_updated')

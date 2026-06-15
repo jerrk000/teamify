@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { RadarChart } from "@salmonco/react-native-radar-chart"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -6,6 +6,9 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { Button } from "@/components/Button"
 import { Text } from "@/components/Text"
 import PlayerSkillRatingModal, { PlayerSkillRatings } from "@/components/ui/PlayerSkillRatingModal"
+import { api } from "@/services/api"
+import type { ApiPlayerStats, ApiPlayerStatsUpdate } from "@/services/api/types"
+import { useAuthStore } from "@/store/useAuthStore"
 
 // It sucks that I have to use a radar chart from a random person
 // TODO maybe implement radar chart yourself?
@@ -24,21 +27,23 @@ type RadarDataItem = {
 }
 
 const SKILL_LABELS: Record<keyof PlayerSkillRatings, string> = {
-  technique: "Technique",
-  fitness: "Fitness",
-  tactics: "Tactics",
+  serve: "Serve",
+  receive: "Receive",
+  set: "Set",
+  hit: "Hit",
+  block: "Block",
+  effort: "Effort",
   mentality: "Mentality",
-  passing: "Passing",
-  shooting: "Shooting",
 }
 
 const INITIAL_SKILL_RATINGS: PlayerSkillRatings = {
-  fitness: 5,
+  serve: 5,
+  receive: 5,
+  set: 5,
+  hit: 5,
+  block: 5,
+  effort: 5,
   mentality: 5,
-  passing: 5,
-  shooting: 5,
-  tactics: 5,
-  technique: 5,
 }
 
 const buildRadarData = (ratings: PlayerSkillRatings): RadarDataItem[] =>
@@ -47,13 +52,78 @@ const buildRadarData = (ratings: PlayerSkillRatings): RadarDataItem[] =>
     value: ratings[skill as keyof PlayerSkillRatings] * 10,
   }))
 
+const ratingsFromStats = (stats: ApiPlayerStats | null): PlayerSkillRatings => ({
+  serve: stats?.beachvolleyball_serve ?? INITIAL_SKILL_RATINGS.serve,
+  receive: stats?.beachvolleyball_receive ?? INITIAL_SKILL_RATINGS.receive,
+  set: stats?.beachvolleyball_set ?? INITIAL_SKILL_RATINGS.set,
+  hit: stats?.beachvolleyball_hit ?? INITIAL_SKILL_RATINGS.hit,
+  block: stats?.beachvolleyball_block ?? INITIAL_SKILL_RATINGS.block,
+  effort: stats?.beachvolleyball_effort ?? INITIAL_SKILL_RATINGS.effort,
+  mentality: stats?.beachvolleyball_mentality ?? INITIAL_SKILL_RATINGS.mentality,
+})
+
+const statsFromRatings = (ratings: PlayerSkillRatings): ApiPlayerStatsUpdate => ({
+  beachvolleyball_serve: ratings.serve,
+  beachvolleyball_receive: ratings.receive,
+  beachvolleyball_set: ratings.set,
+  beachvolleyball_hit: ratings.hit,
+  beachvolleyball_block: ratings.block,
+  beachvolleyball_effort: ratings.effort,
+  beachvolleyball_mentality: ratings.mentality,
+})
+
 const PlayerStatsScreen = () => {
+  const authPlayerId = useAuthStore((state) => state.authPlayerId)
   const [skillRatingModalVisible, setSkillRatingModalVisible] = useState(false)
   const [skillRatings, setSkillRatings] = useState<PlayerSkillRatings>(INITIAL_SKILL_RATINGS)
+  const [isLoadingStats, setIsLoadingStats] = useState(false)
+  const [isSavingStats, setIsSavingStats] = useState(false)
+  const [statsMessage, setStatsMessage] = useState("")
 
-  const saveSkillRatings = (ratings: PlayerSkillRatings) => {
-    setSkillRatings(ratings)
+  const loadStats = useCallback(async () => {
+    if (!authPlayerId) {
+      setStatsMessage("Log in again so the app knows which player to update.")
+      return
+    }
+
+    setIsLoadingStats(true)
+    setStatsMessage("")
+
+    const result = await api.getPlayerStats(authPlayerId)
+    setIsLoadingStats(false)
+
+    if (result.kind !== "ok") {
+      setStatsMessage("Could not load your player stats.")
+      return
+    }
+
+    setSkillRatings(ratingsFromStats(result.stats))
+  }, [authPlayerId])
+
+  useEffect(() => {
+    void loadStats()
+  }, [loadStats])
+
+  const saveSkillRatings = async (ratings: PlayerSkillRatings) => {
+    if (!authPlayerId) {
+      setStatsMessage("Log in again so the app knows which player to update.")
+      return
+    }
+
+    setIsSavingStats(true)
+    setStatsMessage("")
+
+    const result = await api.updatePlayerStats(authPlayerId, statsFromRatings(ratings))
+    setIsSavingStats(false)
+
+    if (result.kind !== "ok") {
+      setStatsMessage("Could not save your player stats.")
+      return
+    }
+
+    setSkillRatings(ratingsFromStats(result.stats))
     setSkillRatingModalVisible(false)
+    setStatsMessage("Stats saved.")
   }
 
   const data = buildRadarData(skillRatings)
@@ -86,9 +156,12 @@ const PlayerStatsScreen = () => {
       />
 
       <View style={styles.skillRatingSection}>
+        {isLoadingStats ? <Text style={styles.statusText}>Loading stats...</Text> : null}
+        {statsMessage ? <Text style={styles.statusText}>{statsMessage}</Text> : null}
         <Button
-          text="Rate Player Skills"
+          text={isSavingStats ? "Saving..." : "Rate Player Skills"}
           onPress={() => setSkillRatingModalVisible(true)}
+          disabled={isLoadingStats || isSavingStats}
           style={styles.actionButton}
         />
         <View style={styles.skillRatingValues}>
@@ -103,7 +176,7 @@ const PlayerStatsScreen = () => {
       <PlayerSkillRatingModal
         visible={skillRatingModalVisible}
         ratings={skillRatings}
-        onSave={saveSkillRatings}
+        onSave={(ratings) => void saveSkillRatings(ratings)}
         onCancel={() => setSkillRatingModalVisible(false)}
       />
     </SafeAreaView>
@@ -141,6 +214,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 10,
     padding: 12,
+  },
+  statusText: {
+    color: TEXT_DARK,
+    fontSize: 14,
+    marginBottom: 8,
+    textAlign: "center",
   },
 })
 

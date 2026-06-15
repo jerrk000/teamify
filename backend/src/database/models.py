@@ -54,6 +54,21 @@ class GameType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True, nullable=False)
 
+class PlayerStats(db.Model):
+    __tablename__ = "playerstats"
+
+    player_id = db.Column(db.Integer, db.ForeignKey("players.id"), primary_key=True)
+    beachvolleyball_serve = db.Column(db.Integer)
+    beachvolleyball_receive = db.Column(db.Integer)
+    beachvolleyball_set = db.Column(db.Integer)
+    beachvolleyball_hit = db.Column(db.Integer)
+    beachvolleyball_block = db.Column(db.Integer)
+    beachvolleyball_effort = db.Column(db.Integer)
+    beachvolleyball_mentality = db.Column(db.Integer)
+    last_updated = db.Column(db.Date)
+
+    player = db.relationship("Player", backref=db.backref("stats", uselist=False))
+
 class Game(db.Model):
     __tablename__ = "games"
 

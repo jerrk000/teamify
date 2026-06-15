@@ -11,7 +11,16 @@ import Config from "@/config"
 
 import { getGeneralApiProblem } from "./apiProblem"
 import type { GeneralApiProblem } from "./apiProblem"
-import type { ApiConfig, ApiFriendsResponse, ApiLoginResponse, ApiPlayer, ApiTestOutputResponse } from "./types"
+import type {
+  ApiConfig,
+  ApiFriendsResponse,
+  ApiLoginResponse,
+  ApiPlayer,
+  ApiPlayerStats,
+  ApiPlayerStatsResponse,
+  ApiPlayerStatsUpdate,
+  ApiTestOutputResponse,
+} from "./types"
 
 /**
  * Configuring the apisauce instance.
@@ -95,6 +104,44 @@ export class Api {
     }
 
     return { kind: "ok", friends: response.data.friends }
+  }
+
+  async getPlayerStats(
+    playerId: number,
+  ): Promise<{ kind: "ok"; stats: ApiPlayerStats | null } | GeneralApiProblem> {
+    const response = await this.apisauce.get<ApiPlayerStatsResponse>(`/playerstats/${playerId}`)
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    if (!response.data || !("stats" in response.data)) {
+      return { kind: "bad-data" }
+    }
+
+    return { kind: "ok", stats: response.data.stats }
+  }
+
+  async updatePlayerStats(
+    playerId: number,
+    stats: ApiPlayerStatsUpdate,
+  ): Promise<{ kind: "ok"; stats: ApiPlayerStats } | GeneralApiProblem> {
+    const response = await this.apisauce.put<ApiPlayerStatsResponse>(
+      `/playerstats/${playerId}`,
+      stats,
+    )
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    if (!response.data?.stats) {
+      return { kind: "bad-data" }
+    }
+
+    return { kind: "ok", stats: response.data.stats }
   }
 }
 
