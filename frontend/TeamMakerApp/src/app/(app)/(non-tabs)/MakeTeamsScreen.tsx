@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import { Image, View, type ViewStyle, Text, TouchableOpacity, Keyboard, useWindowDimensions, type TextStyle, type ImageStyle } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useListStore } from "../../../store/useListStore";
@@ -16,6 +16,8 @@ import { OptionTabs } from "@/components/ui/OptionTabs"
 import { GAME_OPTIONS_TAGS, type GameOptionsTagKey } from '@/options/GameOptionsTabs';
 import { SegmentedContentTabs } from '@/components/ui/SegmentedContentTabs';
 import PlayerRatingModal from '@/components/ui/PlayerRatingModal';
+import { api } from '@/services/api';
+import { useAuthStore } from '@/store/useAuthStore';
 
 type Item = {
   id: string;
@@ -27,23 +29,11 @@ type RosterTabKey = "players" | "groups";
 const MakeTeamsScreen = () => {
   const router = useRouter();
   const setItems = useListStore((state) => state.setItems);
-  const [data, setData] = useState<Item[]>([
-    { id: '1', name: 'Nikolaus' },
-    { id: '2', name: 'Silvester' },
-    { id: '3', name: 'David' },
-    { id: '4', name: 'Lukas' },
-    { id: '5', name: 'Anton' },
-    { id: '6', name: 'Maria' },
-    { id: '7', name: 'Josef' },
-    { id: '8', name: 'Mario' },
-    { id: '9', name: 'Simon' },
-    { id: '10', name: 'Markus' },
-    { id: '11', name: 'Bernd' },
-    { id: '12', name: 'Maximilian' },
-    { id: '13', name: 'Markus Aurelius Dominikus' },
-    { id: '14', name: 'Maximilian Baximilian Raximus' },
-    { id: '15', name: 'Servus Versus Cersus' },
-  ]);
+  const authPlayerId = useAuthStore((state) => state.authPlayerId);
+  const [friendPlayers, setFriendPlayers] = useState<Item[]>([]);
+  const [guestPlayers, setGuestPlayers] = useState<Item[]>([]);
+  const [isLoadingFriends, setIsLoadingFriends] = useState(false);
+  const [friendsError, setFriendsError] = useState("");
 
 
   const {
@@ -55,12 +45,7 @@ const MakeTeamsScreen = () => {
     : require("../../../../assets/avatar_placeholder.png")
 
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [filteredData, setFilteredData] = useState<Item[]>([]);
-  const [selectedItems, setSelectedItems] = useState<Item[]>(() => {
-    // Initialize with the item that has id=1 //TODO change this to their own user
-    const initialItem = data.find(item => item.id === '1'); 
-    return initialItem ? [initialItem] : [];
-  });
+  const [selectedItems, setSelectedItems] = useState<Item[]>([]);
   const [inputName, setInputName] = useState('');
   const { height: windowHeight } = useWindowDimensions();
   const selectedPlayersMaxHeight = windowHeight * 0.3;
@@ -69,6 +54,70 @@ const MakeTeamsScreen = () => {
   const [rosterTab, setRosterTab] = useState<RosterTabKey>("players");
   const [playerRatings, setPlayerRatings] = useState<Record<string, number>>({});
   const [ratingModalPlayer, setRatingModalPlayer] = useState<Item | undefined>();
+
+  const data = useMemo(() => [...friendPlayers, ...guestPlayers], [friendPlayers, guestPlayers]);
+
+  const filteredData = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+
+    if (!normalizedQuery) return data;
+
+    return data.filter((item) => item.name.toLowerCase().includes(normalizedQuery));
+  }, [data, searchQuery]);
+
+  const friendGroups = useMemo(() => {
+    if (friendPlayers.length === 0) return [];
+
+    return [
+      {
+        id: "all-friends",
+        name: "All Friends",
+        playerIds: friendPlayers.map((friend) => friend.id),
+      },
+      {
+        id: "first-four-friends",
+        name: "First 4 Friends",
+        playerIds: friendPlayers.slice(0, 4).map((friend) => friend.id),
+      },
+      {
+        id: "recent-friends",
+        name: "Recent Friends",
+        playerIds: friendPlayers.slice(-4).map((friend) => friend.id),
+      },
+    ].filter((group) => group.playerIds.length > 0);
+  }, [friendPlayers]);
+
+  const loadFriends = useCallback(async () => {
+    if (!authPlayerId) {
+      setFriendPlayers([]);
+      setFriendsError("Log in again so the app knows which player to load.");
+      return;
+    }
+
+    setIsLoadingFriends(true);
+    setFriendsError("");
+
+    const result = await api.getFriends(authPlayerId);
+    setIsLoadingFriends(false);
+
+    if (result.kind !== "ok") {
+      setFriendPlayers([]);
+      setFriendsError("Could not load your friends. Check your backend connection.");
+      return;
+    }
+
+    const nextFriends = result.friends.map((friend) => ({
+      id: String(friend.id),
+      name: friend.name,
+    }));
+
+    setFriendPlayers(nextFriends);
+    setSelectedItems((currentItems) =>
+      currentItems.filter((item) =>
+        item.id.startsWith("guest-") || nextFriends.some((friend) => friend.id === item.id),
+      ),
+    );
+  }, [authPlayerId]);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
@@ -84,19 +133,18 @@ const MakeTeamsScreen = () => {
     };
   }, []);
 
+  useEffect(() => {
+    void loadFriends();
+  }, [loadFriends]);
+
   
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    const filtered = data.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredData(filtered);
   };
 
   const clearSearch = () => {
     setSearchQuery("");
-    setFilteredData(data);
   };
 
   const handleItemPress = (item: Item) => {
@@ -119,10 +167,10 @@ const MakeTeamsScreen = () => {
     if (guestName) {
       Keyboard.dismiss();
       const newItem: Item = {
-        id: String(data.length + 1),
+        id: `guest-${Date.now()}`,
         name: guestName + " (temp)",
       };
-      setData([...data, newItem]);
+      setGuestPlayers([...guestPlayers, newItem]);
       setInputName('');
       if (!selectedItems.some((selected) => selected.id === newItem.id)) {
         setSelectedItems([...selectedItems, newItem]); //add item if not already selected
@@ -197,8 +245,23 @@ const MakeTeamsScreen = () => {
         </TouchableOpacity>
       </View>
 
+      {isLoadingFriends ? (
+        <Text style={themed($stateText)}>Loading friends...</Text>
+      ) : null}
+
+      {friendsError ? (
+        <View style={themed($stateContainer)}>
+          <Text style={themed($stateText)}>{friendsError}</Text>
+          <Button text="Try again" preset="filled" onPress={() => void loadFriends()} />
+        </View>
+      ) : null}
+
+      {!isLoadingFriends && !friendsError && friendPlayers.length === 0 ? (
+        <Text style={themed($stateText)}>No accepted friends yet.</Text>
+      ) : null}
+
       <PlayerList
-        data={filteredData.length > 0 ? filteredData : data}
+        data={filteredData}
         themed={themed}
         isSelected={(item) => isItemSelected(item)}
         favoriteDisabled={true}
@@ -213,11 +276,11 @@ const MakeTeamsScreen = () => {
 
   const groupsTabContent = (
     <View style={themed($groupsContainer)}>
-      {[
-        { id: "classic-boys", name: "Classic Boys", playerIds: ["1", "2", "3", "4"] },
-        { id: "after-work", name: "After Work", playerIds: ["5", "6", "7", "8"] },
-        { id: "weekend-mix", name: "Weekend Mix", playerIds: ["9", "10", "11", "12"] },
-      ].map((group) => {
+      {friendGroups.length === 0 ? (
+        <Text style={themed($stateText)}>No friend groups available yet.</Text>
+      ) : null}
+
+      {friendGroups.map((group) => {
         const selectedCount = group.playerIds.filter((id) =>
           selectedItems.some((item) => item.id === id),
         ).length;
@@ -447,6 +510,19 @@ const $guestAddButtonDisabled: ThemedStyle<ViewStyle> = () => ({
 
 const $groupsContainer: ThemedStyle<ViewStyle> = () => ({
   gap: 10,
+});
+
+const $stateContainer: ThemedStyle<ViewStyle> = (theme) => ({
+  gap: theme.spacing.sm,
+  marginBottom: theme.spacing.sm,
+  marginHorizontal: 5,
+});
+
+const $stateText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.textDim,
+  marginBottom: theme.spacing.sm,
+  marginHorizontal: 5,
+  textAlign: "center",
 });
 
 const $groupCard: ThemedStyle<ViewStyle> = (theme) => ({

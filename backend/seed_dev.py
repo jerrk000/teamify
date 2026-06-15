@@ -42,10 +42,65 @@ PLAYERS = [
         "won_matches": 2,
         "lost_matches": 5,
     },
+    {
+        "name": "Clara",
+        "email": "clara@test.dev",
+        "friendcode": "CLARA-DEV-005",
+        "played_matches": 18,
+        "won_matches": 10,
+        "lost_matches": 8,
+    },
+    {
+        "name": "David",
+        "email": "david@test.dev",
+        "friendcode": "DAVID-DEV-006",
+        "played_matches": 21,
+        "won_matches": 13,
+        "lost_matches": 8,
+    },
+    {
+        "name": "Emma",
+        "email": "emma@test.dev",
+        "friendcode": "EMMA-DEV-007",
+        "played_matches": 11,
+        "won_matches": 6,
+        "lost_matches": 5,
+    },
+    {
+        "name": "Felix",
+        "email": "felix@test.dev",
+        "friendcode": "FELIX-DEV-008",
+        "played_matches": 5,
+        "won_matches": 1,
+        "lost_matches": 4,
+    },
+    {
+        "name": "Hannah",
+        "email": "hannah@test.dev",
+        "friendcode": "HANNAH-DEV-009",
+        "played_matches": 27,
+        "won_matches": 17,
+        "lost_matches": 10,
+    },
+    {
+        "name": "Ivan",
+        "email": "ivan@test.dev",
+        "friendcode": "IVAN-DEV-010",
+        "played_matches": 14,
+        "won_matches": 7,
+        "lost_matches": 7,
+    },
 ]
 
 FRIENDSHIPS = [
     ("max@test.dev", "jerry@test.dev", "accepted"),
+    ("jerry@test.dev", "alice@test.dev", "accepted"),
+    ("jerry@test.dev", "clara@test.dev", "accepted"),
+    ("david@test.dev", "jerry@test.dev", "accepted"),
+    ("emma@test.dev", "jerry@test.dev", "accepted"),
+    ("jerry@test.dev", "hannah@test.dev", "accepted"),
+    ("felix@test.dev", "jerry@test.dev", "pending"),
+    ("ivan@test.dev", "jerry@test.dev", "blocked"),
     ("max@test.dev", "alice@test.dev", "accepted"),
     ("bob@test.dev", "max@test.dev", "pending"),
 ]
@@ -54,6 +109,7 @@ GAME_TYPES = [
     {"id": 1, "name": "classic"},
     {"id": 2, "name": "quick_match"},
     {"id": 3, "name": "ranked"},
+    {"id": 4, "name": "training"},
 ]
 
 GAMES = [
@@ -105,6 +161,118 @@ GAMES = [
             ("bob@test.dev", "team_b"),
         ],
     },
+    {
+        "game_id": "GAME-DEV-004",
+        "game_type": "classic",
+        "ended_at": datetime.now() - timedelta(days=5, hours=2),
+        "duration_seconds": 1485,
+        "winning_team": "team_a",
+        "team_a_score": 12,
+        "team_b_score": 9,
+        "is_valid": True,
+        "participants": [
+            ("jerry@test.dev", "team_a"),
+            ("david@test.dev", "team_a"),
+            ("max@test.dev", "team_b"),
+            ("clara@test.dev", "team_b"),
+        ],
+    },
+    {
+        "game_id": "GAME-DEV-005",
+        "game_type": "ranked",
+        "ended_at": datetime.now() - timedelta(days=4),
+        "duration_seconds": 1900,
+        "winning_team": "team_b",
+        "team_a_score": 13,
+        "team_b_score": 16,
+        "is_valid": True,
+        "participants": [
+            ("jerry@test.dev", "team_a"),
+            ("emma@test.dev", "team_a"),
+            ("hannah@test.dev", "team_b"),
+            ("alice@test.dev", "team_b"),
+        ],
+    },
+    {
+        "game_id": "GAME-DEV-006",
+        "game_type": "quick_match",
+        "ended_at": datetime.now() - timedelta(days=3, hours=7),
+        "duration_seconds": 620,
+        "winning_team": "team_b",
+        "team_a_score": 3,
+        "team_b_score": 5,
+        "is_valid": True,
+        "participants": [
+            ("bob@test.dev", "team_a"),
+            ("felix@test.dev", "team_a"),
+            ("jerry@test.dev", "team_b"),
+            ("clara@test.dev", "team_b"),
+        ],
+    },
+    {
+        "game_id": "GAME-DEV-007",
+        "game_type": "training",
+        "ended_at": datetime.now() - timedelta(days=2, hours=8),
+        "duration_seconds": 910,
+        "winning_team": "team_a",
+        "team_a_score": 8,
+        "team_b_score": 8,
+        "is_valid": False,
+        "participants": [
+            ("jerry@test.dev", "team_a"),
+            ("ivan@test.dev", "team_a"),
+            ("max@test.dev", "team_b"),
+            ("emma@test.dev", "team_b"),
+        ],
+    },
+    {
+        "game_id": "GAME-DEV-008",
+        "game_type": "ranked",
+        "ended_at": datetime.now() - timedelta(days=1, hours=10),
+        "duration_seconds": 1740,
+        "winning_team": "team_a",
+        "team_a_score": 18,
+        "team_b_score": 12,
+        "is_valid": True,
+        "participants": [
+            ("hannah@test.dev", "team_a"),
+            ("jerry@test.dev", "team_a"),
+            ("david@test.dev", "team_b"),
+            ("bob@test.dev", "team_b"),
+        ],
+    },
+    {
+        "game_id": "GAME-DEV-009",
+        "game_type": "classic",
+        "ended_at": datetime.now() - timedelta(hours=18),
+        "duration_seconds": 1215,
+        "winning_team": "team_b",
+        "team_a_score": 9,
+        "team_b_score": 11,
+        "is_valid": True,
+        "participants": [
+            ("jerry@test.dev", "team_a"),
+            ("max@test.dev", "team_a"),
+            ("clara@test.dev", "team_b"),
+            ("alice@test.dev", "team_b"),
+        ],
+    },
+    {
+        "game_id": "GAME-DEV-010",
+        "game_type": "quick_match",
+        "ended_at": datetime.now() - timedelta(hours=2),
+        "duration_seconds": 540,
+        "winning_team": "team_a",
+        "team_a_score": 6,
+        "team_b_score": 2,
+        "is_valid": True,
+        "participants": [
+            ("jerry@test.dev", "team_a"),
+            ("emma@test.dev", "team_a"),
+            ("felix@test.dev", "team_b"),
+            ("ivan@test.dev", "team_b"),
+        ],
+    },
 ]
 
 
@@ -150,7 +318,7 @@ def upsert_player(player_data):
 
 
 def upsert_game_type(game_type_data):
-    game_type = GameType.query.get(game_type_data["id"])
+    game_type = db.session.get(GameType, game_type_data["id"])
 
     if game_type is None:
         game_type = GameType(id=game_type_data["id"])
@@ -197,14 +365,33 @@ def add_friendship(players_by_email, player_email, friend_email, status):
 
 def upsert_game(game_data, game_types_by_name):
     game = Game.query.filter_by(game_id=game_data["game_id"]).first()
+    game_type_name = game_data["game_type"]
+    game_type_id = game_types_by_name[game_type_name].id
 
     if game is None:
-        game = Game(game_id=game_data["game_id"])
-        db.session.add(game)
+        if "game_mode" in table_columns("games"):
+            db.session.execute(
+                text(
+                    """
+                    INSERT INTO games (game_id, game_type_id, game_mode)
+                    VALUES (:game_id, :game_type_id, :game_mode)
+                    """
+                ),
+                {
+                    "game_id": game_data["game_id"],
+                    "game_type_id": game_type_id,
+                    "game_mode": game_type_name,
+                },
+            )
+            db.session.flush()
+            game = Game.query.filter_by(game_id=game_data["game_id"]).first()
+        else:
+            game = Game(game_id=game_data["game_id"])
+            db.session.add(game)
 
     for key, value in game_data.items():
         if key == "game_type":
-            game.game_type_id = game_types_by_name[value].id
+            game.game_type_id = game_type_id
         elif key != "participants":
             setattr(game, key, value)
 

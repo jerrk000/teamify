@@ -14,6 +14,7 @@ import { Button } from "@/components/Button";
 import { router } from "expo-router";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { api } from "@/services/api";
+import { useAuthStore } from "@/store/useAuthStore";
 
 type Props = {
   notificationCount?: number
@@ -22,6 +23,8 @@ type Props = {
 export default function HomeScreen({ notificationCount = 12 }: Props) {
   const badgeText = notificationCount > 9 ? "9+" : String(notificationCount)
   const [testRouteValue, setTestRouteValue] = useState("Loading...")
+  const authPlayerName = useAuthStore((state) => state.authPlayerName)
+  const displayName = authPlayerName ?? "Not logged in"
 
   const {
       themed, theme,
@@ -79,7 +82,9 @@ export default function HomeScreen({ notificationCount = 12 }: Props) {
               (avatarSource && theme.isDark) && { backgroundColor: theme.colors.palette.neutral200 ?? "#eee" },]} //when darkmode and no avatar, make grey background
           />
           <View>
-            <Text style={themed($name)}>Max Mustermann</Text>
+            <Text style={themed($name)} numberOfLines={1} ellipsizeMode="tail">
+              {displayName}
+            </Text>
             <Text style={themed($level)}>{testRouteValue}</Text>
           </View>
         </View>
