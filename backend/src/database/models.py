@@ -65,6 +65,9 @@ class PlayerStats(db.Model):
     beachvolleyball_block = db.Column(db.Integer)
     beachvolleyball_effort = db.Column(db.Integer)
     beachvolleyball_mentality = db.Column(db.Integer)
+    beachvolleyball_quick = db.Column(db.Integer)
+    football_quick = db.Column(db.Integer)
+    general_quick = db.Column(db.Integer)
     last_updated = db.Column(db.Date)
 
     player = db.relationship("Player", backref=db.backref("stats", uselist=False))

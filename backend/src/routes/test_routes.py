@@ -21,6 +21,9 @@ PLAYER_STATS_FIELDS = (
     "beachvolleyball_block",
     "beachvolleyball_effort",
     "beachvolleyball_mentality",
+    "beachvolleyball_quick",
+    "football_quick",
+    "general_quick",
 )
 
 @test_routes.route('/', methods = ['GET'])

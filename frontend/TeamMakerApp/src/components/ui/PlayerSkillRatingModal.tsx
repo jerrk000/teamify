@@ -70,7 +70,7 @@ const DEFAULT_SKILLS: PlayerSkillRatingItem[] = [
   {
     key: "hit",
     title: "Hitting",
-    lowEmoji: "🥅",
+    lowEmoji: "🫣",
     lowLabel: "Avoids taking shots",
     highEmoji: "🚀",
     highLabel: "Consistent finisher",

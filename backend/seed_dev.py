@@ -285,6 +285,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 7,
         "beachvolleyball_effort": 7,
         "beachvolleyball_mentality": 8,
+        "beachvolleyball_quick": 7,
+        "football_quick": 6,
+        "general_quick": 7,
     },
     {
         "email": "jerry@test.dev",
@@ -295,6 +298,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 6,
         "beachvolleyball_effort": 9,
         "beachvolleyball_mentality": 8,
+        "beachvolleyball_quick": 8,
+        "football_quick": 7,
+        "general_quick": 8,
     },
     {
         "email": "alice@test.dev",
@@ -305,6 +311,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 7,
         "beachvolleyball_effort": 8,
         "beachvolleyball_mentality": 9,
+        "beachvolleyball_quick": 8,
+        "football_quick": 6,
+        "general_quick": 8,
     },
     {
         "email": "bob@test.dev",
@@ -315,6 +324,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 6,
         "beachvolleyball_effort": 6,
         "beachvolleyball_mentality": 5,
+        "beachvolleyball_quick": 5,
+        "football_quick": 7,
+        "general_quick": 6,
     },
     {
         "email": "clara@test.dev",
@@ -325,6 +337,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 8,
         "beachvolleyball_effort": 8,
         "beachvolleyball_mentality": 7,
+        "beachvolleyball_quick": 9,
+        "football_quick": 7,
+        "general_quick": 8,
     },
     {
         "email": "david@test.dev",
@@ -335,6 +350,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 9,
         "beachvolleyball_effort": 8,
         "beachvolleyball_mentality": 7,
+        "beachvolleyball_quick": 6,
+        "football_quick": 8,
+        "general_quick": 7,
     },
     {
         "email": "emma@test.dev",
@@ -345,6 +363,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 6,
         "beachvolleyball_effort": 7,
         "beachvolleyball_mentality": 8,
+        "beachvolleyball_quick": 7,
+        "football_quick": 8,
+        "general_quick": 7,
     },
     {
         "email": "hannah@test.dev",
@@ -355,6 +376,9 @@ PLAYER_STATS = [
         "beachvolleyball_block": 8,
         "beachvolleyball_effort": 9,
         "beachvolleyball_mentality": 8,
+        "beachvolleyball_quick": 9,
+        "football_quick": 8,
+        "general_quick": 9,
     },
 ]
 
@@ -375,6 +399,9 @@ def add_column_if_missing(table_name, column_name, column_definition):
 
 def ensure_dev_schema():
     add_column_if_missing("playerstats", "beachvolleyball_block", "INTEGER")
+    add_column_if_missing("playerstats", "beachvolleyball_quick", "INTEGER")
+    add_column_if_missing("playerstats", "football_quick", "INTEGER")
+    add_column_if_missing("playerstats", "general_quick", "INTEGER")
     add_column_if_missing("games", "game_type_id", "INTEGER")
     add_column_if_missing("games", "team_a_score", "INTEGER")
     add_column_if_missing("games", "team_b_score", "INTEGER")

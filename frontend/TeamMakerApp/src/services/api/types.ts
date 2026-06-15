@@ -64,6 +64,9 @@ export interface ApiPlayerStats {
   beachvolleyball_block: number
   beachvolleyball_effort: number
   beachvolleyball_mentality: number
+  beachvolleyball_quick: number
+  football_quick: number
+  general_quick: number
   last_updated?: string
 }
 

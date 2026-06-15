@@ -62,7 +62,10 @@ const ratingsFromStats = (stats: ApiPlayerStats | null): PlayerSkillRatings => (
   mentality: stats?.beachvolleyball_mentality ?? INITIAL_SKILL_RATINGS.mentality,
 })
 
-const statsFromRatings = (ratings: PlayerSkillRatings): ApiPlayerStatsUpdate => ({
+const statsFromRatings = (
+  ratings: PlayerSkillRatings,
+  currentStats: ApiPlayerStats | null,
+): ApiPlayerStatsUpdate => ({
   beachvolleyball_serve: ratings.serve,
   beachvolleyball_receive: ratings.receive,
   beachvolleyball_set: ratings.set,
@@ -70,6 +73,9 @@ const statsFromRatings = (ratings: PlayerSkillRatings): ApiPlayerStatsUpdate => 
   beachvolleyball_block: ratings.block,
   beachvolleyball_effort: ratings.effort,
   beachvolleyball_mentality: ratings.mentality,
+  beachvolleyball_quick: currentStats?.beachvolleyball_quick ?? 5,
+  football_quick: currentStats?.football_quick ?? 5,
+  general_quick: currentStats?.general_quick ?? 5,
 })
 
 const PlayerStatsScreen = () => {
@@ -79,6 +85,7 @@ const PlayerStatsScreen = () => {
   const [isLoadingStats, setIsLoadingStats] = useState(false)
   const [isSavingStats, setIsSavingStats] = useState(false)
   const [statsMessage, setStatsMessage] = useState("")
+  const [currentStats, setCurrentStats] = useState<ApiPlayerStats | null>(null)
 
   const loadStats = useCallback(async () => {
     if (!authPlayerId) {
@@ -97,6 +104,7 @@ const PlayerStatsScreen = () => {
       return
     }
 
+    setCurrentStats(result.stats)
     setSkillRatings(ratingsFromStats(result.stats))
   }, [authPlayerId])
 
@@ -113,7 +121,7 @@ const PlayerStatsScreen = () => {
     setIsSavingStats(true)
     setStatsMessage("")
 
-    const result = await api.updatePlayerStats(authPlayerId, statsFromRatings(ratings))
+    const result = await api.updatePlayerStats(authPlayerId, statsFromRatings(ratings, currentStats))
     setIsSavingStats(false)
 
     if (result.kind !== "ok") {
@@ -121,6 +129,7 @@ const PlayerStatsScreen = () => {
       return
     }
 
+    setCurrentStats(result.stats)
     setSkillRatings(ratingsFromStats(result.stats))
     setSkillRatingModalVisible(false)
     setStatsMessage("Stats saved.")
