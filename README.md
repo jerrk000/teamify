@@ -377,3 +377,16 @@ Change color of field if added. Rounded edges. Little bit of space between each 
 - [ ] In LoginScreen.tsx, check out why the page returns errors
 - [ ] There was an error once in FriendsListScreen while no being logged in, check that out again.
 In Player-Screen, not only do an extended modal, but also do a quick gauge modal for implemented sports. (beachvolleyball on top). Maybe also do a "General" stat?
+- [ ] Make a Quick-Gauge modal for the player, if they do not want to do the long one for each sport. Think about the setup how to do different sports and quick ones. Maybe make radar chart in different color for each chosen sport, maybe one for the quick rating
+- [ ] Save (profile)pictures locally. Do this later with Supabase-backend where it is actually possible to save pictures. Recommended workflow:
+Friend chooses their own profile picture on their phone
+↓
+Friend's app uploads the image to a server/cloud storage
+↓
+Server stores the image and gives it a URL
+↓
+Your app downloads that image from the URL
+↓
+Your app saves a local cached copy on your phone
+↓
+SQLite stores the local URI and/or server URL
