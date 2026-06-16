@@ -390,3 +390,7 @@ Your app downloads that image from the URL
 Your app saves a local cached copy on your phone
 ↓
 SQLite stores the local URI and/or server URL
+- [ ] In the Preview Part of the PlayerStatsScreen, show the Playercard, followed by a quick small stat-screen which are seen by the other people.
+- [ ] In PlayerStatsScreen, add an Edit button which makes it possible to change your profil picture, your stats, (your PlayerCard)
+- [ ] Add a column to the database to show if the game is counted toward global winrate/ranking or just a quick for fun game. Maybe already included into gametype? I am not sure if it is better to make it its own column.
+- [ ] Make a button/listview to make it easy to change between sports-views, and the data in the background has to change.

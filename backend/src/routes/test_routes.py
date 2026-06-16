@@ -2,8 +2,8 @@ from flask import Blueprint, request, jsonify
 import uuid
 from datetime import date
 from werkzeug.security import check_password_hash, generate_password_hash
-from ..database.models import Player, PlayerStats
-from ..database.models import friendships
+from ..database.models import Game, Player, PlayerStats
+from ..database.models import friendships, game_participants
 from .. import db
 from ..database.schema import PlayerSchema, PlayerStatsSchema
 
@@ -25,6 +25,8 @@ PLAYER_STATS_FIELDS = (
     "football_quick",
     "general_quick",
 )
+
+RECENT_GAMES_LIMIT = 10
 
 @test_routes.route('/', methods = ['GET'])
 def test_output():
@@ -186,6 +188,78 @@ def get_friends(player_id):
     friend_list = [{"id": friend.id, "name": friend.name, "email": friend.email} for friend in friends]
 
     return jsonify({"player_id": player_id, "friends": friend_list})
+
+@test_routes.route("/players/<int:player_id>/recent-games", methods=["GET"])
+def get_recent_games(player_id):
+    player = db.session.get(Player, player_id)
+
+    if player is None:
+        return jsonify({"error": "Player not found"}), 404
+
+    try:
+        requested_limit = int(request.args.get("limit", RECENT_GAMES_LIMIT))
+    except (TypeError, ValueError):
+        requested_limit = RECENT_GAMES_LIMIT
+
+    limit = max(1, min(requested_limit, RECENT_GAMES_LIMIT))
+    player_games = (
+        db.session.execute(
+            db.select(Game, game_participants.c.team)
+            .join(game_participants, Game.id == game_participants.c.game_id)
+            .where(game_participants.c.player_id == player_id)
+            .where(Game.is_valid.is_(True))
+            .order_by(Game.ended_at.desc(), Game.id.desc())
+            .limit(limit)
+        )
+        .all()
+    )
+
+    recent_games = []
+
+    for game, player_team in player_games:
+        participant_rows = (
+            db.session.execute(
+                db.select(
+                    Player.id,
+                    Player.name,
+                    Player.email,
+                    game_participants.c.team,
+                )
+                .join(game_participants, Player.id == game_participants.c.player_id)
+                .where(game_participants.c.game_id == game.id)
+                .order_by(game_participants.c.team.asc(), Player.name.asc())
+            )
+            .all()
+        )
+
+        teams = {"team_a": [], "team_b": []}
+
+        for participant_id, name, email, team in participant_rows:
+            teams[team].append(
+                {
+                    "id": participant_id,
+                    "name": name,
+                    "email": email,
+                }
+            )
+
+        recent_games.append(
+            {
+                "id": game.id,
+                "game_id": game.game_id,
+                "game_type": game.game_type.name if game.game_type else None,
+                "ended_at": game.ended_at.isoformat() if game.ended_at else None,
+                "duration_seconds": game.duration_seconds,
+                "winning_team": game.winning_team,
+                "player_team": player_team,
+                "result": "won" if game.winning_team == player_team else "lost",
+                "team_a_score": game.team_a_score,
+                "team_b_score": game.team_b_score,
+                "teams": teams,
+            }
+        )
+
+    return jsonify({"player_id": player_id, "games": recent_games})
 
 @test_routes.route("/playerstats/<int:player_id>", methods=["GET"])
 def get_player_stats(player_id):

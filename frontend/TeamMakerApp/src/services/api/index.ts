@@ -19,6 +19,8 @@ import type {
   ApiPlayerStats,
   ApiPlayerStatsResponse,
   ApiPlayerStatsUpdate,
+  ApiRecentGame,
+  ApiRecentGamesResponse,
   ApiTestOutputResponse,
 } from "./types"
 
@@ -142,6 +144,27 @@ export class Api {
     }
 
     return { kind: "ok", stats: response.data.stats }
+  }
+
+  async getRecentGames(
+    playerId: number,
+    limit = 10,
+  ): Promise<{ kind: "ok"; games: ApiRecentGame[] } | GeneralApiProblem> {
+    const response = await this.apisauce.get<ApiRecentGamesResponse>(
+      `/players/${playerId}/recent-games`,
+      { limit },
+    )
+
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    if (!Array.isArray(response.data?.games)) {
+      return { kind: "bad-data" }
+    }
+
+    return { kind: "ok", games: response.data.games }
   }
 }
 

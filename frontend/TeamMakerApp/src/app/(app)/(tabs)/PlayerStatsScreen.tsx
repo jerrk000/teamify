@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   ImageStyle,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextStyle,
@@ -18,7 +19,12 @@ import { IconSymbol } from "@/components/ui/IconSymbol"
 import PlayerSkillRatingModal, { PlayerSkillRatings } from "@/components/ui/PlayerSkillRatingModal"
 import { SegmentedContentTabs } from "@/components/ui/SegmentedContentTabs"
 import { api } from "@/services/api"
-import type { ApiPlayerStats, ApiPlayerStatsUpdate } from "@/services/api/types"
+import type {
+  ApiGameTeamKey,
+  ApiPlayerStats,
+  ApiPlayerStatsUpdate,
+  ApiRecentGame,
+} from "@/services/api/types"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useAppTheme } from "@/theme/context"
 import { ThemedStyle } from "@/theme/types"
@@ -94,6 +100,25 @@ const statsFromRatings = (
   general_quick: currentStats?.general_quick ?? 5,
 })
 
+const formatGameType = (gameType: string | null) =>
+  (gameType ?? "Game")
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ")
+
+const formatGameDate = (endedAt: string | null) => {
+  if (!endedAt) return "Unknown date"
+
+  const date = new Date(endedAt)
+
+  if (Number.isNaN(date.getTime())) return "Unknown date"
+
+  return date.toLocaleDateString(undefined, {
+    day: "numeric",
+    month: "short",
+  })
+}
+
 const PlayerStatsScreen = () => {
   const { themed, theme } = useAppTheme()
   const authPlayerId = useAuthStore((state) => state.authPlayerId)
@@ -106,6 +131,10 @@ const PlayerStatsScreen = () => {
   const [isSavingStats, setIsSavingStats] = useState(false)
   const [statsMessage, setStatsMessage] = useState("")
   const [currentStats, setCurrentStats] = useState<ApiPlayerStats | null>(null)
+  const [recentGames, setRecentGames] = useState<ApiRecentGame[]>([])
+  const [isLoadingGames, setIsLoadingGames] = useState(false)
+  const [gamesMessage, setGamesMessage] = useState("")
+  const [expandedGameId, setExpandedGameId] = useState<number | null>(null)
 
   const loadStats = useCallback(async () => {
     if (!authPlayerId) {
@@ -128,10 +157,40 @@ const PlayerStatsScreen = () => {
     setSkillRatings(ratingsFromStats(result.stats))
   }, [authPlayerId])
 
+  const loadRecentGames = useCallback(async () => {
+    if (!authPlayerId) {
+      setGamesMessage("Log in again so the app knows which games to show.")
+      return
+    }
+
+    setIsLoadingGames(true)
+    setGamesMessage("")
+
+    const result = await api.getRecentGames(authPlayerId, 10)
+    setIsLoadingGames(false)
+
+    if (result.kind !== "ok") {
+      setGamesMessage("Could not load your recent games.")
+      return
+    }
+
+    setRecentGames(result.games)
+    setExpandedGameId(result.games[0]?.id ?? null)
+
+    if (result.games.length === 0) {
+      setGamesMessage("No games yet.")
+    }
+  }, [authPlayerId])
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadStats()
   }, [loadStats])
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadRecentGames()
+  }, [loadRecentGames])
 
   const saveSkillRatings = async (ratings: PlayerSkillRatings) => {
     if (!authPlayerId) {
@@ -166,6 +225,22 @@ const PlayerStatsScreen = () => {
     ? require("../../../../assets/avatar_placeholder_white.png")
     : require("../../../../assets/avatar_placeholder.png")
   const heroBackground = require("../../../../assets/images/volleyball_court_black.png")
+  const renderGameTeam = (game: ApiRecentGame, teamKey: ApiGameTeamKey, label: string) => {
+    const players = game.teams[teamKey]
+    const isWinner = game.winning_team === teamKey
+
+    return (
+      <View style={themed($gameTeam)}>
+        <View style={themed($gameTeamHeader)}>
+          <Text style={themed($gameTeamTitle)}>{label}</Text>
+          {isWinner ? <Text style={themed($winnerText)}>Winner</Text> : null}
+        </View>
+        <Text style={themed($gameTeamPlayers)}>
+          {players.map((player) => player.name).join(", ")}
+        </Text>
+      </View>
+    )
+  }
 
   const previewContent = (
     <ScrollView
@@ -188,13 +263,88 @@ const PlayerStatsScreen = () => {
     </ScrollView>
   )
 
-  const gamesContent = (
-    <View style={themed($emptyContent)}>
-      <IconSymbol size={40} name="sportscourt" color={theme.colors.textDim} iconSet="material" />
-      <Text style={themed($emptyTitle)}>No games yet</Text>
-      <Text style={themed($emptyText)}>Finished games will appear here.</Text>
-    </View>
-  )
+  const gamesContent =
+    isLoadingGames || recentGames.length > 0 ? (
+      <ScrollView
+        style={themed($tabScroll)}
+        contentContainerStyle={themed($gamesContent)}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={themed($sectionTitle)}>Recent Games</Text>
+        {isLoadingGames ? <Text style={themed($statusText)}>Loading games...</Text> : null}
+        {gamesMessage && recentGames.length > 0 ? (
+          <Text style={themed($statusText)}>{gamesMessage}</Text>
+        ) : null}
+
+        <View style={themed($gamesList)}>
+          {recentGames.map((game) => {
+            const isExpanded = expandedGameId === game.id
+            const resultLabel = game.result === "won" ? "Won" : "Lost"
+
+            return (
+              <Pressable
+                key={game.id}
+                accessibilityRole="button"
+                accessibilityState={{ expanded: isExpanded }}
+                accessibilityLabel={`${formatGameType(game.game_type)} on ${formatGameDate(
+                  game.ended_at,
+                )}. ${resultLabel}. Show teams.`}
+                onPress={() => setExpandedGameId(isExpanded ? null : game.id)}
+                style={({ pressed }) => [themed($gameCard), pressed && themed($gameCardPressed)]}
+              >
+                <View style={themed($gameCardHeader)}>
+                  <View style={themed($gameTitleGroup)}>
+                    <Text style={themed($gameTitle)}>{formatGameType(game.game_type)}</Text>
+                    <Text style={themed($gameMeta)}>{formatGameDate(game.ended_at)}</Text>
+                  </View>
+                  <View
+                    style={[
+                      themed($resultPill),
+                      game.result === "won" ? themed($wonPill) : themed($lostPill),
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        themed($resultPillText),
+                        game.result === "won" ? themed($wonPillText) : themed($lostPillText),
+                      ]}
+                    >
+                      {resultLabel}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={themed($gameScoreRow)}>
+                  <Text style={themed($gameScore)}>
+                    {game.team_a_score ?? "-"} : {game.team_b_score ?? "-"}
+                  </Text>
+                  <IconSymbol
+                    size={16}
+                    name="chevron.down"
+                    color={theme.colors.textDim}
+                    iconSet="fontawesome"
+                    style={isExpanded ? themed($chevronExpanded) : undefined}
+                  />
+                </View>
+
+                {isExpanded ? (
+                  <View style={themed($teamsWrap)}>
+                    {renderGameTeam(game, "team_a", "Team A")}
+                    {renderGameTeam(game, "team_b", "Team B")}
+                  </View>
+                ) : null}
+              </Pressable>
+            )
+          })}
+        </View>
+      </ScrollView>
+    ) : (
+      <View style={themed($emptyContent)}>
+        <IconSymbol size={40} name="sportscourt" color={theme.colors.textDim} iconSet="material" />
+        <Text style={themed($emptyTitle)}>{gamesMessage || "No games yet"}</Text>
+        <Text style={themed($emptyText)}>Finished games will appear here.</Text>
+      </View>
+    )
 
   const statsContent = (
     <ScrollView
@@ -414,6 +564,11 @@ const $statsContent: ThemedStyle<ViewStyle> = () => ({
   paddingBottom: 116,
 })
 
+const $gamesContent: ThemedStyle<ViewStyle> = () => ({
+  padding: 20,
+  paddingBottom: 116,
+})
+
 const $sectionTitle: ThemedStyle<TextStyle> = (theme) => ({
   alignSelf: "flex-start",
   color: theme.colors.text,
@@ -499,6 +654,133 @@ const $summaryLabel: ThemedStyle<TextStyle> = (theme) => ({
   fontSize: 14,
   lineHeight: 20,
   marginTop: 4,
+})
+
+const $gamesList: ThemedStyle<ViewStyle> = () => ({
+  gap: 12,
+  width: "100%",
+})
+
+const $gameCard: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.surface,
+  borderColor: theme.colors.border,
+  borderRadius: 8,
+  borderWidth: 1,
+  padding: 14,
+})
+
+const $gameCardPressed: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.surfacePressed,
+})
+
+const $gameCardHeader: ThemedStyle<ViewStyle> = () => ({
+  alignItems: "flex-start",
+  flexDirection: "row",
+  gap: 12,
+  justifyContent: "space-between",
+})
+
+const $gameTitleGroup: ThemedStyle<ViewStyle> = () => ({
+  flex: 1,
+  minWidth: 0,
+})
+
+const $gameTitle: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontSize: 18,
+  fontWeight: "800",
+  lineHeight: 24,
+})
+
+const $gameMeta: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.textDim,
+  fontSize: 13,
+  lineHeight: 18,
+  marginTop: 2,
+})
+
+const $resultPill: ThemedStyle<ViewStyle> = () => ({
+  borderRadius: 999,
+  paddingHorizontal: 10,
+  paddingVertical: 5,
+})
+
+const $wonPill: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.green100,
+})
+
+const $lostPill: ThemedStyle<ViewStyle> = (theme) => ({
+  backgroundColor: theme.colors.errorBackground,
+})
+
+const $resultPillText: ThemedStyle<TextStyle> = () => ({
+  fontSize: 13,
+  fontWeight: "800",
+  lineHeight: 16,
+})
+
+const $wonPillText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.green500,
+})
+
+const $lostPillText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.error,
+})
+
+const $gameScoreRow: ThemedStyle<ViewStyle> = () => ({
+  alignItems: "center",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  marginTop: 12,
+})
+
+const $gameScore: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontSize: 26,
+  fontWeight: "900",
+  lineHeight: 32,
+})
+
+const $chevronExpanded: ThemedStyle<TextStyle> = () => ({
+  transform: [{ rotate: "180deg" }],
+})
+
+const $teamsWrap: ThemedStyle<ViewStyle> = (theme) => ({
+  borderTopColor: theme.colors.separator,
+  borderTopWidth: 1,
+  gap: 12,
+  marginTop: 14,
+  paddingTop: 14,
+})
+
+const $gameTeam: ThemedStyle<ViewStyle> = () => ({
+  gap: 4,
+})
+
+const $gameTeamHeader: ThemedStyle<ViewStyle> = () => ({
+  alignItems: "center",
+  flexDirection: "row",
+  gap: 8,
+})
+
+const $gameTeamTitle: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.text,
+  fontSize: 15,
+  fontWeight: "800",
+  lineHeight: 20,
+})
+
+const $winnerText: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.volleyColors.volleyyellow,
+  fontSize: 12,
+  fontWeight: "800",
+  lineHeight: 16,
+})
+
+const $gameTeamPlayers: ThemedStyle<TextStyle> = (theme) => ({
+  color: theme.colors.textDim,
+  fontSize: 15,
+  lineHeight: 21,
 })
 
 const $emptyContent: ThemedStyle<ViewStyle> = () => ({

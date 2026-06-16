@@ -77,6 +77,33 @@ export interface ApiPlayerStatsResponse {
   stats: ApiPlayerStats | null
 }
 
+export type ApiGameTeamKey = "team_a" | "team_b"
+
+export interface ApiRecentGamePlayer {
+  id: number
+  name: string
+  email?: string
+}
+
+export interface ApiRecentGame {
+  id: number
+  game_id: string
+  game_type: string | null
+  ended_at: string | null
+  duration_seconds: number | null
+  winning_team: ApiGameTeamKey
+  player_team: ApiGameTeamKey
+  result: "won" | "lost"
+  team_a_score: number | null
+  team_b_score: number | null
+  teams: Record<ApiGameTeamKey, ApiRecentGamePlayer[]>
+}
+
+export interface ApiRecentGamesResponse {
+  player_id: number
+  games: ApiRecentGame[]
+}
+
 /**
  * The options used to configure apisauce.
  */
